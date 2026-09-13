@@ -1,6 +1,6 @@
 # Объектно-ориентированное проектирование 2026
 
-## [Таблица успеваемости]()
+## [Таблица успеваемости](https://docs.google.com/spreadsheets/d/1XR0BWUz3orIC4ks957KAax68rKu8ICDksH9irQHLA5Y/edit?usp=drivesdk)
 
 ## [Лабораторные работы](https://github.com/alexey-malov/ood/tree/master/labs)
   - [Лабораторная работа №1](https://github.com/alexey-malov/ood/blob/master/labs/01/README.md)
