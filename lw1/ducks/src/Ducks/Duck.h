@@ -9,7 +9,10 @@
 class Duck
 {
 public:
-	Duck() = delete;
+
+//TODO:
+// SetBehavior. Нужно ли протектед ктор вместо протектед
+	Duck() = default;
 
 	virtual std::string GetName() const = 0;
 
@@ -24,7 +27,7 @@ public:
 
 		unsigned fliesCount = m_flyBehavior->GetFliesCount();
 
-		if (fliesCount > 0 && fliesCount % 2 == 0)
+		if (m_flyBehavior->IsFlyable() && fliesCount % 2 == 0)
 		{
 			m_quackBehavior->Quack();
 		}
@@ -38,6 +41,15 @@ public:
 	void Dance()
 	{
 		m_danceBehavior->Dance();
+	}
+
+	Duck& operator=(Duck&& duck)
+	{
+		m_flyBehavior = std::move(duck.m_flyBehavior);
+		m_quackBehavior = std::move(duck.m_quackBehavior);
+		m_danceBehavior = std::move(duck.m_danceBehavior);
+
+		return *this;
 	}
 
 	virtual ~Duck() = default;

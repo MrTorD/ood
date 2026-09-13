@@ -1,4 +1,3 @@
-#include "gmock/gmock-cardinalities.h"
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
@@ -14,6 +13,12 @@ struct MockFlyBehavior : IFlyBehavior
 	MOCK_METHOD(
 		void,
 		Fly,
+		(),
+		(override));
+
+	MOCK_METHOD(
+		bool,
+		IsFlyable,
 		(),
 		(override));
 
@@ -40,88 +45,115 @@ struct MockDanceBehavior : IDanceBehavior
 
 struct MockDuck : Duck
 {
-	MockDuck(MockFlyBehavior* flyBehavior,
-		MockQuackBehavior* quackBehavior,
-		MockDanceBehavior* danceBehavior)
-		: Duck(std::unique_ptr<IFlyBehavior>(flyBehavior),
-			  std::unique_ptr<IQuackBehavior>(quackBehavior),
-			  std::unique_ptr<IDanceBehavior>(danceBehavior))
+	MockDuck() = default;
+
+	MockDuck(std::unique_ptr<IFlyBehavior> flyBehavior,
+		std::unique_ptr<IQuackBehavior> quackBehavior,
+		std::unique_ptr<IDanceBehavior> danceBehavior)
+		: Duck(std::move(flyBehavior),
+			  std::move(quackBehavior),
+			  std::move(danceBehavior))
 	{
-		m_flyBehavior = flyBehavior;
-		m_quackBehavior = quackBehavior;
-		m_danceBehavior = danceBehavior;
 	}
 
 	std::string GetName() const override
 	{
 		return "MockDuck";
 	}
-
-	MockFlyBehavior* m_flyBehavior;
-	MockQuackBehavior* m_quackBehavior;
-	MockDanceBehavior* m_danceBehavior;
 };
 
-TEST(DanceBehavior, ValidDanceBehavior)
+class DuckFixture : public ::testing::Test
 {
-	MockDuck duck(new MockFlyBehavior(), new MockQuackBehavior(), new MockDanceBehavior());
+public:
+	void SetUp() override
+	{
+		flyBehavior = new MockFlyBehavior();
+		quackBehavior = new MockQuackBehavior();
+		danceBehavior = new MockDanceBehavior();
 
-	EXPECT_CALL(*duck.m_danceBehavior, Dance())
+		duck = MockDuck(std::unique_ptr<MockFlyBehavior>(flyBehavior),
+			std::unique_ptr<MockQuackBehavior>(quackBehavior),
+			std::unique_ptr<MockDanceBehavior>(danceBehavior));
+	}
+
+	MockDuck duck;
+
+	MockFlyBehavior* flyBehavior;
+	MockQuackBehavior* quackBehavior;
+	MockDanceBehavior* danceBehavior;
+};
+
+TEST_F(DuckFixture, FlyableDuckDanceBehavior)
+{
+	EXPECT_CALL(*danceBehavior, Dance())
 		.Times(1);
 
 	duck.Dance();
 }
 
-TEST(FlyableDuckFlyBehavior, NoQuackAfterSingleFly)
+TEST_F(DuckFixture, FlyableDuckNoQuackAfterSingleFly)
 {
-	MockDuck duck(new MockFlyBehavior(), new MockQuackBehavior(), new MockDanceBehavior());
 
-	EXPECT_CALL(*duck.m_flyBehavior, Fly())
+	EXPECT_CALL(*flyBehavior, Fly())
 		.Times(1);
 
-	ON_CALL(*duck.m_flyBehavior, Fly())
-		.WillByDefault([&duck]() {
-			duck.m_flyBehavior->m_fliesCount++;
+	EXPECT_CALL(*flyBehavior, IsFlyable())
+		.Times(1);
+
+	ON_CALL(*flyBehavior, IsFlyable)
+		.WillByDefault(::testing::Return(true));
+
+	ON_CALL(*flyBehavior, Fly())
+		.WillByDefault([&]() {
+			flyBehavior->m_fliesCount++;
 		});
 
-	EXPECT_CALL(*duck.m_quackBehavior, Quack())
+	EXPECT_CALL(*quackBehavior, Quack())
 		.Times(0);
 
 	duck.Fly();
 }
 
-TEST(FlyableDuckFlyBehavior, SingleQuackAfterDoubleFly)
+TEST_F(DuckFixture, FlyableDuckSingleQuackAfterDoubleFly)
 {
-	MockDuck duck(new MockFlyBehavior(), new MockQuackBehavior(), new MockDanceBehavior());
-
-	EXPECT_CALL(*duck.m_flyBehavior, Fly())
+	EXPECT_CALL(*flyBehavior, Fly())
 		.Times(2);
 
-	ON_CALL(*duck.m_flyBehavior, Fly())
-		.WillByDefault([&duck]() {
-			duck.m_flyBehavior->m_fliesCount++;
+	EXPECT_CALL(*flyBehavior, IsFlyable())
+		.Times(2);
+
+	ON_CALL(*flyBehavior, IsFlyable)
+		.WillByDefault(::testing::Return(true));
+
+	ON_CALL(*flyBehavior, Fly())
+		.WillByDefault([&]() {
+			flyBehavior->m_fliesCount++;
 		});
 
-	EXPECT_CALL(*duck.m_quackBehavior, Quack())
+	EXPECT_CALL(*quackBehavior, Quack())
 		.Times(1);
 
 	duck.Fly();
 	duck.Fly();
 }
 
-TEST(FlyableDuckFlyBehavior, HalfQuacksOfEvenFliesCount)
+TEST_F(DuckFixture, FlyableDuckHalfQuacksOfEvenFliesCount)
 {
-	MockDuck duck(new MockFlyBehavior(), new MockQuackBehavior(), new MockDanceBehavior());
-
-	EXPECT_CALL(*duck.m_flyBehavior, Fly())
+	EXPECT_CALL(*flyBehavior, Fly())
 		.Times(4);
 
-	ON_CALL(*duck.m_flyBehavior, Fly())
-		.WillByDefault([&duck]() {
-			duck.m_flyBehavior->m_fliesCount++;
+	EXPECT_CALL(*flyBehavior, IsFlyable())
+		.Times(4);
+
+	ON_CALL(*flyBehavior, IsFlyable)
+		.WillByDefault(::testing::Return(true));
+
+	ON_CALL(*flyBehavior, Fly())
+		.WillByDefault([&]() {
+			flyBehavior->m_fliesCount++;
 		});
 
-	EXPECT_CALL(*duck.m_quackBehavior, Quack())
+	EXPECT_CALL(*quackBehavior, Quack())
 		.Times(2);
 
 	duck.Fly();
@@ -130,19 +162,23 @@ TEST(FlyableDuckFlyBehavior, HalfQuacksOfEvenFliesCount)
 	duck.Fly();
 }
 
-TEST(FlyableDuckFlyBehavior, HalfMinusOneQuacksOfOddFliesCount)
+TEST_F(DuckFixture, FlyableDuckHalfMinusOneQuacksOfOddFliesCount)
 {
-	MockDuck duck(new MockFlyBehavior(), new MockQuackBehavior(), new MockDanceBehavior());
-
-	EXPECT_CALL(*duck.m_flyBehavior, Fly())
+	EXPECT_CALL(*flyBehavior, Fly())
 		.Times(5);
 
-	ON_CALL(*duck.m_flyBehavior, Fly())
-		.WillByDefault([&duck]() {
-			duck.m_flyBehavior->m_fliesCount++;
+	EXPECT_CALL(*flyBehavior, IsFlyable())
+		.Times(5);
+
+	ON_CALL(*flyBehavior, IsFlyable)
+		.WillByDefault(::testing::Return(true));
+
+	ON_CALL(*flyBehavior, Fly())
+		.WillByDefault([&]() {
+			flyBehavior->m_fliesCount++;
 		});
 
-	EXPECT_CALL(*duck.m_quackBehavior, Quack())
+	EXPECT_CALL(*quackBehavior, Quack())
 		.Times(2);
 
 	duck.Fly();
@@ -152,27 +188,32 @@ TEST(FlyableDuckFlyBehavior, HalfMinusOneQuacksOfOddFliesCount)
 	duck.Fly();
 }
 
-TEST(UnflyableDuckFlyBehavior, ZeroQuacksOnSingleFly)
+TEST_F(DuckFixture, UnflyableDuckZeroQuacksOnSingleFly)
 {
-	MockDuck duck(new MockFlyBehavior(), new MockQuackBehavior(), new MockDanceBehavior());
-
-	EXPECT_CALL(*duck.m_flyBehavior, Fly())
+	EXPECT_CALL(*flyBehavior, Fly())
 		.Times(1);
 
-	EXPECT_CALL(*duck.m_quackBehavior, Quack())
+	EXPECT_CALL(*flyBehavior, IsFlyable())
+		.Times(1);
+
+	ON_CALL(*flyBehavior, IsFlyable)
+		.WillByDefault(::testing::Return(false));
+
+	EXPECT_CALL(*quackBehavior, Quack())
 		.Times(0);
 
 	duck.Fly();
 }
 
-TEST(UnflyableDuckFlyBehavior, ZeroQuacksOnMultipleFlies)
+TEST_F(DuckFixture, UnflyableDuckZeroQuacksOnMultipleFlies)
 {
-	MockDuck duck(new MockFlyBehavior(), new MockQuackBehavior(), new MockDanceBehavior());
-
-	EXPECT_CALL(*duck.m_flyBehavior, Fly())
+	EXPECT_CALL(*flyBehavior, Fly())
 		.Times(4);
 
-	EXPECT_CALL(*duck.m_quackBehavior, Quack())
+	EXPECT_CALL(*flyBehavior, IsFlyable())
+		.Times(4);
+
+	EXPECT_CALL(*quackBehavior, Quack())
 		.Times(0);
 
 	duck.Fly();

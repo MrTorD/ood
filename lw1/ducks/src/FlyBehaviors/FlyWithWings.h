@@ -12,6 +12,11 @@ public:
 		m_fliesCount++;
 	}
 
+	bool IsFlyable() override
+	{
+		return true;
+	}
+
 	unsigned GetFliesCount() override
 	{
 		return m_fliesCount;

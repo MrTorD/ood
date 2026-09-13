@@ -11,6 +11,11 @@ public:
 		std::cout << "Born to crawl will never fly...\n";
 	}
 
+	bool IsFlyable() override
+	{
+		return false;
+	}
+
 	unsigned GetFliesCount() override
 	{
 		return 0;
