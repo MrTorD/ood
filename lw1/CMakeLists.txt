@@ -5,3 +5,4 @@ project(${CURRENT_LAB_NAME})
 
 add_subdirectory(ducks)
 add_subdirectory(functionalDucks)
+add_subdirectory(shapes)
