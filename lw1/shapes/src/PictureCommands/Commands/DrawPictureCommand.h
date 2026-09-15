@@ -1,16 +1,16 @@
 #pragma once
 
-#include "AbstractCommand.h"
+#include "ICommand.h"
 #include "../ParsingUtils.h"
 
-class DrawPictureCommand : public AbstractCommand
+class DrawPictureCommand : public ICommand
 {
 public:
 	DrawPictureCommand(std::stringstream& ss)
 	{
 	}
 
-	void Perform(Picture& picture) override
+	void Execute(Picture& picture) override
 	{
 		picture.DrawPicture();
 	}

@@ -26,12 +26,15 @@ public:
 		output << std::format("{} {} {} {}", from.x, from.y, to.x, to.y);
 	}
 
-private:
-	LineBounds CalcLineBounds(Rect bounds) const
+	void Move(double dx, double dy) override
 	{
-		Point from = bounds.GetTopLeft();
-		Point to = { from.x + bounds.GetWidth(), from.y + bounds.GetHeight() };
-
-		return { from, to };
+		m_from.x += dx;
+		m_from.y += dy;
+		m_to.x += dx;
+		m_to.y += dy;
 	}
+
+private:
+	Point m_from;
+	Point m_to;
 };

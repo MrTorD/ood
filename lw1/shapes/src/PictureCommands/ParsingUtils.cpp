@@ -24,7 +24,7 @@ void ReadRectangleData(std::stringstream& ss, CommandData& data);
 void ReadTriangleData(std::stringstream& ss, CommandData& data);
 void ReadTextData(std::stringstream& ss, CommandData& data);
 
-std::unordered_map<std::string, std::function<std::unique_ptr<AbstractCommand>(std::stringstream&)>> COMMANDS_MAP = {
+std::unordered_map<std::string, std::function<std::unique_ptr<ICommand>(std::stringstream&)>> COMMANDS_MAP = {
 	{ "AddShape", [](std::stringstream& ss) { return std::make_unique<AddShapeCommand>(ss); } },
 	{ "MoveShape", [](std::stringstream& ss) { return std::make_unique<MoveShapeCommand>(ss); } },
 	{ "MovePicture", [](std::stringstream& ss) { return std::make_unique<MovePictureCommand>(ss); } },
@@ -52,7 +52,7 @@ std::unordered_map<ShapeType, std::function<void(std::stringstream&, CommandData
 	{ ShapeType::Text, [](std::stringstream& ss, CommandData& data) { return ReadTextData(ss, data); } },
 };
 
-std::unique_ptr<AbstractCommand> ReadCommand(std::stringstream& ss)
+std::unique_ptr<ICommand> ReadCommand(std::stringstream& ss)
 {
 	std::string command;
 	ss >> command;

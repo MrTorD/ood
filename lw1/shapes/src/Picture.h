@@ -46,6 +46,7 @@ public:
 
 	void DeleteShape(const std::string& id)
 	{
+		// TODO: вынести в validateId();
 		if (!m_idMap.contains(id))
 		{
 			throw NotFoundError("Shape with id: " + id + " doesn't exist");
@@ -112,6 +113,7 @@ public:
 
 private:
 	std::vector<Shape> m_shapes;
+	// TODO: подумать над вектором и инвалидацией ссылок при клонировнии (вектор перемещается в памяти)
 	std::unordered_map<std::string, unsigned> m_idMap;
 	std::unique_ptr<ICanvas> m_canvas;
 };

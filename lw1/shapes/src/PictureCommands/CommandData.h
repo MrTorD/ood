@@ -6,6 +6,7 @@
 #include <string>
 #include "ShapeType.h"
 
+//TODO: Попытаться избавиться от CommandData
 struct CommandData
 {
 	std::string id;

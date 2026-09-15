@@ -1,9 +1,9 @@
 #pragma once
 
-#include "AbstractCommand.h"
+#include "ICommand.h"
 #include "../ParsingUtils.h"
 
-class ChangeShapeCommand : public AbstractCommand
+class ChangeShapeCommand : public ICommand
 {
 public:
 	ChangeShapeCommand(std::stringstream& ss)
@@ -19,7 +19,7 @@ public:
 		ReadCommandData(ss, m_data);
 	}
 
-	void Perform(Picture& picture) override
+	void Execute(Picture& picture) override
 	{
 		picture.ChangeShape(m_data.id, CreateGeometry(m_data), m_data.bounds);
 	}

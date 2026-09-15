@@ -1,12 +1,12 @@
 #pragma once
 
-#include "AbstractCommand.h"
+#include "ICommand.h"
 #include <iostream>
 
-class ListCommand : public AbstractCommand
+class ListCommand : public ICommand
 {
 public:
-	void Perform(Picture& picture) override
+	void Execute(Picture& picture) override
 	{
 		picture.PrintShapes(std::cout);
 	}

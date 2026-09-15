@@ -5,17 +5,15 @@
 class RectangleGeometry : public IShapeGeometry
 {
 public:
-	void Draw(ICanvas& canvas, Rect bounds, Color color) override
+	void Draw(ICanvas& canvas, Color color) override
 	{
-		auto [x, y] = bounds.GetTopLeft();
-		double w = bounds.GetWidth();
-		double h = bounds.GetHeight();
+		auto [x, y] = m_topLeft();
 
-		Point topRight = { x + w, y };
-		Point bottomLeft = { x, y + h };
-		Point bottomRight = { x + w, y + h };
+		Point topRight = { x + m_width, y };
+		Point bottomLeft = { x, y + m_height };
+		Point bottomRight = { x + m_width, y + m_height };
 
-		canvas.DrawPolygon({ bounds.GetTopLeft(), topRight, bottomRight, bottomLeft }, color);
+		canvas.DrawPolygon({ m_topLeft, topRight, bottomRight, bottomLeft }, color);
 	}
 
 	std::string GetName() const override
@@ -23,8 +21,15 @@ public:
 		return "rectangle";
 	}
 
-	void PrintParams(std::ostream& output, Rect bounds) const override
+	void PrintParams(std::ostream& output) const override
 	{
-		output << bounds.GetTopLeft().x << "" << bounds.GetTopLeft().y << "" << bounds.GetWidth() << " " << bounds.GetHeight() << " ";
+		auto [x, y] = m_topLeft;
+
+		output << std::format("{} {} {} {} ", x, y, m_width, m_height);
 	}
+
+private:
+	Point m_topLeft;
+	double width;
+	double height;
 };

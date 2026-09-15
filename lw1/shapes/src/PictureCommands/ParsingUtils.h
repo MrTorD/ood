@@ -4,10 +4,10 @@
 #include "Errors/CommandParseError.h"
 #include <sstream>
 #include <memory>
-#include "Commands/AbstractCommand.h"
+#include "Commands/ICommand.h"
 
 ShapeType ReadShapeType(const std::string& str);
-std::unique_ptr<AbstractCommand> ReadCommand(std::stringstream& ss);
+std::unique_ptr<ICommand> ReadCommand(std::stringstream& ss);
 void ReadCommandData(std::stringstream& ss, CommandData& args);
 std::unique_ptr<IShapeGeometry> CreateGeometry(CommandData args);
 

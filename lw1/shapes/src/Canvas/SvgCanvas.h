@@ -5,7 +5,6 @@
 #include <fstream>
 #include <sstream>
 
-// validation??
 class SvgCanvas : public ICanvas
 {
 public:
@@ -18,7 +17,7 @@ public:
 	{
 		m_drawing << std::format(R"(<line x1="{}" x2="{}" y1="{}" y2="{}" stroke="#{:06x}" />)",
 			from.x, to.x, from.y, to.y, color);
-			
+
 		Flush();
 	}
 
@@ -52,6 +51,8 @@ public:
 		Flush();
 	}
 
+private:
+	//TODO: Применять изменения по методу DrawPicture();
 	void Flush() override
 	{
 		std::ofstream output(m_fileName);
@@ -61,7 +62,6 @@ public:
 			   << "</svg>\n";
 	}
 
-private:
 	std::string m_fileName;
 	std::stringstream m_drawing;
 };

@@ -2,16 +2,20 @@
 
 #include "IShapeGeometry.h"
 
-using CircleBounds = std::tuple<double, double, double>;
-
 class CircleGeometry : public IShapeGeometry
 {
 public:
-	void Draw(ICanvas& canvas, Rect bounds, Color color) override
+	CircleGeometry(Point centre, double radius)
 	{
-		auto [cx, cy, r] = CalcCircleBounds(bounds);
+		m_centre = centre;
+		m_radius = radius;
+	}
 
-		canvas.DrawEllipse({ cx, cy }, { r, r }, color);
+	void Draw(ICanvas& canvas, Color color) override
+	{
+		auto [x, y] = m_centre;
+
+		canvas.DrawEllipse({ x, y }, { m_radius, m_radius }, color);
 	}
 
 	std::string GetName() const override
@@ -19,24 +23,20 @@ public:
 		return "circle";
 	}
 
-	void PrintParams(std::ostream& output, Rect bounds) const override
+	void PrintParams(std::ostream& output) const override
 	{
-		auto [cx, cy, r] = CalcCircleBounds(bounds);
+		auto [x, y] = m_centre;
 
-		output << std::format("{} {} {} ", cx, cy, r);
+		output << std::format("{} {} {} ", x, y, m_radius);
+	}
+
+	void Move(double dx, double dy) override
+	{
+		m_centre.x += dx;
+		m_centre.y += dy;
 	}
 
 private:
-	CircleBounds CalcCircleBounds(Rect bounds) const
-	{
-		Point topLeft = bounds.GetTopLeft();
-		double w = bounds.GetWidth();
-		double h = bounds.GetHeight();
-
-		double cx = topLeft.x + (w / 2);
-		double cy = topLeft.y + (h / 2);
-		double r = std::min(w / 2, h / 2);
-
-		return { cx, cy, r };
-	}
+	Point m_centre;
+	double m_radius;
 };

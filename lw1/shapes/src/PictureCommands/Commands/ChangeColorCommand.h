@@ -1,9 +1,9 @@
 #pragma once
 
-#include "AbstractCommand.h"
+#include "ICommand.h"
 #include "../ParsingUtils.h"
 
-class ChangeColorCommand : public AbstractCommand
+class ChangeColorCommand : public ICommand
 {
 public:
 	ChangeColorCommand(std::stringstream& ss)
@@ -12,7 +12,7 @@ public:
 		m_newColor = ReadColor(ss);
 	}
 
-	void Perform(Picture& picture) override
+	void Execute(Picture& picture) override
 	{
 		picture.ChangeShapeColor(m_id, m_newColor);
 	}

@@ -1,18 +1,17 @@
 #pragma once
 
 #include "Color.h"
-#include "Rect.h"
 #include "ShapeGeometries/IShapeGeometry.h"
 #include <memory>
 
 class Shape
 {
+	// TODO: Избавиться от bounds, хранить положение фигуры в стратегии
 public:
-	Shape(const std::string& id, std::unique_ptr<IShapeGeometry> geometry, Rect bounds, Color color)
+	Shape(const std::string& id, std::unique_ptr<IShapeGeometry> geometry, Color color)
 	{
 		m_id = id;
 		m_geometry = std::move(geometry);
-		m_bounds = bounds;
 		m_color = color;
 	}
 
@@ -23,16 +22,13 @@ public:
 
 	void Move(double dx, double dy)
 	{
-		Point oldTopLeft = m_bounds.GetTopLeft();
-		Point newTopLeft = { oldTopLeft.x + dx, oldTopLeft.y + dy };
-
-		m_bounds.SetTopLeft(newTopLeft);
+		m_geometry->Move(dx, dy);
 	}
 
 	void Print(std::ostream& output)
 	{
 		output << std::format("{} {} {:#06x}", m_geometry->GetName(), m_id, m_color);
-		m_geometry->PrintParams(output, m_bounds);
+		m_geometry->PrintParams(output);
 	}
 
 	void SetColor(Color color)
@@ -45,14 +41,8 @@ public:
 		m_geometry = std::move(geometry);
 	}
 
-	void SetBounds(Rect bounds)
-	{
-		m_bounds = bounds;
-	}
-
 private:
 	std::string m_id;
 	std::unique_ptr<IShapeGeometry> m_geometry;
-	Rect m_bounds;
 	Color m_color;
 };

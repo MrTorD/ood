@@ -1,9 +1,9 @@
 #pragma once
 
-#include "AbstractCommand.h"
+#include "ICommand.h"
 #include "../ParsingUtils.h"
 
-class DeleteShapeCommand : public AbstractCommand
+class DeleteShapeCommand : public ICommand
 {
 public:
 	DeleteShapeCommand(std::stringstream& ss)
@@ -11,7 +11,7 @@ public:
 		m_id = ReadStringStrictly(ss);
 	}
 
-	void Perform(Picture& picture) override
+	void Execute(Picture& picture) override
 	{
 		picture.DeleteShape(m_id);
 	}
