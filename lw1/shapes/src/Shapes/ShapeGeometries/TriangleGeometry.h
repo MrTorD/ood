@@ -1,18 +1,14 @@
 #pragma once
 
-#include "../Rect.h"
+#include "Bounds.h"
 #include "IShapeGeometry.h"
-
-using TriangleBounds = std::tuple<Point, Point, Point>;
 
 class TriangleGeometry : public IShapeGeometry
 {
 public:
-	void Draw(ICanvas& canvas, Rect bounds, Color color) override
+	TriangleGeometry(Bounds bounds)
 	{
-		auto [bottomLeft, topMiddle, bottomRight] = CalcTriangleBounds(bounds);
-
-		canvas.DrawPolygon({ bottomLeft, topMiddle, bottomRight }, color);
+		SetBounds(bounds);
 	}
 
 	std::string GetName() const override
@@ -20,24 +16,45 @@ public:
 		return "triangle";
 	}
 
-	void PrintParams(std::ostream& output, Rect bounds) const override
+	Bounds GetBounds() const override
 	{
-		auto [bottomLeft, topMiddle, bottomRight] = CalcTriangleBounds(bounds);
+		Point topLeft = { m_bottomLeft.x, m_topMiddle.y };
+		double width = m_bottomRight.x - m_bottomLeft.x;
+		double height = m_topMiddle.y - m_bottomLeft.y;
 
-		output << std::format("{} {} {} {} {} {}", bottomLeft.x, bottomLeft.y, topMiddle.x, topMiddle.y, bottomRight.x, bottomRight.y);
+		return { topLeft, width, height };
 	}
 
-private:
-	TriangleBounds CalcTriangleBounds(Rect bounds) const
+	void SetBounds(Bounds bounds)
 	{
 		auto [x, y] = bounds.GetTopLeft();
 		double w = bounds.GetWidth();
 		double h = bounds.GetHeight();
 
-		Point bottomLeft = { x, y + h };
-		Point topMiddle = { x + (w / 2), y };
-		Point bottomRight = { x + w, y + h };
-
-		return { bottomLeft, topMiddle, bottomRight };
+		m_bottomLeft = { x, y + h };
+		m_topMiddle = { x + (w / 2), y };
+		m_bottomRight = { x + w, y + h };
 	}
+
+	void Draw(ICanvas& canvas, Color color) override
+	{
+		canvas.DrawPolygon({ m_bottomLeft, m_bottomLeft, m_bottomLeft }, color);
+	}
+
+	void Move(double dx, double dy) override
+	{
+		m_bottomLeft = { m_bottomLeft.x + dx, m_bottomLeft.y + dy };
+		m_topMiddle = { m_topMiddle.x + dx, m_topMiddle.y + dy };
+		m_bottomLeft = { m_bottomRight.x + dx, m_bottomRight.y + dy };
+	}
+
+	void PrintParams(std::ostream& output) const override
+	{
+		output << std::format("{} {} {} {} {} {}", m_bottomLeft.x, m_bottomLeft.y, m_topMiddle.x, m_topMiddle.y, m_bottomRight.x, m_bottomRight.y);
+	}
+
+private:
+	Point m_bottomLeft;
+	Point m_topMiddle;
+	Point m_bottomRight;
 };

@@ -3,12 +3,12 @@
 #include "Point.h"
 #include "Errors/InvalidShapeError.h"
 
-class Rect
+class Bounds
 {
 public:
-	Rect() = default;
+	Bounds() = default;
 
-	Rect(Point topLeft, double width, double height)
+	Bounds(Point topLeft, double width, double height)
 	{
 		m_topLeft = topLeft;
 		SetWidth(width);
@@ -20,11 +20,11 @@ public:
 		return m_topLeft;
 	}
 
-	Rect& operator=(const Rect& rect)
+	Bounds& operator=(const Bounds& bounds)
 	{
-		SetTopLeft(rect.m_topLeft);
-		SetWidth(rect.m_width);
-		SetHeight(rect.m_height);
+		SetTopLeft(bounds.m_topLeft);
+		SetWidth(bounds.m_width);
+		SetHeight(bounds.m_height);
 
 		return *this;
 	}

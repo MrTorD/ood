@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Shapes/Color.h"
-#include "Shapes/Point.h"
+#include "Color.h"
+#include "Point.h"
 #include <cstdint>
 #include <string>
 #include <vector>

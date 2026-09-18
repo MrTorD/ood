@@ -1,15 +1,16 @@
-#include "src/Canvas/SvgCanvas.h"
-#include "src/Picture.h"
-#include "src/PictureCommands/ParsingUtils.h"
-#include "src/Shapes/Point.h"
-#include "src/Shapes/Rect.h"
-#include "src/Shapes/Shape.h"
-#include "src/Shapes/ShapeGeometries/CircleGeometry.h"
-#include "src/Shapes/ShapeGeometries/LineGeometry.h"
-#include "src/Shapes/ShapeGeometries/RectangleGeometry.h"
-#include "src/Shapes/ShapeGeometries/TextGeometry.h"
+#include "Bounds.h"
+#include "CircleGeometry.h"
+#include "LineGeometry.h"
+#include "Picture.h"
+#include "Point.h"
+#include "RectangleGeometry.h"
+#include "Shape.h"
+#include "SvgCanvas.h"
+#include "TextGeometry.h"
 #include <iostream>
 #include <memory>
+#include "CommandParseError.h"
+#include "ParsingUtils.h"
 
 int main()
 {
@@ -24,7 +25,7 @@ int main()
 		{
 			std::stringstream ss(str);
 			auto command = ReadCommand(ss);
-			command->Perform(picture);
+			// command->Execute(picture);
 		}
 	}
 	catch (const CommandParseError& e)

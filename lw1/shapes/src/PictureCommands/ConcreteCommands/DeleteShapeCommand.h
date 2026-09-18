@@ -1,19 +1,19 @@
 #pragma once
 
 #include "ICommand.h"
-#include "../ParsingUtils.h"
+#include "ParsingUtils.h"
 
-class DrawShapeCommand : public ICommand
+class DeleteShapeCommand : public ICommand
 {
 public:
-	DrawShapeCommand(std::stringstream& ss)
+	DeleteShapeCommand(std::stringstream& ss)
 	{
 		m_id = ReadStringStrictly(ss);
 	}
 
 	void Execute(Picture& picture) override
 	{
-		picture.DrawShape(m_id);
+		picture.DeleteShape(m_id);
 	}
 
 private:

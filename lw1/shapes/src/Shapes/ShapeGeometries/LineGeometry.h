@@ -7,11 +7,9 @@ using LineBounds = std::tuple<Point, Point>;
 class LineGeometry : public IShapeGeometry
 {
 public:
-	void Draw(ICanvas& canvas, Rect bounds, Color color) override
+	LineGeometry(Bounds bounds)
 	{
-		auto [from, to] = CalcLineBounds(bounds);
-
-		canvas.DrawLine(from, to, color);
+		SetBounds(bounds);
 	}
 
 	std::string GetName() const override
@@ -19,11 +17,20 @@ public:
 		return "line";
 	}
 
-	void PrintParams(std::ostream& output, Rect bounds) const override
+	Bounds GetBounds() const override
 	{
-		auto [from, to] = CalcLineBounds(bounds);
+		return { m_from, m_to.x - m_from.x, m_to.y - m_from.y };
+	}
 
-		output << std::format("{} {} {} {}", from.x, from.y, to.x, to.y);
+	void SetBounds(Bounds bounds)
+	{
+		m_from = bounds.GetTopLeft();
+		m_to = { m_from.x + bounds.GetWidth(), m_from.y + bounds.GetHeight() };
+	}
+
+	void Draw(ICanvas& canvas, Color color) override
+	{
+		canvas.DrawLine(m_from, m_to, color);
 	}
 
 	void Move(double dx, double dy) override
@@ -32,6 +39,11 @@ public:
 		m_from.y += dy;
 		m_to.x += dx;
 		m_to.y += dy;
+	}
+
+	void PrintParams(std::ostream& output) const override
+	{
+		output << std::format("{} {} {} {}", m_from.x, m_from.y, m_to.x, m_to.y);
 	}
 
 private:

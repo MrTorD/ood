@@ -1,6 +1,6 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
-#include "src/Canvas/ICanvas.h"
+#include "ICanvas.h"
 
 struct MockCanvas : ICanvas
 {

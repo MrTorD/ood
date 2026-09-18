@@ -1,12 +1,13 @@
 #pragma once
 
 #include "Color.h"
-#include "ShapeGeometries/IShapeGeometry.h"
+#include "IShapeGeometry.h"
 #include <memory>
 
 class Shape
 {
 	// TODO: Избавиться от bounds, хранить положение фигуры в стратегии
+	// Completed: Hello
 public:
 	Shape(const std::string& id, std::unique_ptr<IShapeGeometry> geometry, Color color)
 	{
@@ -17,7 +18,7 @@ public:
 
 	void Draw(ICanvas& canvas) const
 	{
-		m_geometry->Draw(canvas, m_bounds, m_color);
+		m_geometry->Draw(canvas, m_color);
 	}
 
 	void Move(double dx, double dy)

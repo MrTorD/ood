@@ -2,7 +2,7 @@
 
 #include <stdexcept>
 
-//TODO: подумать над типом ошибок
+//[ ]: Подумать над типом ошибок
 class CommandParseError : public std::runtime_error
 {
 public:

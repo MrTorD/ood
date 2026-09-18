@@ -1,15 +1,15 @@
 #pragma once
 
-#include "CommandData.h"
-#include "Errors/CommandParseError.h"
-#include <sstream>
+#include "CommandParseError.h"
+#include "ICommand.h"
+#include "ShapeData.h"
 #include <memory>
-#include "Commands/ICommand.h"
+#include <sstream>
 
 ShapeType ReadShapeType(const std::string& str);
 std::unique_ptr<ICommand> ReadCommand(std::stringstream& ss);
-void ReadCommandData(std::stringstream& ss, CommandData& args);
-std::unique_ptr<IShapeGeometry> CreateGeometry(CommandData args);
+void ReadConcreteShapeData(std::stringstream& ss, ShapeData& args);
+std::unique_ptr<IShapeGeometry> CreateGeometry(const ShapeData& args);
 
 std::string ReadStringStrictly(std::stringstream& ss);
 Point ReadPoint(std::stringstream& ss);

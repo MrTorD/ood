@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ICommand.h"
-#include "../ParsingUtils.h"
+#include "ParsingUtils.h"
 
 class MoveShapeCommand : public ICommand
 {

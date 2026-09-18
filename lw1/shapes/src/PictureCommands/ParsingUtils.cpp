@@ -1,28 +1,28 @@
 #include "ParsingUtils.h"
 #include "ShapeType.h"
-#include "Shapes/ShapeGeometries/CircleGeometry.h"
-#include "Shapes/ShapeGeometries/LineGeometry.h"
-#include "Shapes/ShapeGeometries/RectangleGeometry.h"
-#include "Shapes/ShapeGeometries/TextGeometry.h"
-#include "Shapes/ShapeGeometries/TriangleGeometry.h"
+#include "CircleGeometry.h"
+#include "LineGeometry.h"
+#include "RectangleGeometry.h"
+#include "TextGeometry.h"
+#include "TriangleGeometry.h"
 #include <functional>
 #include <memory>
 
-#include "Commands/AddShapeCommand.h"
-#include "Commands/ChangeColorCommand.h"
-#include "Commands/ChangeShapeCommand.h"
-#include "Commands/DeleteShapeCommand.h"
-#include "Commands/DrawPictureCommand.h"
-#include "Commands/DrawShapeCommand.h"
-#include "Commands/ListCommand.h"
-#include "Commands/MovePictureCommand.h"
-#include "Commands/MoveShapeCommand.h"
+#include "AddShapeCommand.h"
+#include "ChangeColorCommand.h"
+#include "ChangeShapeCommand.h"
+#include "DeleteShapeCommand.h"
+#include "DrawPictureCommand.h"
+#include "DrawShapeCommand.h"
+#include "ListCommand.h"
+#include "MovePictureCommand.h"
+#include "MoveShapeCommand.h"
 
-void ReadLineData(std::stringstream& ss, CommandData& data);
-void ReadCircleData(std::stringstream& ss, CommandData& data);
-void ReadRectangleData(std::stringstream& ss, CommandData& data);
-void ReadTriangleData(std::stringstream& ss, CommandData& data);
-void ReadTextData(std::stringstream& ss, CommandData& data);
+void ReadLineData(std::stringstream& ss, ShapeData& data);
+void ReadCircleData(std::stringstream& ss, ShapeData& data);
+void ReadRectangleData(std::stringstream& ss, ShapeData& data);
+void ReadTriangleData(std::stringstream& ss, ShapeData& data);
+void ReadTextData(std::stringstream& ss, ShapeData& data);
 
 std::unordered_map<std::string, std::function<std::unique_ptr<ICommand>(std::stringstream&)>> COMMANDS_MAP = {
 	{ "AddShape", [](std::stringstream& ss) { return std::make_unique<AddShapeCommand>(ss); } },
@@ -44,12 +44,12 @@ std::unordered_map<std::string, ShapeType> SHAPE_TYPES = {
 	{ "Text", ShapeType::Text },
 };
 
-std::unordered_map<ShapeType, std::function<void(std::stringstream&, CommandData&)>> SHAPE_READERS = {
-	{ ShapeType::LineSegment, [](std::stringstream& ss, CommandData& data) { return ReadLineData(ss, data); } },
-	{ ShapeType::Circle, [](std::stringstream& ss, CommandData& data) { return ReadCircleData(ss, data); } },
-	{ ShapeType::Rectangle, [](std::stringstream& ss, CommandData& data) { return ReadRectangleData(ss, data); } },
-	{ ShapeType::Triangle, [](std::stringstream& ss, CommandData& data) { return ReadTriangleData(ss, data); } },
-	{ ShapeType::Text, [](std::stringstream& ss, CommandData& data) { return ReadTextData(ss, data); } },
+std::unordered_map<ShapeType, std::function<void(std::stringstream&, ShapeData&)>> SHAPE_READERS = {
+	{ ShapeType::LineSegment, [](std::stringstream& ss, ShapeData& data) { return ReadLineData(ss, data); } },
+	{ ShapeType::Circle, [](std::stringstream& ss, ShapeData& data) { return ReadCircleData(ss, data); } },
+	{ ShapeType::Rectangle, [](std::stringstream& ss, ShapeData& data) { return ReadRectangleData(ss, data); } },
+	{ ShapeType::Triangle, [](std::stringstream& ss, ShapeData& data) { return ReadTriangleData(ss, data); } },
+	{ ShapeType::Text, [](std::stringstream& ss, ShapeData& data) { return ReadTextData(ss, data); } },
 };
 
 std::unique_ptr<ICommand> ReadCommand(std::stringstream& ss)
@@ -65,7 +65,7 @@ std::unique_ptr<ICommand> ReadCommand(std::stringstream& ss)
 	return COMMANDS_MAP[command](ss);
 }
 
-std::unique_ptr<IShapeGeometry> CreateGeometry(CommandData args)
+std::unique_ptr<IShapeGeometry> CreateGeometry(const ShapeData& args)
 {
 	switch (args.shapeType)
 	{
@@ -94,7 +94,7 @@ ShapeType ReadShapeType(const std::string& str)
 	return SHAPE_TYPES[str];
 }
 
-void ReadCommandData(std::stringstream& ss, CommandData& data)
+void ReadConcreteShapeData(std::stringstream& ss, ShapeData& data)
 {
 	if (!SHAPE_READERS.contains(data.shapeType))
 	{
@@ -104,7 +104,7 @@ void ReadCommandData(std::stringstream& ss, CommandData& data)
 	return SHAPE_READERS[data.shapeType](ss, data);
 }
 
-void ReadLineData(std::stringstream& ss, CommandData& data)
+void ReadLineData(std::stringstream& ss, ShapeData& data)
 {
 	Point start = ReadPoint(ss);
 	Point end = ReadPoint(ss);
@@ -112,7 +112,7 @@ void ReadLineData(std::stringstream& ss, CommandData& data)
 	data.bounds = { start, end.x - start.x, end.y - start.y };
 }
 
-void ReadCircleData(std::stringstream& ss, CommandData& data)
+void ReadCircleData(std::stringstream& ss, ShapeData& data)
 {
 	auto [cx, cy] = ReadPoint(ss);
 	double radius = ReadDouble(ss);
@@ -120,7 +120,7 @@ void ReadCircleData(std::stringstream& ss, CommandData& data)
 	data.bounds = { { cx - (radius / 2) }, radius, radius };
 }
 
-void ReadRectangleData(std::stringstream& ss, CommandData& data)
+void ReadRectangleData(std::stringstream& ss, ShapeData& data)
 {
 	Point topLeft = ReadPoint(ss);
 	double width = ReadDouble(ss);
@@ -129,7 +129,7 @@ void ReadRectangleData(std::stringstream& ss, CommandData& data)
 	data.bounds = { topLeft, width, height };
 }
 
-void ReadTriangleData(std::stringstream& ss, CommandData& data)
+void ReadTriangleData(std::stringstream& ss, ShapeData& data)
 {
 	Point bottomLeft = ReadPoint(ss);
 	Point topMiddle = ReadPoint(ss);
@@ -142,7 +142,7 @@ void ReadTriangleData(std::stringstream& ss, CommandData& data)
 	data.bounds = { topLeft, width, height };
 }
 
-void ReadTextData(std::stringstream& ss, CommandData& data)
+void ReadTextData(std::stringstream& ss, ShapeData& data)
 {
 	Point topLeft = ReadPoint(ss);
 	double fontSize = ReadDouble(ss);

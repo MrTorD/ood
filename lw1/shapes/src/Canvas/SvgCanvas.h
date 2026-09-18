@@ -52,8 +52,8 @@ public:
 	}
 
 private:
-	//TODO: Применять изменения по методу DrawPicture();
-	void Flush() override
+	//[-]: Применять изменения по методу DrawPicture();
+	void Flush()
 	{
 		std::ofstream output(m_fileName);
 

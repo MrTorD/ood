@@ -3,19 +3,27 @@ cmake_minimum_required(VERSION 3.15)
 set(CURRENT_TASK_NAME "shapes")
 project(${CURRENT_TASK_NAME})
 
-file(GLOB_RECURSE PROJECT_SOURCES CONFIGURE_DEPENDS
-        src/*.cpp
-        src/*.h
+# file(GLOB_RECURSE PROJECT_SOURCES CONFIGURE_DEPENDS
+#         "*.cpp"
+#         "*.h"
+# )
+
+HEADER_DIRECTORIES(header_dir_list)
+
+add_executable("${CURRENT_TASK_NAME}_main" ${header_dir_list} main.cpp)
+add_executable("${CURRENT_TASK_NAME}_tests" ${header_dir_list} tests.cpp)
+
+target_include_directories(
+    ${CURRENT_TASK_NAME}_main
+    PRIVATE
+    ${header_dir_list}
 )
 
-list(FILTER PROJECT_SOURCES EXCLUDE REGEX ".*main\\.cpp$")
-
-add_executable("${CURRENT_TASK_NAME}_main" ${PROJECT_SOURCES} main.cpp)
-add_executable("${CURRENT_TASK_NAME}_tests" ${PROJECT_SOURCES} tests.cpp)
-
-target_include_directories(${CURRENT_TASK_NAME}_main PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-
-target_include_directories(${CURRENT_TASK_NAME}_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+target_include_directories(
+    ${CURRENT_TASK_NAME}_tests
+    PRIVATE
+    ${header_dir_list}
+)
 
 target_link_libraries("${CURRENT_TASK_NAME}_tests" PRIVATE GTest::gtest GTest::gtest_main GTest::gmock )
 
