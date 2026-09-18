@@ -16,7 +16,7 @@ public:
 			throw CommandParseError("Invalid shape provided");
 		}
 
-		ReadConcreteShapeParams(ss, m_data);
+		ReadConcreteShapeData(ss, m_data);
 	}
 
 	void Execute(Picture& picture) override

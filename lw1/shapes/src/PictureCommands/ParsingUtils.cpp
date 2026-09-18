@@ -70,15 +70,15 @@ std::unique_ptr<IShapeGeometry> CreateGeometry(const ShapeData& args)
 	switch (args.shapeType)
 	{
 	case ShapeType::Circle:
-		return std::make_unique<CircleGeometry>();
+		return std::make_unique<CircleGeometry>(args.bounds);
 	case ShapeType::LineSegment:
-		return std::make_unique<LineGeometry>();
+		return std::make_unique<LineGeometry>(args.bounds);
 	case ShapeType::Rectangle:
-		return std::make_unique<RectangleGeometry>();
+		return std::make_unique<RectangleGeometry>(args.bounds);
 	case ShapeType::Text:
-		return std::make_unique<TextGeometry>(args.text, args.fontSize);
+		return std::make_unique<TextGeometry>(args.bounds, args.text, args.fontSize);
 	case ShapeType::Triangle:
-		return std::make_unique<TriangleGeometry>();
+		return std::make_unique<TriangleGeometry>(args.bounds);
 	default:
 		throw CommandParseError("This shape doesn't exist");
 	}

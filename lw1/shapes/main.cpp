@@ -25,7 +25,7 @@ int main()
 		{
 			std::stringstream ss(str);
 			auto command = ReadCommand(ss);
-			// command->Execute(picture);
+			command->Execute(picture);
 		}
 	}
 	catch (const CommandParseError& e)
