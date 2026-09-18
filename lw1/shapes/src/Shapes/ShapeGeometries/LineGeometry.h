@@ -22,7 +22,7 @@ public:
 		return { m_from, m_to.x - m_from.x, m_to.y - m_from.y };
 	}
 
-	void SetBounds(Bounds bounds)
+	void SetBounds(Bounds bounds) override
 	{
 		m_from = bounds.GetTopLeft();
 		m_to = { m_from.x + bounds.GetWidth(), m_from.y + bounds.GetHeight() };

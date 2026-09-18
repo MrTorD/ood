@@ -20,7 +20,7 @@ public:
 		return m_bounds;
 	}
 
-	void SetBounds(Bounds bounds)
+	void SetBounds(Bounds bounds) override
 	{
 		m_bounds = bounds;
 	}

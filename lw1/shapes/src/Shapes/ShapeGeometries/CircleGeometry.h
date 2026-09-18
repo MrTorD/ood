@@ -22,7 +22,7 @@ public:
 		return { topLeft, m_radius * 2, m_radius * 2 };
 	}
 
-	void SetBounds(Bounds bounds)
+	void SetBounds(Bounds bounds) override
 	{
 		auto [x, y] = bounds.GetTopLeft();
 		double w = bounds.GetWidth();

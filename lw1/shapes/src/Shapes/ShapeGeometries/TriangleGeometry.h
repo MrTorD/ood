@@ -25,7 +25,7 @@ public:
 		return { topLeft, width, height };
 	}
 
-	void SetBounds(Bounds bounds)
+	void SetBounds(Bounds bounds) override
 	{
 		auto [x, y] = bounds.GetTopLeft();
 		double w = bounds.GetWidth();
