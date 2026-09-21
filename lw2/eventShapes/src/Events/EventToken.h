@@ -1,5 +1,4 @@
 #pragma once
-
 #include <cstdint>
 
-using Color = uint32_t;
+using EventToken = uint32_t;
