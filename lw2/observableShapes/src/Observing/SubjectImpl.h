@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Subscribtion.h"
+#include <algorithm>
 #include <list>
 
 template <typename TSubject>

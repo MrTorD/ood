@@ -9,6 +9,7 @@
 #include <list>
 #include <map>
 #include <unordered_map>
+#include <algorithm>
 
 class Picture : public SubjectImpl<Picture>
 	, public IObserver<Shape>
