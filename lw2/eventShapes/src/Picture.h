@@ -5,7 +5,7 @@
 #include "NotFoundError.h"
 #include "PictureInvalidOperation.h"
 #include "Shape.h"
-#include "Sig.h"
+#include "Signal.h"
 #include <iostream>
 #include <list>
 #include <map>
@@ -58,25 +58,25 @@ public:
 		m_onShapeAdded(*m_idMap[id]);
 	}
 
-	using AddEventSub = EventSubscribtion<Sig<Shape&>, Shape&>;
+	using AddEventSub = EventSubscribtion<Signal<Shape&>, Shape&>;
 	AddEventSub OnShapeAdded(std::function<void(Shape&)> observer)
 	{
 		return m_onShapeAdded.Subscribe(observer);
 	}
 
-	using DeleteEventSub = EventSubscribtion<Sig<const std::string&>, const std::string&>;
+	using DeleteEventSub = EventSubscribtion<Signal<const std::string&>, const std::string&>;
 	DeleteEventSub OnShapeDeleted(std::function<void(const std::string&)> observer)
 	{
 		return m_onShapeDeleted.Subscribe(observer);
 	}
 
-	using MoveEventSub = EventSubscribtion<Sig<const std::string&, double, double>, const std::string&, double, double>;
+	using MoveEventSub = EventSubscribtion<Signal<const std::string&, double, double>, const std::string&, double, double>;
 	MoveEventSub OnShapeMoved(std::function<void(const std::string&, double, double)> observer)
 	{
 		return m_onShapeMoved.Subscribe(observer);
 	}
 
-	using ColorChangeSub = EventSubscribtion<Sig<const std::string&, Color>, const std::string&, Color>;
+	using ColorChangeSub = EventSubscribtion<Signal<const std::string&, Color>, const std::string&, Color>;
 	ColorChangeSub OnColorChanged(std::function<void(const std::string&, Color)> observer)
 	{
 		return m_onColorChanged.Subscribe(observer);
@@ -169,8 +169,8 @@ private:
 	std::list<MoveEventSub> m_moveSubs;
 	std::list<ColorChangeSub> m_colorChangeSubs;
 
-	Sig<Shape&> m_onShapeAdded;
-	Sig<const std::string&> m_onShapeDeleted;
-	Sig<const std::string&, double, double> m_onShapeMoved;
-	Sig<const std::string&, Color> m_onColorChanged;
+	Signal<Shape&> m_onShapeAdded;
+	Signal<const std::string&> m_onShapeDeleted;
+	Signal<const std::string&, double, double> m_onShapeMoved;
+	Signal<const std::string&, Color> m_onColorChanged;
 };

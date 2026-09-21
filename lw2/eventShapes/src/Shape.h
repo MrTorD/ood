@@ -2,7 +2,7 @@
 
 #include "Color.h"
 #include "IShapeGeometry.h"
-#include "Sig.h"
+#include "Signal.h"
 #include <list>
 #include <memory>
 
@@ -37,13 +37,13 @@ public:
 		m_geometry->Draw(canvas, m_color);
 	}
 
-	using ColorEventSub = EventSubscribtion<Sig<const std::string&, Color>, const std::string&, Color>;
+	using ColorEventSub = EventSubscribtion<Signal<const std::string&, Color>, const std::string&, Color>;
 	ColorEventSub OnColorChanged(std::function<void(const std::string&, Color)> observer)
 	{
 		return m_onColorChanged.Subscribe(observer);
 	}
 
-	using MoveEventSub = EventSubscribtion<Sig<const std::string&, double, double>, const std::string&, double, double>;
+	using MoveEventSub = EventSubscribtion<Signal<const std::string&, double, double>, const std::string&, double, double>;
 	MoveEventSub OnShapeMoved(std::function<void(const std::string&, double, double)> observer)
 	{
 		return m_onMove.Subscribe(observer);
@@ -62,8 +62,8 @@ public:
 	}
 
 private:
-	Sig<const std::string&, Color> m_onColorChanged;
-	Sig<const std::string&, double, double> m_onMove;
+	Signal<const std::string&, Color> m_onColorChanged;
+	Signal<const std::string&, double, double> m_onMove;
 
 	std::string m_id;
 	std::unique_ptr<IShapeGeometry> m_geometry;

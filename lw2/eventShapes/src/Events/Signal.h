@@ -6,12 +6,12 @@
 #include <map>
 
 template <typename... TArgs>
-class Sig
+class Signal
 {
 public:
 	using Observer = std::function<void((TArgs...))>;
 
-	EventSubscribtion<Sig<TArgs...>, TArgs...> Subscribe(const Observer& observer)
+	EventSubscribtion<Signal<TArgs...>, TArgs...> Subscribe(const Observer& observer)
 	{
 		m_observers[m_nextToken] = observer;
 
