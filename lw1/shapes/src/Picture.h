@@ -4,7 +4,7 @@
 #include "PictureInvalidOperation.h"
 #include "Shape.h"
 #include <unordered_map>
-#include <vector>
+#include <list>
 
 class Picture
 {
@@ -22,14 +22,14 @@ public:
 		}
 
 		m_shapes.push_back({ id, std::move(geometry), color });
-		m_idMap[id] = m_shapes.size() - 1;
+		m_idMap[id] = --m_shapes.end();
 	}
 
 	void MoveShape(const std::string& id, double dx, double dy)
 	{
-		ValidateIdExistance(id);
+		CheckIdExistance(id);
 
-		Shape& shape = m_shapes[m_idMap[id]];
+		Shape& shape = *m_idMap[id];
 		shape.Move(dx, dy);
 	}
 
@@ -44,9 +44,9 @@ public:
 	void DeleteShape(const std::string& id)
 	{
 		// [x]: Вынести в validateId();
-		ValidateIdExistance(id);
+		CheckIdExistance(id);
 
-		m_shapes.erase(m_shapes.begin() + m_idMap[id]);
+		m_shapes.erase(m_idMap[id]);
 		m_idMap.erase(id);
 	}
 
@@ -65,25 +65,25 @@ public:
 
 	void ChangeShapeColor(const std::string& id, Color newColor)
 	{
-		ValidateIdExistance(id);
+		CheckIdExistance(id);
 
-		Shape& shape = m_shapes[m_idMap[id]];
+		Shape& shape = *m_idMap[id];
 		shape.SetColor(newColor);
 	}
 
 	void ChangeShape(const std::string& id, std::unique_ptr<IShapeGeometry> geometry)
 	{
-		ValidateIdExistance(id);
+		CheckIdExistance(id);
 
-		Shape& shape = m_shapes[m_idMap[id]];
+		Shape& shape = *m_idMap[id];
 		shape.SetGeometry(std::move(geometry));
 	}
 
 	void DrawShape(const std::string& id)
 	{
-		ValidateIdExistance(id);
+		CheckIdExistance(id);
 
-		Shape& shape = m_shapes[m_idMap[id]];
+		Shape& shape = *m_idMap[id];
 		shape.Draw(*m_canvas);
 	}
 
@@ -96,7 +96,7 @@ public:
 	}
 
 private:
-	void ValidateIdExistance(const std::string& id) const
+	void CheckIdExistance(const std::string& id) const
 	{
 		if (!m_idMap.contains(id))
 		{
@@ -104,8 +104,8 @@ private:
 		}
 	}
 
-	std::vector<Shape> m_shapes;
-	// [ ]: Подумать над вектором и инвалидацией ссылок при клонировнии (вектор перемещается в памяти)
-	std::unordered_map<std::string, unsigned> m_idMap;
+	std::list<Shape> m_shapes;
+	// [x]: Подумать над вектором и инвалидацией ссылок при клонировнии (вектор перемещается в памяти)
+	std::unordered_map<std::string, std::list<Shape>::iterator> m_idMap;
 	std::unique_ptr<ICanvas> m_canvas;
 };

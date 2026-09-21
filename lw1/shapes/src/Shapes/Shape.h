@@ -6,14 +6,23 @@
 
 class Shape
 {
-	// TODO: Избавиться от bounds, хранить положение фигуры в стратегии
-	// Completed: Hello
+	// [x]: Избавиться от bounds, хранить положение фигуры в стратегии
 public:
 	Shape(const std::string& id, std::unique_ptr<IShapeGeometry> geometry, Color color)
 	{
 		m_id = id;
 		m_geometry = std::move(geometry);
 		m_color = color;
+	}
+
+	void SetColor(Color color)
+	{
+		m_color = color;
+	}
+
+	void SetGeometry(std::unique_ptr<IShapeGeometry> geometry)
+	{
+		m_geometry = std::move(geometry);
 	}
 
 	void Draw(ICanvas& canvas) const
@@ -28,18 +37,8 @@ public:
 
 	void Print(std::ostream& output)
 	{
-		output << std::format("{} {} {:#06x}", m_geometry->GetName(), m_id, m_color);
+		output << std::format("{} {} {:#06x} ", m_geometry->GetName(), m_id, m_color);
 		m_geometry->PrintParams(output);
-	}
-
-	void SetColor(Color color)
-	{
-		m_color = color;
-	}
-
-	void SetGeometry(std::unique_ptr<IShapeGeometry> geometry)
-	{
-		m_geometry = std::move(geometry);
 	}
 
 private:

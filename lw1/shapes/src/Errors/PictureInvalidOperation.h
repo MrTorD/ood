@@ -2,8 +2,8 @@
 
 #include <stdexcept>
 
-class PictureInvalidOperation : public std::runtime_error
+class PictureInvalidOperation : public std::invalid_argument
 {
 public:
-	using std::runtime_error::runtime_error;
+	using std::invalid_argument::invalid_argument;
 };

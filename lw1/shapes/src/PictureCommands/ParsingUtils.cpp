@@ -1,8 +1,8 @@
 #include "ParsingUtils.h"
-#include "ShapeType.h"
 #include "CircleGeometry.h"
 #include "LineGeometry.h"
 #include "RectangleGeometry.h"
+#include "ShapeType.h"
 #include "TextGeometry.h"
 #include "TriangleGeometry.h"
 #include <functional>

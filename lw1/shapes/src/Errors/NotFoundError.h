@@ -2,8 +2,8 @@
 
 #include <stdexcept>
 
-class NotFoundError : public std::runtime_error
+class NotFoundError : public std::invalid_argument
 {
 public:
-	using std::runtime_error::runtime_error;
+	using std::invalid_argument::invalid_argument;
 };

@@ -1,16 +1,9 @@
-#include "Bounds.h"
-#include "CircleGeometry.h"
-#include "LineGeometry.h"
-#include "Picture.h"
-#include "Point.h"
-#include "RectangleGeometry.h"
-#include "Shape.h"
-#include "SvgCanvas.h"
-#include "TextGeometry.h"
-#include <iostream>
-#include <memory>
 #include "CommandParseError.h"
 #include "ParsingUtils.h"
+#include "Picture.h"
+#include "SvgCanvas.h"
+#include <iostream>
+#include <memory>
 
 int main()
 {
@@ -27,6 +20,10 @@ int main()
 			auto command = ReadCommand(ss);
 			command->Execute(picture);
 		}
+	}
+	catch (const PictureInvalidOperation& e)
+	{
+		std::cout << e.what() << '\n';
 	}
 	catch (const CommandParseError& e)
 	{

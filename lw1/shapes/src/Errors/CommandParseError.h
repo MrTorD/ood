@@ -2,9 +2,9 @@
 
 #include <stdexcept>
 
-//[ ]: Подумать над типом ошибок
-class CommandParseError : public std::runtime_error
+//[x]: Подумать над типом ошибок
+class CommandParseError : public std::invalid_argument
 {
 public:
-	using std::runtime_error::runtime_error;
+	using std::invalid_argument::invalid_argument;
 };

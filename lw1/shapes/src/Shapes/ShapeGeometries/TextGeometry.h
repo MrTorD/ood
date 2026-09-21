@@ -9,7 +9,7 @@ public:
 	{
 		if (fontSize < 0)
 		{
-			throw new InvalidShapeError("Text's font should be non-negative number");
+			throw InvalidShapeError("Text's font should be non-negative number");
 		}
 
 		SetBounds(bounds);

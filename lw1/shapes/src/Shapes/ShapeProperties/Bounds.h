@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Point.h"
-#include "Errors/InvalidShapeError.h"
+#include "InvalidShapeError.h"
 
 class Bounds
 {
@@ -48,7 +48,7 @@ public:
 	{
 		if (width < 0)
 		{
-			throw new InvalidShapeError("Width can't be number less than 0");
+			throw InvalidShapeError("Width can't be number less than 0");
 		}
 
 		m_width = width;
@@ -58,7 +58,7 @@ public:
 	{
 		if (height < 0)
 		{
-			throw new InvalidShapeError("Height can't be number less than 0");
+			throw InvalidShapeError("Height can't be number less than 0");
 		}
 
 		m_height = height;
