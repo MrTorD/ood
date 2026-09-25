@@ -1,10 +1,12 @@
+#include "BoostPicture.h"
+#include "BoostShape.h"
 #include "LineGeometry.h"
-#include "Picture.h"
-
-#include "Shape.h"
 #include "SvgCanvas.h"
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
+
+using Picture = BoostPicture;
+using Shape = BoostShape;
 
 class MockMethode
 {
@@ -48,10 +50,10 @@ TEST_F(EventFixture, NoUpdateOnOtherEvents)
 	picture.MovePicture(10, 20);
 }
 
- TEST_F(EventFixture, UpdateRecievesData)
- {
- 	EXPECT_CALL(m, Update())
- 		.Times(1);
+TEST_F(EventFixture, UpdateRecievesData)
+{
+	EXPECT_CALL(m, Update())
+		.Times(1);
 
 	auto sub = picture.OnShapeMoved([&](const std::string& id, double dx, double dy) {
 		m.Update();
@@ -122,7 +124,7 @@ TEST_F(EventFixture, DifferentSubsTurnsOffIndependently)
 	picture.AddShape("1", std::make_unique<LineGeometry>(Bounds({ 10, 20 }, 30, 40)), 0xfff);
 	picture.MovePicture(10, 20);
 
-	sub1.Cancel();
+	sub1.disconnect();
 	picture.AddShape("2", std::make_unique<LineGeometry>(Bounds({ 10, 20 }, 30, 40)), 0xfff);
 	picture.MovePicture(10, 20);
 }

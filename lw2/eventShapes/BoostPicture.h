@@ -1,24 +1,26 @@
 #pragma once
 
+#include "BoostShape.h"
 #include "Color.h"
-#include "EventSubscribtion.h"
 #include "NotFoundError.h"
 #include "PictureInvalidOperation.h"
-#include "Shape.h"
-#include "Signal.h"
+#include <boost/signals2.hpp>
 #include <iostream>
 #include <list>
 #include <unordered_map>
 
-class Picture
+using boost::signals2::scoped_connection;
+using boost::signals2::signal;
+
+class BoostPicture
 {
 public:
-	Picture(std::unique_ptr<ICanvas> canvas)
+	BoostPicture(std::unique_ptr<ICanvas> canvas)
 	{
 		m_canvas = std::move(canvas);
 	}
 
-	Shape& GetShape(const std::string& id)
+	BoostShape& GetShape(const std::string& id)
 	{
 		return *m_idMap[id];
 	}
@@ -57,36 +59,31 @@ public:
 		m_onShapeAdded(*m_idMap[id]);
 	}
 
-	// [x] Назвать подписки более явно (e.g. AddShapeSub)
-	using AddShapeSub = EventSubscribtion<Signal<Shape&>, Shape&>;
-	AddShapeSub OnShapeAdded(std::function<void(Shape&)> observer)
+	scoped_connection OnShapeAdded(std::function<void(BoostShape&)> observer)
 	{
-		return m_onShapeAdded.Subscribe(observer);
+		return m_onShapeAdded.connect(observer);
 	}
 
-	using DeleteShapeSub = EventSubscribtion<Signal<const std::string&>, const std::string&>;
-	DeleteShapeSub OnShapeDeleted(std::function<void(const std::string&)> observer)
+	scoped_connection OnShapeDeleted(std::function<void(const std::string&)> observer)
 	{
-		return m_onShapeDeleted.Subscribe(observer);
+		return m_onShapeDeleted.connect(observer);
 	}
 
-	using MoveShapeSub = EventSubscribtion<Signal<const std::string&, double, double>, const std::string&, double, double>;
-	MoveShapeSub OnShapeMoved(std::function<void(const std::string&, double, double)> observer)
+	scoped_connection OnShapeMoved(std::function<void(const std::string&, double, double)> observer)
 	{
-		return m_onShapeMoved.Subscribe(observer);
+		return m_onShapeMoved.connect(observer);
 	}
 
-	using ChangeShapeColorSub = EventSubscribtion<Signal<const std::string&, Color>, const std::string&, Color>;
-	ChangeShapeColorSub OnColorChanged(std::function<void(const std::string&, Color)> observer)
+	scoped_connection OnColorChanged(std::function<void(const std::string&, Color)> observer)
 	{
-		return m_onColorChanged.Subscribe(observer);
+		return m_onColorChanged.connect(observer);
 	}
 
 	void MoveShape(std::string& id, double dx, double dy)
 	{
 		CheckIdExistance(id);
 
-		Shape& shape = *m_idMap[id];
+		auto& shape = *m_idMap[id];
 		shape.Move(dx, dy);
 	}
 
@@ -125,7 +122,7 @@ public:
 	{
 		CheckIdExistance(id);
 
-		Shape& shape = *m_idMap[id];
+		auto& shape = *m_idMap[id];
 		shape.SetColor(newColor);
 	}
 
@@ -133,7 +130,7 @@ public:
 	{
 		CheckIdExistance(id);
 
-		Shape& shape = *m_idMap[id];
+		auto& shape = *m_idMap[id];
 		shape.SetGeometry(std::move(geometry));
 	}
 
@@ -141,7 +138,7 @@ public:
 	{
 		CheckIdExistance(id);
 
-		Shape& shape = *m_idMap[id];
+		auto& shape = *m_idMap[id];
 		shape.Draw(*m_canvas);
 	}
 
@@ -162,15 +159,15 @@ private:
 		}
 	}
 
-	std::list<Shape> m_shapes;
-	std::unordered_map<std::string, std::list<Shape>::iterator> m_idMap;
+	std::list<BoostShape> m_shapes;
+	std::unordered_map<std::string, std::list<BoostShape>::iterator> m_idMap;
 	std::unique_ptr<ICanvas> m_canvas;
 
-	std::list<MoveShapeSub> m_moveSubs;
-	std::list<ChangeShapeColorSub> m_colorChangeSubs;
+	std::list<scoped_connection> m_moveSubs;
+	std::list<scoped_connection> m_colorChangeSubs;
 
-	Signal<Shape&> m_onShapeAdded;
-	Signal<const std::string&> m_onShapeDeleted;
-	Signal<const std::string&, double, double> m_onShapeMoved;
-	Signal<const std::string&, Color> m_onColorChanged;
+	signal<void(BoostShape&)> m_onShapeAdded;
+	signal<void(const std::string&)> m_onShapeDeleted;
+	signal<void(const std::string&, double, double)> m_onShapeMoved;
+	signal<void(const std::string&, Color)> m_onColorChanged;
 };
