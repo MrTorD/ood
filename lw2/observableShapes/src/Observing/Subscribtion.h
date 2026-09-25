@@ -30,9 +30,8 @@ public:
 		if (m_subject)
 		{
 			m_subject->Unsubscribe(m_observer);
+			m_subject = nullptr;
 		}
-
-		m_subject = nullptr;
 	}
 
 	Subscribtion& operator=(Subscribtion&& subscribtion)

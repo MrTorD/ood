@@ -50,7 +50,6 @@ public:
 		output << std::format("{} {} {:#06x}", m_geometry->GetName(), m_id, m_color);
 		m_geometry->PrintParams(output);
 	}
-
 private:
 	std::string m_id;
 	std::unique_ptr<IShapeGeometry> m_geometry;

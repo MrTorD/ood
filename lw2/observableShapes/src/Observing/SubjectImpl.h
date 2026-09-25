@@ -43,9 +43,9 @@ protected:
 
 	~SubjectImpl()
 	{
-		for (auto observer : m_observers)
+		while (m_observers.size() != 0)
 		{
-			observer->CancelSubscribtion(static_cast<TSubject*>(this));
+			m_observers.front()->CancelSubscribtion(static_cast<TSubject*>(this));
 		}
 	}
 

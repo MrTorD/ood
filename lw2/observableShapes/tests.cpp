@@ -250,6 +250,22 @@ TEST_F(PictureObsFixture, SubscribtionDeathStopUpdates)
 	picture.AddShape("2", std::make_unique<LineGeometry>(Bounds({ 10, 20 }, 30, 40)), 0xfff);
 }
 
+TEST_F(PictureObsFixture, SubjectDiesBeforeSub)
+{
+	EXPECT_CALL(observer, Update())
+		.Times(1);
+
+	observer.CancelSubscribtion();
+
+	{
+		Picture pic(std::make_unique<SvgCanvas>(""));
+		observer.Subscribe(&pic);
+		pic.AddShape("1", std::make_unique<LineGeometry>(Bounds({ 10, 20 }, 30, 40)), 0xfff);
+	}
+
+	observer.CancelSubscribtion();
+}
+
 TEST_F(PictureObsFixture, SubscribtionsSupportsSeveralCancels)
 {
 	EXPECT_CALL(observer, Update())

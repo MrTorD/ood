@@ -36,7 +36,6 @@ public:
 			return;
 		}
 
-		m_subscribtionIdMap.erase(subIt->GetSubject()->GetId());
 		m_subscribtions.erase(subIt);
 	}
 
@@ -61,7 +60,6 @@ public:
 		m_idMap[id] = --m_shapes.end();
 
 		m_subscribtions.push_back(m_idMap[id]->Subscribe(this));
-		m_subscribtionIdMap[id] = --m_subscribtions.end();
 
 		NotifyObservers();
 	}
@@ -86,8 +84,6 @@ public:
 	{
 		CheckIdExistance(id);
 
-		m_subscribtions.erase(m_subscribtionIdMap[id]);
-		m_subscribtionIdMap.erase(id);
 		m_shapes.erase(m_idMap[id]);
 		m_idMap.erase(id);
 
@@ -152,7 +148,7 @@ private:
 	std::unordered_map<std::string, std::list<Shape>::iterator> m_idMap;
 
 	std::list<Subscribtion<Shape>> m_subscribtions;
-	std::unordered_map<std::string, std::list<Subscribtion<Shape>>::iterator> m_subscribtionIdMap;
+	// [x] Избавиться от subscribtionIdMap. Подписки не должны инвалидироваться при смерти субъекта
 
 	std::unique_ptr<ICanvas> m_canvas;
 };
