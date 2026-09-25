@@ -7,7 +7,6 @@
 #include <memory>
 
 using boost::signals2::scoped_connection;
-using boost::signals2::signal;
 
 class BoostShape
 {
@@ -63,8 +62,8 @@ public:
 	}
 
 private:
-	signal<void(const std::string&, Color)> m_onColorChanged;
-	signal<void(const std::string&, double, double)> m_onMove;
+	boost::signals2::signal<void(const std::string&, Color)> m_onColorChanged;
+	boost::signals2::signal<void(const std::string&, double, double)> m_onMove;
 
 	std::string m_id;
 	std::unique_ptr<IShapeGeometry> m_geometry;

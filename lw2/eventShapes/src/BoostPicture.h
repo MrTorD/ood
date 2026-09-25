@@ -10,7 +10,6 @@
 #include <unordered_map>
 
 using boost::signals2::scoped_connection;
-using boost::signals2::signal;
 
 class BoostPicture
 {
@@ -166,8 +165,8 @@ private:
 	std::list<scoped_connection> m_moveSubs;
 	std::list<scoped_connection> m_colorChangeSubs;
 
-	signal<void(BoostShape&)> m_onShapeAdded;
-	signal<void(const std::string&)> m_onShapeDeleted;
-	signal<void(const std::string&, double, double)> m_onShapeMoved;
-	signal<void(const std::string&, Color)> m_onColorChanged;
+	boost::signals2::signal<void(BoostShape&)> m_onShapeAdded;
+	boost::signals2::signal<void(const std::string&)> m_onShapeDeleted;
+	boost::signals2::signal<void(const std::string&, double, double)> m_onShapeMoved;
+	boost::signals2::signal<void(const std::string&, Color)> m_onColorChanged;
 };
