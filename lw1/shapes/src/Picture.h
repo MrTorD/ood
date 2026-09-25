@@ -3,8 +3,8 @@
 #include "NotFoundError.h"
 #include "PictureInvalidOperation.h"
 #include "Shape.h"
-#include <unordered_map>
 #include <list>
+#include <unordered_map>
 
 class Picture
 {
@@ -69,6 +69,14 @@ public:
 
 		Shape& shape = *m_idMap[id];
 		shape.SetColor(newColor);
+	}
+
+	void CloneShape(const std::string& id, const std::string& newId)
+	{
+		CheckIdExistance(id);
+
+		Shape& shape = *m_idMap[id];
+		m_shapes.push_back(shape.Clone(newId));
 	}
 
 	void ChangeShape(const std::string& id, std::unique_ptr<IShapeGeometry> geometry)

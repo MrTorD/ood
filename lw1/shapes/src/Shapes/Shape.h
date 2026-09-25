@@ -41,6 +41,11 @@ public:
 		m_geometry->PrintParams(output);
 	}
 
+	Shape Clone(const std::string& newId)
+	{
+		return { newId, m_geometry->Clone(), m_color };
+	}
+
 private:
 	std::string m_id;
 	std::unique_ptr<IShapeGeometry> m_geometry;

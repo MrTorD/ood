@@ -1,8 +1,8 @@
 #pragma once
 
-#include "IShapeGeometry.h"
+#include "PrototypeImpl.h"
 
-class TextGeometry : public IShapeGeometry
+class TextGeometry : public PrototypeImpl<TextGeometry, IShapeGeometry>
 {
 public:
 	TextGeometry(Bounds bounds, const std::string& text, double fontSize)

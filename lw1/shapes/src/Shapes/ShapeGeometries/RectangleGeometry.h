@@ -1,8 +1,8 @@
 #pragma once
 
-#include "IShapeGeometry.h"
+#include "PrototypeImpl.h"
 
-class RectangleGeometry : public IShapeGeometry
+class RectangleGeometry : public PrototypeImpl<RectangleGeometry, IShapeGeometry>
 {
 public:
 	RectangleGeometry(Bounds bounds)

@@ -17,6 +17,7 @@
 #include "ListCommand.h"
 #include "MovePictureCommand.h"
 #include "MoveShapeCommand.h"
+#include "CloneShapeCommand.h"
 
 void ReadLineData(std::stringstream& ss, ShapeData& data);
 void ReadCircleData(std::stringstream& ss, ShapeData& data);
@@ -34,6 +35,7 @@ std::unordered_map<std::string, std::function<std::unique_ptr<ICommand>(std::str
 	{ "ChangeShape", [](std::stringstream& ss) { return std::make_unique<ChangeShapeCommand>(ss); } },
 	{ "DrawShape", [](std::stringstream& ss) { return std::make_unique<DrawShapeCommand>(ss); } },
 	{ "DrawPicture", [](std::stringstream& ss) { return std::make_unique<DrawPictureCommand>(ss); } },
+	{ "CloneShape", [](std::stringstream& ss) { return std::make_unique<CloneShapeCommand>(ss); } }
 };
 
 std::unordered_map<std::string, ShapeType> SHAPE_TYPES = {

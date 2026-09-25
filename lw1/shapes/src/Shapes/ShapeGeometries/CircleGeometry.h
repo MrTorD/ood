@@ -1,8 +1,8 @@
 #pragma once
 
-#include "IShapeGeometry.h"
+#include "PrototypeImpl.h"
 
-class CircleGeometry : public IShapeGeometry
+class CircleGeometry : public PrototypeImpl<CircleGeometry, IShapeGeometry>
 {
 public:
 	CircleGeometry(Bounds bounds)

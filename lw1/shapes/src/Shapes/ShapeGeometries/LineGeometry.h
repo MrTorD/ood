@@ -1,10 +1,8 @@
 #pragma once
 
-#include "IShapeGeometry.h"
+#include "PrototypeImpl.h"
 
-using LineBounds = std::tuple<Point, Point>;
-
-class LineGeometry : public IShapeGeometry
+class LineGeometry : public PrototypeImpl<LineGeometry, IShapeGeometry>
 {
 public:
 	LineGeometry(Bounds bounds)

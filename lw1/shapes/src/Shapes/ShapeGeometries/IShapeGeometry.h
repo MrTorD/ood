@@ -2,6 +2,7 @@
 
 #include "Bounds.h"
 #include "ICanvas.h"
+#include <memory>
 
 class IShapeGeometry
 {
@@ -14,6 +15,7 @@ public:
 	virtual void Draw(ICanvas& canvas, Color color) = 0;
 	virtual void Move(double dx, double dy) = 0;
 	virtual void PrintParams(std::ostream& output) const = 0;
+	virtual std::unique_ptr<IShapeGeometry> Clone() const = 0;
 
 	virtual ~IShapeGeometry() = default;
 };

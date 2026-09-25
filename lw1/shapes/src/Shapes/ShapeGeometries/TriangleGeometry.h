@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Bounds.h"
-#include "IShapeGeometry.h"
+#include "PrototypeImpl.h"
 
-class TriangleGeometry : public IShapeGeometry
+class TriangleGeometry : public PrototypeImpl<TriangleGeometry, IShapeGeometry>
 {
 public:
 	TriangleGeometry(Bounds bounds)
