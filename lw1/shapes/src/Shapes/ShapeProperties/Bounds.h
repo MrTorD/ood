@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Point.h"
 #include "InvalidShapeError.h"
+#include "Point.h"
 
 class Bounds
 {
@@ -64,8 +64,15 @@ public:
 		m_height = height;
 	}
 
+	bool operator==(const Bounds& other) const
+	{
+		return m_topLeft == other.m_topLeft && std::abs(m_width - other.m_width) < m_epsilon && std::abs(m_height - other.m_height) < m_epsilon;
+	}
+
 private:
 	Point m_topLeft;
 	double m_width;
 	double m_height;
+
+	static constexpr double m_epsilon = 1e-9;
 };

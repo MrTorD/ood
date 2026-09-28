@@ -1,6 +1,7 @@
 #pragma once
 
 #include "PrototypeImpl.h"
+#include "IShapeGeometry.h"
 
 class TextGeometry : public PrototypeImpl<TextGeometry, IShapeGeometry>
 {

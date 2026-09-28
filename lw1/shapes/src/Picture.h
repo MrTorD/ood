@@ -14,12 +14,16 @@ public:
 		m_canvas = std::move(canvas);
 	}
 
+	Shape& GetShape(const std::string& id)
+	{
+		CheckIdExistance(id);
+
+		return *m_idMap[id];
+	}
+
 	void AddShape(const std::string& id, std::unique_ptr<IShapeGeometry> geometry, Color color)
 	{
-		if (m_idMap.contains(id))
-		{
-			throw PictureInvalidOperation("Shape with id: " + id + " already exists");
-		}
+		CheckIdUnexists(id);
 
 		m_shapes.push_back({ id, std::move(geometry), color });
 		m_idMap[id] = --m_shapes.end();
@@ -40,7 +44,6 @@ public:
 			shape.Move(dx, dy);
 		}
 	}
-
 	void DeleteShape(const std::string& id)
 	{
 		// [x]: Вынести в validateId();
@@ -74,9 +77,11 @@ public:
 	void CloneShape(const std::string& id, const std::string& newId)
 	{
 		CheckIdExistance(id);
+		CheckIdUnexists(newId);
 
 		Shape& shape = *m_idMap[id];
 		m_shapes.push_back(shape.Clone(newId));
+		m_idMap[newId] = --m_shapes.end();
 	}
 
 	void ChangeShape(const std::string& id, std::unique_ptr<IShapeGeometry> geometry)
@@ -109,6 +114,14 @@ private:
 		if (!m_idMap.contains(id))
 		{
 			throw NotFoundError("Shape with id: " + id + " doesn't exist");
+		}
+	}
+
+	void CheckIdUnexists(const std::string& id) const
+	{
+		if (m_idMap.contains(id))
+		{
+			throw PictureInvalidOperation("Shape with id: " + id + " already exists");
 		}
 	}
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "PrototypeImpl.h"
+#include "IShapeGeometry.h"
 
 class RectangleGeometry : public PrototypeImpl<RectangleGeometry, IShapeGeometry>
 {
@@ -32,8 +33,8 @@ public:
 		double h = m_bounds.GetHeight();
 
 		Point topRight = { x + w, y };
-		Point bottomLeft = { x, y + h };
-		Point bottomRight = { x + w, y + h };
+		Point bottomLeft = { x, y - h };
+		Point bottomRight = { x + w, y - h };
 
 		canvas.DrawPolygon({ m_bounds.GetTopLeft(), topRight, bottomRight, bottomLeft }, color);
 	}

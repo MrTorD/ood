@@ -1,6 +1,7 @@
 #pragma once
 
 #include "PrototypeImpl.h"
+#include "IShapeGeometry.h"
 
 class CircleGeometry : public PrototypeImpl<CircleGeometry, IShapeGeometry>
 {

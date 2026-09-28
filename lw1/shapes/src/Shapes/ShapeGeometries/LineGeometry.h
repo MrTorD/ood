@@ -1,6 +1,7 @@
 #pragma once
 
 #include "PrototypeImpl.h"
+#include "IShapeGeometry.h"
 
 class LineGeometry : public PrototypeImpl<LineGeometry, IShapeGeometry>
 {
@@ -17,13 +18,13 @@ public:
 
 	Bounds GetBounds() const override
 	{
-		return { m_from, m_to.x - m_from.x, m_to.y - m_from.y };
+		return { m_from, m_to.x - m_from.x, m_from.y - m_to.y };
 	}
 
 	void SetBounds(Bounds bounds) override
 	{
 		m_from = bounds.GetTopLeft();
-		m_to = { m_from.x + bounds.GetWidth(), m_from.y + bounds.GetHeight() };
+		m_to = { m_from.x + bounds.GetWidth(), m_from.y - bounds.GetHeight() };
 	}
 
 	void Draw(ICanvas& canvas, Color color) override

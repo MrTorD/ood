@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Bounds.h"
 #include "PrototypeImpl.h"
+#include "IShapeGeometry.h"
 
 class TriangleGeometry : public PrototypeImpl<TriangleGeometry, IShapeGeometry>
 {
@@ -31,21 +31,21 @@ public:
 		double w = bounds.GetWidth();
 		double h = bounds.GetHeight();
 
-		m_bottomLeft = { x, y + h };
+		m_bottomLeft = { x, y - h };
 		m_topMiddle = { x + (w / 2), y };
-		m_bottomRight = { x + w, y + h };
+		m_bottomRight = { x + w, y - h };
 	}
 
 	void Draw(ICanvas& canvas, Color color) override
 	{
-		canvas.DrawPolygon({ m_bottomLeft, m_bottomLeft, m_bottomLeft }, color);
+		canvas.DrawPolygon({ m_bottomLeft, m_topMiddle, m_bottomRight }, color);
 	}
 
 	void Move(double dx, double dy) override
 	{
 		m_bottomLeft = { m_bottomLeft.x + dx, m_bottomLeft.y + dy };
 		m_topMiddle = { m_topMiddle.x + dx, m_topMiddle.y + dy };
-		m_bottomLeft = { m_bottomRight.x + dx, m_bottomRight.y + dy };
+		m_bottomRight = { m_bottomRight.x + dx, m_bottomRight.y + dy };
 	}
 
 	void PrintParams(std::ostream& output) const override

@@ -25,6 +25,16 @@ public:
 		m_geometry = std::move(geometry);
 	}
 
+	Bounds GetBounds() const
+	{
+		return m_geometry->GetBounds();
+	}
+
+	Color GetColor() const
+	{
+		return m_color;
+	}
+
 	void Draw(ICanvas& canvas) const
 	{
 		m_geometry->Draw(canvas, m_color);
@@ -41,7 +51,7 @@ public:
 		m_geometry->PrintParams(output);
 	}
 
-	Shape Clone(const std::string& newId)
+	Shape Clone(const std::string& newId) const
 	{
 		return { newId, m_geometry->Clone(), m_color };
 	}
