@@ -61,15 +61,14 @@ public:
 		m_danceBehavior->Dance();
 	}
 
-	// FIXME Подумать что с оператором
-	// Duck& operator=(Duck&& duck)
-	// {
-	// 	m_flyBehavior = std::move(duck.m_flyBehavior);
-	// 	m_quackBehavior = std::move(duck.m_quackBehavior);
-	// 	m_danceBehavior = std::move(duck.m_danceBehavior);
+	Duck& operator=(Duck&& duck)
+	{
+		m_flyBehavior = std::move(duck.m_flyBehavior);
+		m_quackBehavior = std::move(duck.m_quackBehavior);
+		m_danceBehavior = std::move(duck.m_danceBehavior);
 
-	// 	return *this;
-	// }
+		return *this;
+	}
 
 	virtual ~Duck() = default;
 

@@ -1,13 +1,13 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
-#include "Ducks/Duck.h"
+#include "Duck.h"
 
 struct MockFlyBehavior : IFlyBehavior
 {
 	unsigned GetFliesCount() override
 	{
-		return m_fliesCount;
+		return fliesCount;
 	}
 
 	MOCK_METHOD(
@@ -22,7 +22,7 @@ struct MockFlyBehavior : IFlyBehavior
 		(),
 		(override));
 
-	unsigned m_fliesCount = 0;
+	unsigned fliesCount = 0;
 };
 
 struct MockQuackBehavior : IQuackBehavior
@@ -65,22 +65,13 @@ struct MockDuck : Duck
 class DuckFixture : public ::testing::Test
 {
 public:
-	void SetUp() override
-	{
-		flyBehavior = new MockFlyBehavior();
-		quackBehavior = new MockQuackBehavior();
-		danceBehavior = new MockDanceBehavior();
+	MockFlyBehavior* flyBehavior = new MockFlyBehavior();
+	MockQuackBehavior* quackBehavior = new MockQuackBehavior();
+	MockDanceBehavior* danceBehavior = new MockDanceBehavior();
 
-		duck = MockDuck(std::unique_ptr<MockFlyBehavior>(flyBehavior),
-			std::unique_ptr<MockQuackBehavior>(quackBehavior),
-			std::unique_ptr<MockDanceBehavior>(danceBehavior));
-	}
-
-	MockDuck duck;
-
-	MockFlyBehavior* flyBehavior;
-	MockQuackBehavior* quackBehavior;
-	MockDanceBehavior* danceBehavior;
+	MockDuck duck = { std::unique_ptr<MockFlyBehavior>(flyBehavior),
+		std::unique_ptr<MockQuackBehavior>(quackBehavior),
+		std::unique_ptr<MockDanceBehavior>(danceBehavior) };
 };
 
 TEST_F(DuckFixture, FlyableDuckDanceBehavior)
@@ -105,7 +96,7 @@ TEST_F(DuckFixture, FlyableDuckNoQuackAfterSingleFly)
 
 	ON_CALL(*flyBehavior, Fly())
 		.WillByDefault([&]() {
-			flyBehavior->m_fliesCount++;
+			flyBehavior->fliesCount++;
 		});
 
 	EXPECT_CALL(*quackBehavior, Quack())
@@ -127,7 +118,7 @@ TEST_F(DuckFixture, FlyableDuckSingleQuackAfterDoubleFly)
 
 	ON_CALL(*flyBehavior, Fly())
 		.WillByDefault([&]() {
-			flyBehavior->m_fliesCount++;
+			flyBehavior->fliesCount++;
 		});
 
 	EXPECT_CALL(*quackBehavior, Quack())
@@ -150,7 +141,7 @@ TEST_F(DuckFixture, FlyableDuckHalfQuacksOfEvenFliesCount)
 
 	ON_CALL(*flyBehavior, Fly())
 		.WillByDefault([&]() {
-			flyBehavior->m_fliesCount++;
+			flyBehavior->fliesCount++;
 		});
 
 	EXPECT_CALL(*quackBehavior, Quack())
@@ -175,7 +166,7 @@ TEST_F(DuckFixture, FlyableDuckHalfMinusOneQuacksOfOddFliesCount)
 
 	ON_CALL(*flyBehavior, Fly())
 		.WillByDefault([&]() {
-			flyBehavior->m_fliesCount++;
+			flyBehavior->fliesCount++;
 		});
 
 	EXPECT_CALL(*quackBehavior, Quack())

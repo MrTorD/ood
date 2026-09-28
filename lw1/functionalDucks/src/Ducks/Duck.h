@@ -6,7 +6,12 @@
 class Duck
 {
 public:
-	Duck() = delete;
+	Duck(const std::function<int()>& flyBehavior, const std::function<void()>& quackBehavior, const std::function<void()>& danceBehavior)
+	{
+		m_flyBehavior = flyBehavior;
+		m_quackBehavior = quackBehavior;
+		m_danceBehavior = danceBehavior;
+	}
 
 	virtual std::string GetName() const = 0;
 
@@ -17,8 +22,6 @@ public:
 
 	void Fly()
 	{
-		m_flyBehavior();
-
 		unsigned fliesCount = m_flyBehavior();
 
 		if (fliesCount > 0 && fliesCount % 2 == 0)
@@ -38,14 +41,6 @@ public:
 	}
 
 	virtual ~Duck() = default;
-
-protected:
-	Duck(const std::function<int()>& flyBehavior, const std::function<void()>& quackBehavior, const std::function<void()>& danceBehavior)
-	{
-		m_flyBehavior = flyBehavior;
-		m_quackBehavior = quackBehavior;
-		m_danceBehavior = danceBehavior;
-	}
 
 private:
 	std::function<int()> m_flyBehavior;

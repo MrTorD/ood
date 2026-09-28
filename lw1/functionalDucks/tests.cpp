@@ -1,4 +1,4 @@
-#include "Ducks/Duck.h"
+#include "Duck.h"
 
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
@@ -26,28 +26,26 @@ struct MockDuck : Duck
 	}
 };
 
-TEST(DanceBehavior, ValidDanceBehavior)
+class DuckFixture : public ::testing::Test
 {
+public:
 	DanceBehavior danceBehavior;
 	QuackBehavior quackBehavior;
 	FlyBehavior flyBehavior;
 
-	MockDuck duck = MockDuck(flyBehavior.AsStdFunction(), quackBehavior.AsStdFunction(), danceBehavior.AsStdFunction());
+	MockDuck duck = { flyBehavior.AsStdFunction(), quackBehavior.AsStdFunction(), danceBehavior.AsStdFunction() };
+};
 
+TEST_F(DuckFixture, ValidDanceBehavior)
+{
 	EXPECT_CALL(danceBehavior, Call())
 		.Times(1);
 
 	duck.Dance();
 }
 
-TEST(FlyableDuck, NoQuackAfterSingleFly)
+TEST_F(DuckFixture, NoQuackAfterSingleFly)
 {
-	DanceBehavior danceBehavior;
-	QuackBehavior quackBehavior;
-	FlyBehavior flyBehavior;
-
-	MockDuck duck = MockDuck(flyBehavior.AsStdFunction(), quackBehavior.AsStdFunction(), danceBehavior.AsStdFunction());
-
 	EXPECT_CALL(flyBehavior, Call())
 		.Times(1);
 
@@ -57,90 +55,91 @@ TEST(FlyableDuck, NoQuackAfterSingleFly)
 	duck.Fly();
 }
 
-// TEST_F(DuckFixture, FlyableDuckSingleQuackAfterDoubleFly)
-// {
-// 	unsigned fliesCount = 0;
+TEST_F(DuckFixture, FlyableDuckSingleQuackAfterDoubleFly)
+{
+	unsigned fliesCount = 0;
 
-// 	EXPECT_CALL(flyBehavior, Call())
-// 		.Times(2)
-// 		.WillRepeatedly(testing::Return(fliesCount));
+	EXPECT_CALL(flyBehavior, Call())
+		.Times(2);
 
-// 	ON_CALL(flyBehavior, Call())
-// 		.WillByDefault([&fliesCount]() mutable {
-// 			return ++fliesCount;
-// 		});
+	ON_CALL(flyBehavior, Call())
+		.WillByDefault([&fliesCount]() mutable {
+			return ++fliesCount;
+		});
 
-// 	EXPECT_CALL(quackBehavior, Call())
-// 		.Times(1);
+	EXPECT_CALL(quackBehavior, Call())
+		.Times(1);
 
-// 	duck.Fly();
-// 	duck.Fly();
-// }
+	duck.Fly();
+	duck.Fly();
+}
 
-// TEST_F(DuckFixture, FlyableDuckHalfQuacksOfEvenFliesCount)
-// {
+TEST_F(DuckFixture, FlyableDuckHalfQuacksOfEvenFliesCount)
+{
+	unsigned fliesCount = 0;
 
-// 	EXPECT_CALL(flyBehavior, Call())
-// 		.Times(4);
+	EXPECT_CALL(flyBehavior, Call())
+		.Times(4);
 
-// 	// ON_CALL(*duck.m_flyBehavior, Fly())
-// 	// 	.WillByDefault([&duck]() {
-// 	// 		duck.m_flyBehavior->m_fliesCount++;
-// 	// 	});
+	ON_CALL(flyBehavior, Call())
+		.WillByDefault([&fliesCount]() mutable {
+			return ++fliesCount;
+		});
 
-// 	EXPECT_CALL(quackBehavior, Call())
-// 		.Times(2);
+	EXPECT_CALL(quackBehavior, Call())
+		.Times(2);
 
-// 	duck.Fly();
-// 	duck.Fly();
-// 	duck.Fly();
-// 	duck.Fly();
-// }
+	duck.Fly();
+	duck.Fly();
+	duck.Fly();
+	duck.Fly();
+}
 
-// TEST_F(DuckFixture, HalfMinusOneQuacksOfOddFliesCount)
-// {
-// 	EXPECT_CALL(flyBehavior, Call())
-// 		.Times(5);
+TEST_F(DuckFixture, HalfMinusOneQuacksOfOddFliesCount)
+{
+	unsigned fliesCount = 0;
+	EXPECT_CALL(flyBehavior, Call())
+		.Times(5);
 
-// 	// ON_CALL(*duck.m_flyBehavior, Fly())
-// 	// 	.WillByDefault([&duck]() {
-// 	// 		duck.m_flyBehavior->m_fliesCount++;
-// 	// 	});
+	ON_CALL(flyBehavior, Call())
+		.WillByDefault([&fliesCount]() mutable {
+			return ++fliesCount;
+		});
 
-// 	EXPECT_CALL(quackBehavior, Call())
-// 		.Times(2);
+	EXPECT_CALL(quackBehavior, Call())
+		.Times(2);
 
-// 	duck.Fly();
-// 	duck.Fly();
-// 	duck.Fly();
-// 	duck.Fly();
-// 	duck.Fly();
-// }
+	duck.Fly();
+	duck.Fly();
+	duck.Fly();
+	duck.Fly();
+	duck.Fly();
+}
 
-// TEST_F(DuckFixture, UnflyableDuckZeroQuacksOnSingleFly)
-// {
-// 	EXPECT_CALL(flyBehavior, Call())
-// 		.Times(1);
+TEST_F(DuckFixture, UnflyableDuckZeroQuacksOnSingleFly)
+{
+	EXPECT_CALL(flyBehavior, Call())
+		.Times(1);
 
-// 	EXPECT_CALL(quackBehavior, Call())
-// 		.Times(0);
+	EXPECT_CALL(quackBehavior, Call())
+		.Times(0);
 
-// 	duck.Fly();
-// }
+	duck.Fly();
+}
 
-// TEST_F(DuckFixture, UnflyableDuckZeroQuacksOnMultipleFlies)
-// {
-// 	EXPECT_CALL(flyBehavior, Call())
-// 		.Times(4);
+TEST_F(DuckFixture, UnflyableDuckZeroQuacksOnMultipleFlies)
+{
+	EXPECT_CALL(flyBehavior, Call())
+		.Times(4);
 
-// 	EXPECT_CALL(quackBehavior, Call())
-// 		.Times(0);
+	EXPECT_CALL(quackBehavior, Call())
+		.Times(0);
 
-// 	duck.Fly();
-// 	duck.Fly();
-// 	duck.Fly();
-// 	duck.Fly();
-// }
+	duck.Fly();
+	duck.Fly();
+	duck.Fly();
+	duck.Fly();
+}
 
 int main(int argc, char* argv[])
 {

@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Duck.h"
-#include "FlyBehaviors/FlyWithWings.h"
-#include "QuackBehaviors/LoudQuack.h"
-#include "DanceBehaviors/Minuet.h"
+#include "FlyWithWings.h"
+#include "LoudQuack.h"
+#include "Minuet.h"
 #include <memory>
 
 class ReadHeadDuck final : public Duck

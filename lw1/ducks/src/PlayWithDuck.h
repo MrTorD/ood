@@ -1,6 +1,7 @@
 #pragma once
+
+#include "Duck.h"
 #include <memory>
-#include "Ducks/Duck.h"
 
 void PlayWithDuck(std::unique_ptr<Duck> duck)
 {

@@ -1,8 +1,8 @@
 #include "PlayWithDuck.h"
-#include "src/Ducks/DecoyDuck.h"
-#include "src/Ducks/MallardDuck.h"
-#include "src/Ducks/ReadHeadDuck.h"
-#include "src/Ducks/RubberDuck.h"
+#include "DecoyDuck.h"
+#include "MallardDuck.h"
+#include "ReadHeadDuck.h"
+#include "RubberDuck.h"
 #include <iostream>
 #include <vector>
 

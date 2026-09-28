@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../Behaviors/DanceBehaviors.h"
-#include "../Behaviors/FlyBehaviors.h"
-#include "../Behaviors/QuackBehaviors.h"
+#include "DanceBehaviors.h"
+#include "FlyBehaviors.h"
+#include "QuackBehaviors.h"
 #include "Duck.h"
 
 class MallardDuck final : public Duck
