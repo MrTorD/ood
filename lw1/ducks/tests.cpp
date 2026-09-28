@@ -45,7 +45,7 @@ struct MockDanceBehavior : IDanceBehavior
 
 struct MockDuck : Duck
 {
-	MockDuck() = default;
+	MockDuck() = delete;
 
 	MockDuck(std::unique_ptr<IFlyBehavior> flyBehavior,
 		std::unique_ptr<IQuackBehavior> quackBehavior,
