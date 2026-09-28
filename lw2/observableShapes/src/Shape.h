@@ -17,6 +17,13 @@ public:
 		m_color = color;
 	}
 
+	Shape(const Shape& other)
+	{
+		m_id = other.m_id;
+		m_geometry = other.m_geometry->Clone();
+		m_color = other.m_color;
+	}
+
 	const std::string& GetId() const
 	{
 		return m_id;
@@ -50,6 +57,12 @@ public:
 		output << std::format("{} {} {:#06x}", m_geometry->GetName(), m_id, m_color);
 		m_geometry->PrintParams(output);
 	}
+
+	Shape Clone() const
+	{
+		return { m_id, m_geometry->Clone(), m_color };
+	}
+
 private:
 	std::string m_id;
 	std::unique_ptr<IShapeGeometry> m_geometry;

@@ -20,6 +20,8 @@ public:
 
 	Shape& GetShape(const std::string& id)
 	{
+		CheckIdExistance(id);
+
 		return *m_idMap[id];
 	}
 

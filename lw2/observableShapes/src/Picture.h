@@ -5,11 +5,11 @@
 #include "Shape.h"
 #include "SubjectImpl.h"
 #include "Subscribtion.h"
+#include <algorithm>
 #include <iostream>
 #include <list>
 #include <map>
 #include <unordered_map>
-#include <algorithm>
 
 class Picture : public SubjectImpl<Picture>
 	, public IObserver<Shape>
@@ -49,14 +49,12 @@ public:
 		return m_shapes.size();
 	}
 
-	void AddShape(const std::string& id, std::unique_ptr<IShapeGeometry> geometry, Color color)
+	void AddShape(Shape shape)
 	{
-		if (m_idMap.contains(id))
-		{
-			throw PictureInvalidOperation("Shape with id: " + id + " already exists");
-		}
+		const auto& id = shape.GetId();
+		CheckIdUnexists(id);
 
-		m_shapes.push_back({ id, std::move(geometry), color });
+		m_shapes.emplace_back(shape);
 		m_idMap[id] = --m_shapes.end();
 
 		m_subscribtions.push_back(m_idMap[id]->Subscribe(this));
@@ -135,12 +133,32 @@ public:
 		}
 	}
 
+	Picture Clone(std::unique_ptr<ICanvas> newCanvas)
+	{
+		Picture newPicture(std::move(newCanvas));
+
+		for (const auto& shape : m_shapes)
+		{
+			newPicture.AddShape(shape.Clone());
+		}
+
+		return newPicture;
+	}
+
 private:
 	void CheckIdExistance(const std::string& id) const
 	{
 		if (!m_idMap.contains(id))
 		{
 			throw NotFoundError("Shape with id: " + id + " doesn't exist");
+		}
+	}
+
+	void CheckIdUnexists(const std::string& id) const
+	{
+		if (m_idMap.contains(id))
+		{
+			throw PictureInvalidOperation("Shape with id: " + id + " already exists");
 		}
 	}
 
