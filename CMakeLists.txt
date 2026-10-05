@@ -18,5 +18,6 @@ FetchContent_MakeAvailable(googletest)
 include(GoogleTest)
 enable_testing()
 
-add_subdirectory(lw1)
-add_subdirectory(lw2)
+# add_subdirectory(lw1)
+# add_subdirectory(lw2)
+add_subdirectory(lw3)

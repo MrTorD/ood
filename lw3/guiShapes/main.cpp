@@ -1,21 +1,13 @@
-#include <SFML/Graphics.hpp>
+#include "EditorWindow.h"
+#include "Ellipse.h"
+#include "Picture.h"
+#include "Triangle.h"
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode({200, 200}), "Window");
-    sf::CircleShape shape(100.f);
-    shape.setFillColor(sf::Color::Green);
+	Picture pic;
 
-    while (window.isOpen())
-    {
-        while (const std::optional event = window.pollEvent())
-        {
-            if (event->is<sf::Event::Closed>())
-                window.close();
-        }
+	EditorWindow window(pic);
 
-        window.clear();
-        window.draw(shape);
-        window.display();
-    }
+	window.Run();
 }
