@@ -44,6 +44,10 @@ public:
 		return m_onColorChanged.connect(observer);
 	}
 
+	/*
+		shape.OnColorChanged([](){stc::cout << "Hello"})	
+	*/
+
 	scoped_connection OnShapeMoved(std::function<void(const std::string&, double, double)> observer)
 	{
 		return m_onMove.connect(observer);

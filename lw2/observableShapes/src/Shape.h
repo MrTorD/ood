@@ -58,6 +58,7 @@ public:
 		m_geometry->PrintParams(output);
 	}
 
+	// TODO: Недопускать существование 2 одинаковых id
 	Shape Clone() const
 	{
 		return { m_id, m_geometry->Clone(), m_color };

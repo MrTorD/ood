@@ -18,6 +18,7 @@ public:
 		());
 };
 
+//TODO: Добавить тесты для Shape.OnColorChanged, Shape.OnMove, подумать над названиями этих методов
 class EventFixture : public ::testing::Test
 {
 public:

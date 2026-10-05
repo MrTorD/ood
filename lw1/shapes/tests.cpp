@@ -87,7 +87,7 @@ TEST_F(PictureFixture, DrawExistingShape)
 	EXPECT_CALL(*canvas, DrawPolygon(trianglePoints, 0xfff))
 		.Times(1);
 
-	picture->DrawShape("triangle");
+	picture->DrawShape("id_triangle");
 }
 
 TEST_F(PictureFixture, DrawShapeWithUnexistingId)

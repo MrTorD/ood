@@ -54,7 +54,7 @@ public:
 		const auto& id = shape.GetId();
 		CheckIdUnexists(id);
 
-		m_shapes.emplace_back(shape);
+		m_shapes.push_back(shape);
 		m_idMap[id] = --m_shapes.end();
 
 		m_subscribtions.push_back(m_idMap[id]->Subscribe(this));
@@ -94,10 +94,9 @@ public:
 
 		for (auto& shape : m_shapes)
 		{
-			output << count << ' ';
+			output << count++ << ' ';
 			shape.Print(output);
 			output << "\n";
-			count++;
 		}
 	}
 
