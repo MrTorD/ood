@@ -14,6 +14,7 @@ public:
 		: m_picture(picture)
 		, m_session(session)
 	{
+		// TODO: контроллер не должен знать про расположение кнопок
 		m_buttons.emplace_back(
 			"Add rectangle",
 			[](Picture& picture) {

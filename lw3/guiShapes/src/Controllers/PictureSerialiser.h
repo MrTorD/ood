@@ -4,6 +4,7 @@
 #include "Picture.h"
 #include "Rectangle.h"
 #include "Triangle.h"
+#include <format>
 #include <fstream>
 
 class PictureSerialiser : IShapeOperation

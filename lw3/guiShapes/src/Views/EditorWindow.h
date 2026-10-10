@@ -7,10 +7,9 @@
 
 class EditorWindow
 {
-
 public:
 	explicit EditorWindow(Picture& picture)
-		: m_window(sf::VideoMode({ 800, 600 }), "Picture")
+		: m_window(sf::VideoMode({ 800, 600 }, 16), "Picture")
 		, m_canvasView(picture, m_session, m_window)
 		, m_toolBarView(picture, m_window, m_session)
 	{

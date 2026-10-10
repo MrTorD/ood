@@ -13,6 +13,7 @@
 class PictureRenderer : public IShapeOperation
 {
 public:
+//TODO: Избавиться от зависимости View ot Model
 	explicit PictureRenderer(sf::RenderTarget& target)
 		: m_target(target)
 	{

@@ -1,4 +1,14 @@
 {
+	"image": "mcr.microsoft.com/devcontainers/universal:5.1.4",
+	"features": {
+		"ghcr.io/devcontainers/features/desktop-lite:1.2.10": {
+			"version": "latest",
+			"noVncVersion": "1.6.0",
+			"password": "ood",
+			"webPort": "6080",
+			"vncPort": "5901"
+		}
+	},
 	"customizations": {
 		"vscode": {
 			"extensions": [
@@ -6,9 +16,9 @@
 				"ms-vscode.cpp-devtools",
 				"ms-vscode.cpptools-extension-pack",
 				"ms-vscode.cpptools-themes",
-				"ms-vscode.cmake-tools",
-				"FanaticPythoner.better-todo-tree"
+				"ms-vscode.cmake-tools"
 			]
 		}
-	}
+	},
+	"postCreateCommand": "sudo apt-get update && sudo apt-get install -y libxrandr-dev libxcursor-dev libxi-dev libxinerama-dev libgl1-mesa-dev libfreetype6-dev libopenal-dev libflac-dev libvorbis-dev libogg-dev libudev-dev"
 }

@@ -4,6 +4,10 @@
 #include "Color.h"
 #include "IShapeOperation.h"
 
+// TODO: Разобраться с четкостью Dran'n'drop
+// TODO: Ограничить рамку
+// TODO: Контекстные окна для загрузки документа
+// TODO: Диаграмма классов
 class Shape
 {
 public:
