@@ -1,13 +1,6 @@
-#include "EditorWindow.h"
-#include "Ellipse.h"
-#include "Picture.h"
-#include "Triangle.h"
+#include "EditorController.h"
 
 int main()
 {
-	Picture pic;
-
-	EditorWindow window(pic);
-
-	window.Run();
+	EditorController editor;
 }

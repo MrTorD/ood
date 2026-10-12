@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Button.h"
-#include "Picture.h"
 #include "ToolBarController.h"
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <vector>
@@ -9,8 +8,8 @@
 class ToolBarView
 {
 public:
-	ToolBarView(Picture& picture, sf::RenderTarget& target, EditorSession& session)
-		: m_controller(picture, session)
+	ToolBarView(ToolBarController& controller, sf::RenderTarget& target)
+		: m_controller(controller)
 		, m_target(target)
 		, m_font("arial.ttf")
 	{
@@ -91,7 +90,7 @@ public:
 	}
 
 private:
-	ToolBarController m_controller;
+	ToolBarController& m_controller;
 	sf::RenderTarget& m_target;
 	sf::Font m_font;
 

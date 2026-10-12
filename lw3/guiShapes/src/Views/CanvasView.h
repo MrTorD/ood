@@ -1,7 +1,6 @@
 #pragma once
 
 #include "CanvasController.h"
-#include "Picture.h"
 #include "PictureRenderer.h"
 #include "SfVectorToPoint.h"
 #include <SFML/Window/Event.hpp>
@@ -9,9 +8,8 @@
 class CanvasView
 {
 public:
-	CanvasView(Picture& picture, EditorSession& session, sf::RenderTarget& target)
-		: m_picture(picture)
-		, m_controller(picture, session, { 200, 100, 400, 400 })
+	CanvasView(CanvasController& controller, sf::RenderTarget& target, EditorSession& session)
+		: m_controller(controller)
 		, m_session(session)
 		, m_renderer(target)
 	{
@@ -35,12 +33,11 @@ public:
 
 	void Draw()
 	{
-		m_renderer.Draw(m_picture, m_session.GetSelectedShape());
+		m_renderer.Draw(m_controller.GetPicture(), m_session.GetSelectedShape());
 	}
 
 private:
-	Picture& m_picture;
-	CanvasController m_controller;
+	CanvasController& m_controller;
 	const EditorSession& m_session;
 
 	PictureRenderer m_renderer;

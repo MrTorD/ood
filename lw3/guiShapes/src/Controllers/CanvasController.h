@@ -82,6 +82,11 @@ public:
 		m_currDragPoint = std::nullopt;
 	}
 
+	Picture& GetPicture()
+	{
+		return m_picture;
+	}
+
 private:
 	Picture& m_picture;
 	EditorSession& m_editorSession;

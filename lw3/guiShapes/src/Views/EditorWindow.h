@@ -1,17 +1,18 @@
 #pragma once
 
 #include "CanvasView.h"
-#include "Picture.h"
 #include "ToolBarView.h"
+#include "CanvasController.h"
+#include "ToolBarController.h"
 #include <SFML/Graphics.hpp>
 
 class EditorWindow
 {
 public:
-	explicit EditorWindow(Picture& picture)
+	EditorWindow(CanvasController& canvasController, ToolBarController& toolBarContoller, EditorSession& session)
 		: m_window(sf::VideoMode({ 800, 600 }, 16), "Picture")
-		, m_canvasView(picture, m_session, m_window)
-		, m_toolBarView(picture, m_window, m_session)
+		, m_canvasView(canvasController, m_window, session)
+		, m_toolBarView(toolBarContoller, m_window)
 	{
 	}
 
@@ -40,8 +41,6 @@ public:
 	}
 
 private:
-	EditorSession m_session;
-
 	sf::RenderWindow m_window;
 	CanvasView m_canvasView;
 	ToolBarView m_toolBarView;
