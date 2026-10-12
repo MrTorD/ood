@@ -12,16 +12,12 @@ public:
 		m_topLeft = topLeft;
 		m_width = width;
 		m_height = height;
-		// m_v2 = { vertex.x + (width / 2), vertex.y + height };
-		// m_v3 = { vertex.x + width, vertex.y };
 		m_color = color;
 	}
 
 	Bounds GetBounds() const override
 	{
 		auto [x, y] = m_topLeft;
-		// auto [minX, maxX] = std::minmax({ m_v1.x, m_v2.x, m_v3.x });
-		// auto [minY, maxY] = std::minmax({ m_v1.y, m_v2.y, m_v3.y });
 
 		return { x, y, m_width, m_height };
 	}

@@ -10,8 +10,7 @@ class ToolBarView
 {
 public:
 	ToolBarView(Picture& picture, sf::RenderTarget& target, EditorSession& session)
-		: m_picture(picture)
-		, m_controller(picture, session)
+		: m_controller(picture, session)
 		, m_target(target)
 		, m_font("arial.ttf")
 	{
@@ -92,7 +91,6 @@ public:
 	}
 
 private:
-	Picture& m_picture;
 	ToolBarController m_controller;
 	sf::RenderTarget& m_target;
 	sf::Font m_font;

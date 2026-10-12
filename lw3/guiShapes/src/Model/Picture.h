@@ -5,7 +5,7 @@
 #include <memory>
 #include <ranges>
 
-//TODO: Узнать про аналоги mvc
+//[x]: Узнать про аналоги mvc
 class Picture
 {
 public:

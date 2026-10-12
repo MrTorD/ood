@@ -13,7 +13,7 @@
 class PictureRenderer : public IShapeOperation
 {
 public:
-	// TODO: Избавиться от зависимости View ot Model
+	// [ ]: Избавиться от зависимости View oт Model
 	explicit PictureRenderer(sf::RenderTarget& target)
 		: m_target(target)
 	{
@@ -36,6 +36,7 @@ private:
 	sf::RenderTarget& m_target;
 	Color m_selectionColor = 0xFF0000FF;
 	float m_selectionThickness = 5;
+	float m_dragPointRadius = 10;
 
 	void ApplyTo(const Rectangle& rect) override
 	{
@@ -100,12 +101,12 @@ private:
 
 		for (int i = 0; i < 4; i++)
 		{
-			boundPoints.emplace_back(10); // TODO: Избавиться от магической 10
+			boundPoints.emplace_back(m_dragPointRadius);
 			boundPoints[i].setFillColor(sf::Color::White);
 		}
 
-		x -= 10;
-		y -= 10;
+		x -= m_dragPointRadius;
+		y -= m_dragPointRadius;
 
 		boundPoints[0].setPosition({ x, y });
 		boundPoints[1].setPosition({ x + w, y });
