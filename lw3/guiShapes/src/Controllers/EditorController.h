@@ -6,6 +6,7 @@
 
 class EditorController
 {
+// [ ]: Подумать о целесообразности EditorController. Почитать об Dependency Injection
 public:
 	EditorController()
 		: m_canvasController(m_picture, m_session, { 200, 100, 400, 400 })
