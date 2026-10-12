@@ -25,6 +25,17 @@ public:
 		return { x, y, w, h };
 	}
 
+	void SetBounds(Bounds bounds) override
+	{
+		auto [x, y, w, h] = bounds;
+
+		m_radiusX = w / 2;
+		m_radiusY = h / 2;
+
+		m_centre.x = x + m_radiusX;
+		m_centre.y = y + m_radiusY;
+	}
+
 	Point GetCentre() const
 	{
 		return m_centre;

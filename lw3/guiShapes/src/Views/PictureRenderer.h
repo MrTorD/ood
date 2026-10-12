@@ -13,7 +13,7 @@
 class PictureRenderer : public IShapeOperation
 {
 public:
-//TODO: Избавиться от зависимости View ot Model
+	// TODO: Избавиться от зависимости View ot Model
 	explicit PictureRenderer(sf::RenderTarget& target)
 		: m_target(target)
 	{
@@ -28,15 +28,7 @@ public:
 
 		if (selectedShape)
 		{
-			auto [x, y, w, h] = selectedShape->GetBounds();
-			sf::RectangleShape selection({ w, h });
-
-			selection.setPosition({ x, y });
-			selection.setOutlineColor(sf::Color(m_selectionColor));
-			selection.setOutlineThickness(m_selectionThickness);
-			selection.setFillColor(sf::Color::Transparent);
-
-			m_target.draw(selection);
+			DrawSelection(selectedShape);
 		}
 	}
 
@@ -81,6 +73,46 @@ private:
 		drawable.setFillColor(sf::Color(triangle.GetColor()));
 
 		m_target.draw(drawable);
+	}
+
+	void DrawSelection(const Shape* shape) const
+	{
+		auto [x, y, w, h] = shape->GetBounds();
+		sf::RectangleShape selection({ w, h });
+
+		selection.setPosition({ x, y });
+		selection.setOutlineColor(sf::Color(m_selectionColor));
+		selection.setOutlineThickness(m_selectionThickness);
+		selection.setFillColor(sf::Color::Transparent);
+
+		m_target.draw(selection);
+
+		for (auto boundPoints = GetBoundPoints(x, y, w, h);
+			const auto& point : boundPoints)
+		{
+			m_target.draw(point);
+		}
+	}
+
+	std::vector<sf::CircleShape> GetBoundPoints(float x, float y, float w, float h) const
+	{
+		std::vector<sf::CircleShape> boundPoints;
+
+		for (int i = 0; i < 4; i++)
+		{
+			boundPoints.emplace_back(10); // TODO: Избавиться от магической 10
+			boundPoints[i].setFillColor(sf::Color::White);
+		}
+
+		x -= 10;
+		y -= 10;
+
+		boundPoints[0].setPosition({ x, y });
+		boundPoints[1].setPosition({ x + w, y });
+		boundPoints[2].setPosition({ x, y + h });
+		boundPoints[3].setPosition({ x + w, y + h });
+
+		return boundPoints;
 	}
 
 	sf::Vector2f ToSfVector(Point point) const

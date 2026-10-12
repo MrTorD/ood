@@ -11,7 +11,7 @@ class CanvasView
 public:
 	CanvasView(Picture& picture, EditorSession& session, sf::RenderTarget& target)
 		: m_picture(picture)
-		, m_controller(picture, session)
+		, m_controller(picture, session, { 200, 100, 400, 400 })
 		, m_session(session)
 		, m_renderer(target)
 	{

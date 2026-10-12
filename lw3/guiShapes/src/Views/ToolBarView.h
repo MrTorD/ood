@@ -1,14 +1,10 @@
 #pragma once
 
+#include "Button.h"
 #include "Picture.h"
-#include "SfVectorToPoint.h"
 #include "ToolBarController.h"
-#include <SFML/Graphics/Font.hpp>
-#include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
-#include <SFML/Graphics/Text.hpp>
-#include <iostream>
-#include <memory>
+#include <vector>
 
 class ToolBarView
 {
@@ -19,17 +15,61 @@ public:
 		, m_target(target)
 		, m_font("arial.ttf")
 	{
+		m_buttons.emplace_back(
+			"Add rectangle",
+			[&]() {
+				m_controller.AddRectangle();
+			},
+			sf::Vector2f(10, 10),
+			sf::Vector2f(110, 40),
+			m_font);
+		m_buttons.emplace_back(
+			"Add ellipse",
+			[&]() {
+				m_controller.AddEllipse();
+			},
+			sf::Vector2f(10, 60),
+			sf::Vector2f(110, 40),
+			m_font);
+		m_buttons.emplace_back(
+			"Add triangle",
+			[&]() {
+				m_controller.AddTriangle();
+			},
+			sf::Vector2f(10, 110),
+			sf::Vector2f(110, 40),
+			m_font);
+		m_buttons.emplace_back(
+			"Delete selected\nshape",
+			[&]() {
+				m_controller.DeleteSelectedShape();
+			},
+			sf::Vector2f(10, 160),
+			sf::Vector2f(110, 40),
+			m_font);
+		m_buttons.emplace_back(
+			"Save to\ndocument",
+			[&]() {
+				m_controller.SaveToDocument();
+			},
+			sf::Vector2f(10, 210),
+			sf::Vector2f(110, 40),
+			m_font);
+		m_buttons.emplace_back(
+			"Load from\ndocument",
+			[&]() {
+				m_controller.LoadFromDocument();
+			},
+			sf::Vector2f(10, 260),
+			sf::Vector2f(110, 40),
+			m_font);
 	}
 
 	void Draw()
 	{
-		for (size_t i = 0; i < m_controller.GetButtonsCount(); i++)
+		for (const auto& button : m_buttons)
 		{
-			const auto& button = m_controller.GetButton(i);
-			auto bounds = button.GetBounds();
-
-			DrawButton(bounds, button.GetColor());
-			DrawText(bounds, button.GetText());
+			button.Draw(m_target);
 		}
 	}
 
@@ -37,7 +77,17 @@ public:
 	{
 		if (const auto* pressed = event.getIf<sf::Event::MouseButtonPressed>())
 		{
-			m_controller.OnMousePressed(ConvertToPoint(pressed->position));
+			auto it = std::find_if(
+				m_buttons.begin(),
+				m_buttons.end(),
+				[&pressed](const Button& button) {
+					return button.HitTest(static_cast<sf::Vector2f>(pressed->position));
+				});
+
+			if (it != m_buttons.end())
+			{
+				it->Press();
+			}
 		}
 	}
 
@@ -47,30 +97,5 @@ private:
 	sf::RenderTarget& m_target;
 	sf::Font m_font;
 
-	void DrawButton(Bounds bounds, Color color)
-	{
-		auto [x, y, w, h] = bounds;
-
-		sf::RectangleShape drawableButton({ w, h });
-
-		drawableButton.setPosition({ x, y });
-		drawableButton.setFillColor(sf::Color(color));
-
-		m_target.draw(drawableButton);
-	}
-
-	void DrawText(Bounds bounds, const std::string& text)
-	{
-		auto [x, y, w, h] = bounds;
-
-		sf::Text drawableText(m_font);
-
-		drawableText.setString(text);
-		drawableText.setCharacterSize(16);
-		drawableText.setFillColor(sf::Color::Black);
-
-		drawableText.setPosition({ x, y });
-
-		m_target.draw(drawableText);
-	}
+	std::vector<Button> m_buttons;
 };

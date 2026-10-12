@@ -21,6 +21,15 @@ public:
 		return { x, y, m_width, m_height };
 	}
 
+	void SetBounds(Bounds bounds) override
+	{
+		auto [x, y, w, h] = bounds;
+
+		m_topLeft = { x, y };
+		m_width = w;
+		m_height = h;
+	}
+
 	bool HitTest(Point point) const override
 	{
 		return GetBounds().HitTest(point);

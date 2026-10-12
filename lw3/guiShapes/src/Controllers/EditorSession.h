@@ -1,6 +1,8 @@
 #pragma once
 
+#include "SelectionBox.h"
 #include "Shape.h"
+#include <optional>
 
 class EditorSession
 {
@@ -15,35 +17,26 @@ public:
 		return m_selectedShape;
 	}
 
-	Bounds GetAddRectButtonBounds() const
-	{
-		return m_addRectBounds;
-	}
-
-	Bounds GetAddEllipseBounds() const
-	{
-		return m_addEllipseBounds;
-	}
-
-	Bounds GetAddTriangleBounds() const
-	{
-		return m_addTriangleBounds;
-	}
-
-	Bounds GetDeleteSelectedBounds() const
-	{
-		return m_deleteSelectedBounds;
-	}
-
 	void SetSelectedShape(Shape* shape)
 	{
 		m_selectedShape = shape;
+
+		if (shape)
+		{
+			m_selectionBox = SelectionBox(shape->GetBounds());
+		}
+		else
+		{
+			m_selectionBox = std::nullopt;
+		}
+	}
+
+	const std::optional<SelectionBox>& GetSelectionBox() const
+	{
+		return m_selectionBox;
 	}
 
 private:
 	Shape* m_selectedShape = nullptr;
-	Bounds m_addRectBounds = { 0, 0, 20, 20 };
-	Bounds m_addEllipseBounds = { 0, 30, 20, 20 };
-	Bounds m_addTriangleBounds = { 0, 60, 20, 20 };
-	Bounds m_deleteSelectedBounds = { 0, 90, 20, 20 };
+	std::optional<SelectionBox> m_selectionBox = std::nullopt;
 };

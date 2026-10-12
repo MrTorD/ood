@@ -12,6 +12,7 @@ class Shape
 {
 public:
 	virtual Bounds GetBounds() const = 0;
+	virtual void SetBounds(Bounds bounds) = 0;
 	virtual void MoveBy(Point offset) = 0;
 
 	virtual bool HitTest(Point point) const = 0;

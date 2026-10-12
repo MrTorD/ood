@@ -7,24 +7,40 @@
 class Triangle : public Visitable<Triangle, Shape>
 {
 public:
-	Triangle(Point vertex1, Point vertex2, Point vertex3, Color color)
+	Triangle(Point topLeft, float width, float height, Color color)
 	{
-		m_v1 = vertex1;
-		m_v2 = vertex2;
-		m_v3 = vertex3;
+		m_topLeft = topLeft;
+		m_width = width;
+		m_height = height;
+		// m_v2 = { vertex.x + (width / 2), vertex.y + height };
+		// m_v3 = { vertex.x + width, vertex.y };
 		m_color = color;
 	}
 
 	Bounds GetBounds() const override
 	{
-		auto [minX, maxX] = std::minmax({ m_v1.x, m_v2.x, m_v3.x });
-		auto [minY, maxY] = std::minmax({ m_v1.y, m_v2.y, m_v3.y });
+		auto [x, y] = m_topLeft;
+		// auto [minX, maxX] = std::minmax({ m_v1.x, m_v2.x, m_v3.x });
+		// auto [minY, maxY] = std::minmax({ m_v1.y, m_v2.y, m_v3.y });
 
-		return { minX, minY, maxX - minX, maxY - minY };
+		return { x, y, m_width, m_height };
+	}
+
+	void SetBounds(Bounds bounds) override
+	{
+		auto [x, y, w, h] = bounds;
+
+		m_topLeft = { x, y };
+		m_width = w;
+		m_height = h;
 	}
 
 	bool HitTest(Point p) const override
 	{
+		Point m_v1 = GetVertex1();
+		Point m_v2 = GetVertex2();
+		Point m_v3 = GetVertex3();
+
 		int a = (m_v1.x - p.x) * (m_v2.y - m_v1.y) - (m_v2.x - m_v1.x) * (m_v1.y - p.y);
 		int b = (m_v2.x - p.x) * (m_v3.y - m_v2.y) - (m_v3.x - m_v2.x) * (m_v2.y - p.y);
 		int c = (m_v3.x - p.x) * (m_v1.y - m_v3.y) - (m_v1.x - m_v3.x) * (m_v3.y - p.y);
@@ -34,33 +50,27 @@ public:
 
 	void MoveBy(Point offset) override
 	{
-		m_v1.x += offset.x;
-		m_v1.y += offset.y;
-
-		m_v2.x += offset.x;
-		m_v2.y += offset.y;
-
-		m_v3.x += offset.x;
-		m_v3.y += offset.y;
+		m_topLeft.x += offset.x;
+		m_topLeft.y += offset.y;
 	}
 
 	Point GetVertex1() const
 	{
-		return m_v1;
+		return m_topLeft;
 	}
 
 	Point GetVertex2() const
 	{
-		return m_v2;
+		return { m_topLeft.x + m_width, m_topLeft.y + m_height };
 	}
 
 	Point GetVertex3() const
 	{
-		return m_v3;
+		return { m_topLeft.x + (m_width / 2), m_topLeft.y };
 	}
 
 private:
-	Point m_v1;
-	Point m_v2;
-	Point m_v3;
+	Point m_topLeft;
+	float m_width;
+	float m_height;
 };
