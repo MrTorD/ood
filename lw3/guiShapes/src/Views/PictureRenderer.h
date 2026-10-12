@@ -10,8 +10,7 @@
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
 
-class PictureRenderer : public IShapeOperation
-{
+class PictureRenderer 
 public:
 	// [ ]: Избавиться от зависимости View oт Model
 	explicit PictureRenderer(sf::RenderTarget& target)
@@ -19,18 +18,7 @@ public:
 	{
 	}
 
-	void Draw(Picture& picture, const Shape* selectedShape)
-	{
-		for (size_t i = 0; i < picture.GetShapesCount(); i++)
-		{
-			picture.GetShape(i).ApplyOperation(*this);
-		}
 
-		if (selectedShape)
-		{
-			DrawSelection(selectedShape);
-		}
-	}
 
 private:
 	sf::RenderTarget& m_target;

@@ -33,7 +33,8 @@ public:
 
 	void Draw()
 	{
-		m_renderer.Draw(m_controller.GetPicture(), m_session.GetSelectedShape());
+		m_controller.InitDrawing(m_renderer);
+		// m_renderer.Draw(m_controller.GetPicture(), m_session.GetSelectedShape());
 	}
 
 private:

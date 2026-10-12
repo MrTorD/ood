@@ -2,14 +2,16 @@
 
 #include "EditorSession.h"
 #include "Picture.h"
+#include "PictureRenderer.h"
 #include "SelectionBox.h"
 #include <algorithm>
 
-class CanvasController
+class CanvasController : public IShapeOperation
 {
 public:
-	CanvasController(Picture& picture, EditorSession& editorSession, Bounds canvasBounds)
+	CanvasController(Picture& picture, CanvasView& view, EditorSession& editorSession, Bounds canvasBounds)
 		: m_picture(picture)
+		, m_renderer(renderer)
 		, m_editorSession(editorSession)
 		, m_canvasBounds(canvasBounds)
 	{
@@ -82,6 +84,19 @@ public:
 		m_currDragPoint = std::nullopt;
 	}
 
+	void InitDrawing(PictureRenderer& renderer)
+	{
+		for (size_t i = 0; i < m_picture.GetShapesCount(); i++)
+		{
+			m_picture.GetShape(i).ApplyOperation(*this);
+		}
+
+		// if (m_editorSession.GetSelectedShape())
+		// {
+		// 	m_renderer.DrawSelection(selectedShape);
+		// }
+	}
+
 	Picture& GetPicture()
 	{
 		return m_picture;
@@ -89,6 +104,7 @@ public:
 
 private:
 	Picture& m_picture;
+	PictureRenderer& m_renderer;
 	EditorSession& m_editorSession;
 
 	bool m_isDragging = false;
@@ -96,4 +112,19 @@ private:
 	std::optional<DragPoint> m_currDragPoint;
 	Point m_lastMousePosition;
 	Bounds m_canvasBounds;
+
+	void ApplyTo(const Rectangle& rect) override
+	{
+		m_renderer.DrawRectangle(rect.GetBounds(), rect.GetColor());
+	}
+
+	void ApplyTo(const Ellipse& ellipse) override
+	{
+		m_renderer.DrawEllipse(ellipse.GetBounds(), )
+	}
+
+	void ApplyTo(const Triangle& triangle) override
+	{
+		m_renderer.DrawTriangle(triangle.GetVertex1(), triangle.GetVertex2(), triangle.GetVertex3(), triangle.GetColor());
+	}
 };
