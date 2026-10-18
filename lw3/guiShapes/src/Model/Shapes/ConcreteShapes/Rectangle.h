@@ -35,10 +35,12 @@ public:
 		return GetBounds().HitTest(point);
 	}
 
-	void MoveBy(Point offset) override
+	void ShiftBy(Bounds offset) override
 	{
 		m_topLeft.x += offset.x;
 		m_topLeft.y += offset.y;
+		m_width += offset.w;
+		m_height += offset.h;
 	}
 
 	Point GetTopLeft() const

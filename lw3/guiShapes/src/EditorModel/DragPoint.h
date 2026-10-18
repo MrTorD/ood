@@ -8,8 +8,9 @@ struct DragPoint
 	float x;
 	float y;
 	float radius;
-    std::function<Bounds(Bounds, Point)> GetNewBounds;
+	std::function<Bounds(Point)> GetOffset;
 
+	// TODO: Rename HitTest?
 	bool HitTest(Point point) const
 	{
 		return x - radius <= point.x

@@ -1,53 +1,53 @@
 #pragma once
 
 #include "Button.h"
-#include "EditorSession.h"
 #include "Picture.h"
 #include "PictureSerialiser.h"
 #include "Rectangle.h"
+// TODO: Подумать над тем должен ли контроллер знать это
+#include "Ellipse.h"
+#include "Triangle.h"
 #include <vector>
 
 class ToolBarController
 {
 public:
-	ToolBarController(Picture& picture, EditorSession& session)
-		: m_picture(picture)
-		, m_session(session)
+	ToolBarController(EditorModel& model)
+		: m_model(model)
 	{
 		// [x]: Контроллер не должен знать про расположение кнопок
 	}
 
 	void AddRectangle()
 	{
-		m_picture.AddShape(std::make_unique<Rectangle>(Point(400, 390), 200, 150, 0xB1FF21FF));
+		m_model.AddShape(std::make_unique<Rectangle>(Point(150, 190), 200, 150, 0xB1FF21FF));
 	}
 
 	void AddEllipse()
 	{
-		m_picture.AddShape(std::make_unique<Ellipse>(Point(320, 220), 60, 30, 0xFFDE21FF));
+		m_model.AddShape(std::make_unique<Ellipse>(Point(320, 220), 60, 30, 0xFFDE21FF));
 	}
 
 	void AddTriangle()
 	{
-		m_picture.AddShape(std::make_unique<Triangle>(Point(300, 250), 60, 60, 0xF9AAC0FF));
+		m_model.AddShape(std::make_unique<Triangle>(Point(300, 250), 60, 60, 0xF9AAC0FF));
 	}
 
-	void DeleteSelectedShape()
+	void DeleteSelectedShapes()
 	{
-		auto* selected = m_session.GetSelectedShape();
-		m_picture.DeleteShape(selected);
-		m_session.SetSelectedShape(nullptr);
+		m_model.DeleteSelectedShapes();
 	}
 
-	void SaveToDocument()
+	void SaveToFile()
 	{
+		m_model.SaveToFile("picture.txt");
 	}
 
-	void LoadFromDocument()
+	void LoadFromFile()
 	{
+		m_model.LoadFromFile("picture.txt");
 	}
 
 private:
-	Picture& m_picture;
-	EditorSession& m_session;
+	EditorModel& m_model;
 };

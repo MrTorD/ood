@@ -28,6 +28,19 @@ public:
 		return *(it->get());
 	}
 
+	Shape& GetShape(size_t i)
+	{
+		if (i >= m_shapes.size())
+		{
+			throw std::out_of_range("Index is out of shape list bounds");
+		}
+
+		auto it = m_shapes.begin();
+		std::advance(it, i);
+
+		return *(it->get());
+	}
+
 	Shape* FindShapeAt(Point point)
 	{
 		for (const auto& shape : m_shapes | std::views::reverse)

@@ -1,12 +1,12 @@
 #pragma once
 
-#include "IShapeOperation.h"
+#include "IShapeVisitor.h"
 
 template <typename TConcreteElement, typename TBase>
 class Visitable : public TBase
 {
-	virtual void ApplyOperation(IShapeOperation& operation) const override
+	virtual void Accept(IShapeVisitor& visitor) const override
 	{
-		operation.ApplyTo(static_cast<const TConcreteElement&>(*this));
+		visitor.Visit(static_cast<const TConcreteElement&>(*this));
 	}
 };

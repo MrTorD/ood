@@ -44,25 +44,27 @@ public:
 		return (a >= 0 && b >= 0 && c >= 0) || (a <= 0 && b <= 0 && c <= 0);
 	}
 
-	void MoveBy(Point offset) override
+	void ShiftBy(Bounds offset) override
 	{
 		m_topLeft.x += offset.x;
 		m_topLeft.y += offset.y;
+		m_width += offset.w;
+		m_height += offset.h;
 	}
 
 	Point GetVertex1() const
 	{
-		return m_topLeft;
+		return { m_topLeft.x, m_topLeft.y + m_height };
 	}
 
 	Point GetVertex2() const
 	{
-		return { m_topLeft.x + m_width, m_topLeft.y + m_height };
+		return { m_topLeft.x + (m_width) / 2, m_topLeft.y };
 	}
 
 	Point GetVertex3() const
 	{
-		return { m_topLeft.x + (m_width / 2), m_topLeft.y };
+		return { m_topLeft.x + m_width, m_topLeft.y + m_height };
 	}
 
 private:

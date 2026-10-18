@@ -2,7 +2,7 @@
 
 #include "Bounds.h"
 #include "Color.h"
-#include "IShapeOperation.h"
+#include "IShapeVisitor.h"
 
 // [x]: Разобраться с четкостью Dran'n'drop
 // [x]: Ограничить рамку
@@ -13,10 +13,10 @@ class Shape
 public:
 	virtual Bounds GetBounds() const = 0;
 	virtual void SetBounds(Bounds bounds) = 0;
-	virtual void MoveBy(Point offset) = 0;
+	virtual void ShiftBy(Bounds offset) = 0;
 
 	virtual bool HitTest(Point point) const = 0;
-	virtual void ApplyOperation(IShapeOperation& operation) const = 0;
+	virtual void Accept(IShapeVisitor& visitor) const = 0;
 
 	Color GetColor() const
 	{

@@ -8,9 +8,8 @@
 class ToolBarView
 {
 public:
-	ToolBarView(ToolBarController& controller, sf::RenderTarget& target)
-		: m_controller(controller)
-		, m_target(target)
+	explicit ToolBarView(EditorModel& model)
+		: m_controller(model)
 		, m_font("arial.ttf")
 	{
 		m_buttons.emplace_back(
@@ -38,9 +37,9 @@ public:
 			sf::Vector2f(110, 40),
 			m_font);
 		m_buttons.emplace_back(
-			"Delete selected\nshape",
+			"Delete selected\nshapes",
 			[&]() {
-				m_controller.DeleteSelectedShape();
+				m_controller.DeleteSelectedShapes();
 			},
 			sf::Vector2f(10, 160),
 			sf::Vector2f(110, 40),
@@ -48,7 +47,7 @@ public:
 		m_buttons.emplace_back(
 			"Save to\ndocument",
 			[&]() {
-				m_controller.SaveToDocument();
+				m_controller.SaveToFile();
 			},
 			sf::Vector2f(10, 210),
 			sf::Vector2f(110, 40),
@@ -56,23 +55,28 @@ public:
 		m_buttons.emplace_back(
 			"Load from\ndocument",
 			[&]() {
-				m_controller.LoadFromDocument();
+				m_controller.LoadFromFile();
 			},
 			sf::Vector2f(10, 260),
 			sf::Vector2f(110, 40),
 			m_font);
 	}
 
-	void Draw()
+	void Draw(sf::RenderTarget& target)
 	{
 		for (const auto& button : m_buttons)
 		{
-			button.Draw(m_target);
+			button.Draw(target);
 		}
 	}
 
-	void HandleEvent(sf::Event& event)
+	void HandleEvent(const sf::Event& event)
 	{
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Delete))
+		{
+			m_controller.DeleteSelectedShapes();
+		}
+
 		if (const auto* pressed = event.getIf<sf::Event::MouseButtonPressed>())
 		{
 			auto it = std::find_if(
@@ -90,8 +94,7 @@ public:
 	}
 
 private:
-	ToolBarController& m_controller;
-	sf::RenderTarget& m_target;
+	ToolBarController m_controller;
 	sf::Font m_font;
 
 	std::vector<Button> m_buttons;

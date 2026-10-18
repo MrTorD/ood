@@ -59,10 +59,15 @@ public:
 		return (normalizedX * normalizedX + normalizedY * normalizedY) <= 1.0f;
 	}
 
-	void MoveBy(Point offset) override
+	void ShiftBy(Bounds offset) override
 	{
-		m_centre.x += offset.x;
-		m_centre.y += offset.y;
+		auto radiusXShift = (offset.w / 2);
+		auto radiusYShift = (offset.h / 2);
+		
+		m_centre.x += offset.x + radiusXShift;
+		m_centre.y += offset.y + radiusYShift;
+		m_radiusX += radiusXShift;
+		m_radiusY += radiusYShift;
 	}
 
 private:

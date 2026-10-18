@@ -1,18 +1,27 @@
 #pragma once
 
-#include "CanvasView.h"
-#include "ToolBarView.h"
 #include "CanvasController.h"
+#include "CanvasView.h"
+#include "PictureDocument.h"
 #include "ToolBarController.h"
+#include "ToolBarView.h"
 #include <SFML/Graphics.hpp>
 
 class EditorWindow
 {
 public:
-	EditorWindow(CanvasController& canvasController, ToolBarController& toolBarContoller, EditorSession& session)
+	EditorWindow(PictureDocument& document)
 		: m_window(sf::VideoMode({ 800, 600 }, 16), "Picture")
-		, m_canvasView(canvasController, m_window, session)
-		, m_toolBarView(toolBarContoller, m_window)
+		, m_document(document)
+		, m_model(
+			  document.GetPicture(),
+			  [&document](std::unique_ptr<ICommand> command) {
+				  document.ExecuteCommand(std::move(command));
+			  },
+			  500,
+			  400)
+		, m_canvasView(m_model, { 150, 100, 500, 400 })
+		, m_toolBarView(m_model)
 	{
 	}
 
@@ -22,26 +31,53 @@ public:
 		{
 			while (auto event = m_window.pollEvent())
 			{
-				if (!event->is<sf::Event::Closed>())
-				{
-					m_toolBarView.HandleEvent(*event);
-					m_canvasView.HandleEvent(*event);
-				}
-				else
-				{
-					m_window.close();
-				}
+				HandleEvent(*event);
 			}
 
 			m_window.clear();
-			m_canvasView.Draw();
-			m_toolBarView.Draw();
+			m_canvasView.Draw(m_window);
+			m_toolBarView.Draw(m_window);
 			m_window.display();
 		}
 	}
 
 private:
 	sf::RenderWindow m_window;
+	PictureDocument& m_document;
+	EditorModel m_model;
 	CanvasView m_canvasView;
 	ToolBarView m_toolBarView;
+
+	void HandleEvent(const sf::Event& event)
+	{
+		if (event.is<sf::Event::Closed>())
+		{
+			m_window.close();
+			return;
+		}
+
+		if (const auto* resized = event.getIf<sf::Event::Resized>())
+		{
+			sf::FloatRect visibleArea({ 0.f, 0.f }, sf::Vector2f(resized->size));
+			m_window.setView(sf::View(visibleArea));
+		}
+
+		if (const auto* keyPressed = event.getIf<sf::Event::KeyPressed>())
+		{
+			if (keyPressed->code == sf::Keyboard::Key::Z && keyPressed->control)
+			{
+				m_document.Undo();
+				return;
+			}
+
+			if (keyPressed->code == sf::Keyboard::Key::Y && keyPressed->control)
+			{
+				m_document.Redo();
+				return;
+			}
+		}
+
+		m_toolBarView.HandleEvent(event);
+		m_canvasView.HandleEvent(event);
+	}
 };

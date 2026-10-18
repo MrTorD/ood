@@ -16,4 +16,21 @@ struct Bounds
 			&& y <= point.y
 			&& point.y <= y + h;
 	}
+
+	auto operator<=>(const Bounds& b) const = default;
+
+	Bounds& operator+=(const Bounds& bounds)
+	{
+		x += bounds.x;
+		y += bounds.y;
+		w += bounds.w;
+		h += bounds.h;
+
+		return *this;
+	}
+
+	Bounds operator-()
+	{
+		return { -x, -y, -w, -h };
+	}
 };

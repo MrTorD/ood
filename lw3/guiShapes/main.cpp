@@ -1,6 +1,11 @@
-#include "EditorController.h"
+#include "PictureDocument.h"
+#include "EditorWindow.h"
 
 int main()
 {
-	EditorController editor;
+	PictureDocument pictureDoc;
+
+	EditorWindow window(pictureDoc);
+
+	window.Run();
 }
