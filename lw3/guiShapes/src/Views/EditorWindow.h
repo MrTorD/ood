@@ -11,9 +11,9 @@ class EditorWindow
 {
 public:
 	EditorWindow(PictureDocument& document)
-		: m_window(sf::VideoMode({ 1200, 900 }, 16), "Picture")
+		: m_window(sf::VideoMode({ 1000, 700 }, 16), "Picture")
 		, m_document(document)
-		, m_canvasBounds(150, 100, 900, 700)
+		, m_canvasBounds(150, 100, 700, 500)
 		, m_model(
 			  document.GetPicture(),
 			  [&document](std::unique_ptr<ICommand> command) {
