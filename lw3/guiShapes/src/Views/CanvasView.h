@@ -8,7 +8,7 @@
 class CanvasView
 {
 public:
-	CanvasView(EditorModel& model, Bounds canvasBounds)
+	CanvasView(EditorModel& model, Bounds& canvasBounds)
 		: m_model(model)
 		, m_canvasBounds(canvasBounds)
 		, m_controller(model, canvasBounds)
@@ -42,7 +42,7 @@ public:
 
 private:
 	EditorModel& m_model;
-	Bounds m_canvasBounds;
+	Bounds& m_canvasBounds;
 	CanvasController m_controller;
 
 	void DrawCanvasBounds(sf::RenderTarget& target)

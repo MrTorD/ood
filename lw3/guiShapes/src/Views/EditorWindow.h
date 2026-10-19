@@ -11,20 +11,20 @@ class EditorWindow
 {
 public:
 	EditorWindow(PictureDocument& document)
-		: m_window(sf::VideoMode({ 800, 600 }, 16), "Picture")
+		: m_window(sf::VideoMode({ 1200, 900 }, 16), "Picture")
 		, m_document(document)
+		, m_canvasBounds(150, 100, 900, 700)
 		, m_model(
 			  document.GetPicture(),
 			  [&document](std::unique_ptr<ICommand> command) {
 				  document.ExecuteCommand(std::move(command));
 			  },
-			  [&](Picture picture) {
+			  [&](std::unique_ptr<Picture> picture) {
 				  document.SetPicture(std::move(picture));
 				  m_model.SetPicture(document.GetPicture());
 			  },
-			  500,
-			  400)
-		, m_canvasView(m_model, { 150, 100, 500, 400 })
+			  m_canvasBounds)
+		, m_canvasView(m_model, m_canvasBounds)
 		, m_toolBarView(m_model)
 	{
 	}
@@ -48,6 +48,9 @@ public:
 private:
 	sf::RenderWindow m_window;
 	PictureDocument& m_document;
+
+	Bounds m_canvasBounds;
+
 	EditorModel m_model;
 	CanvasView m_canvasView;
 	ToolBarView m_toolBarView;

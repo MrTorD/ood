@@ -6,19 +6,14 @@
 class PictureDocument
 {
 public:
-	Picture& GetPicture()
+	Picture* GetPicture()
 	{
-		return m_picture;
+		return m_picture.get();
 	}
 
-	const Picture& GetPicture() const
+	void SetPicture(std::unique_ptr<Picture> picture)
 	{
-		return m_picture;
-	}
-
-	void SetPicture(Picture picture)
-	{
-		m_picture = picture;
+		m_picture = std::move(picture);
 		m_history.Truncate();
 	}
 
@@ -38,6 +33,6 @@ public:
 	}
 
 private:
-	Picture m_picture;
+	std::unique_ptr<Picture> m_picture = std::make_unique<Picture>();
 	CommandHistory m_history;
 };

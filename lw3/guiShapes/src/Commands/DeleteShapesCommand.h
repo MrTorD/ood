@@ -9,7 +9,7 @@
 class DeleteShapesCommand : public ICommand
 {
 public:
-	DeleteShapesCommand(Picture& picture, std::unordered_map<size_t, std::unique_ptr<Shape>>&& shapes)
+	DeleteShapesCommand(Picture* picture, std::unordered_map<size_t, std::unique_ptr<Shape>>&& shapes)
 		: m_picture(picture)
 		, m_shapes(std::move(shapes))
 	{
@@ -19,7 +19,7 @@ public:
 	{
 		for (auto&& [index, _] : m_shapes)
 		{
-			m_picture.DeleteShape(index);
+			m_picture->DeleteShape(index);
 		}
 	}
 
@@ -27,11 +27,11 @@ public:
 	{
 		for (auto&& [index, shape] : m_shapes)
 		{
-			m_picture.AddShape(shape->Clone(), index);
+			m_picture->AddShape(shape->Clone(), index);
 		}
 	}
 
 private:
-	Picture& m_picture;
+	Picture* m_picture;
 	std::unordered_map<size_t, std::unique_ptr<Shape>> m_shapes;
 };

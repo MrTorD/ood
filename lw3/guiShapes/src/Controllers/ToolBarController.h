@@ -4,7 +4,6 @@
 #include "Picture.h"
 #include "PictureSerialiser.h"
 #include "Rectangle.h"
-// TODO: Подумать над тем должен ли контроллер знать это
 #include "Ellipse.h"
 #include "Triangle.h"
 #include <vector>

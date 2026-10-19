@@ -22,7 +22,7 @@ public:
 		}
 	}
 
-	Picture Deserialise(const std::string& fileName)
+	std::unique_ptr<Picture> Deserialise(const std::string& fileName)
 	{
 		std::ifstream file(fileName);
 
@@ -31,7 +31,7 @@ public:
 			throw std::invalid_argument("File can't be opened");
 		}
 
-		Picture pic;
+		auto pic = std::make_unique<Picture>();
 
 		std::string str;
 		while (std::getline(file, str))
@@ -49,7 +49,7 @@ public:
 			auto shapeData = ReadShapeData(ss);
 			auto shape = SHAPES_MAP[shapeName](shapeData);
 
-			pic.AddShape(std::move(shape));
+			pic->AddShape(std::move(shape));
 		}
 
 		return pic;

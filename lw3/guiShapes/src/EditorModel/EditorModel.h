@@ -17,14 +17,13 @@ public:
 	using ScopedConnection = boost::signals2::scoped_connection;
 	using ChangeSignal = boost::signals2::signal<void()>;
 	using CommandSink = std::function<void(std::unique_ptr<ICommand>)>;
-	using SetNewPicture = std::function<void(Picture*)>;
+	using SetNewPicture = std::function<void(std::unique_ptr<Picture>)>;
 
-	explicit EditorModel(Picture* picture, CommandSink commandSink, SetNewPicture setNewPicture, float width, float height)
+	explicit EditorModel(Picture* picture, CommandSink commandSink, SetNewPicture setNewPicture, Bounds& m_canvasBounds)
 		: m_picture(picture)
 		, m_commandSink(std::move(commandSink))
 		, m_setNewPicture(setNewPicture)
-		, m_width(width)
-		, m_height(height)
+		, m_canvasBounds(m_canvasBounds)
 	{
 		SyncShapes();
 
@@ -66,7 +65,6 @@ public:
 	{
 		for (const auto& shape : m_shapes | std::views::reverse)
 		{
-			// TODO: Simplify
 			if (shape->IsSelected())
 			{
 				if (shape->GetBounds().IsContains(point))
@@ -243,8 +241,7 @@ private:
 	std::function<Bounds(Point)> m_actionFunc;
 
 	CommandSink m_commandSink;
-	float m_width;
-	float m_height;
+	Bounds& m_canvasBounds;
 
 	float m_minShapeWidth = 50.f;
 	float m_minShapeHeight = 50.f;
@@ -276,27 +273,27 @@ private:
 		if (y < 0)
 			y = 0;
 
-		if (x + w > m_width)
+		if (x + w > m_canvasBounds.w)
 		{
 			if (dw == 0)
 			{
-				x = m_width - w;
+				x = m_canvasBounds.w - w;
 			}
 			else
 			{
-				w = m_width - x;
+				w = m_canvasBounds.w - x;
 			}
 		}
 
-		if (y + h > m_height)
+		if (y + h > m_canvasBounds.h)
 		{
 			if (dh == 0)
 			{
-				y = m_height - h;
+				y = m_canvasBounds.h - h;
 			}
 			else
 			{
-				h = m_height - y;
+				h = m_canvasBounds.h - y;
 			}
 		}
 
