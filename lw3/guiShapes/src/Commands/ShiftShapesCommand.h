@@ -1,35 +1,38 @@
 #pragma once
 
 #include "ICommand.h"
-#include "Point.h"
-#include "Shape.h"
+#include "Picture.h"
 
 class ShiftShapesCommand : public ICommand
 {
 public:
-	ShiftShapesCommand(const std::vector<Shape*>& shapes, Bounds offset)
-		: m_shapes(shapes)
+	ShiftShapesCommand(Picture& picture, std::vector<size_t>& indexes, Bounds offset)
+		: m_picture(picture)
+		, m_indexes(std::move(indexes))
 		, m_offset(offset)
 	{
 	}
 
 	void Execute() override
 	{
-		for (auto& shape : m_shapes)
+		for (auto index : m_indexes)
 		{
+			auto* shape = m_picture.GetShape(index);
 			shape->ShiftBy(m_offset);
 		}
 	}
 
 	void Unexecute() override
 	{
-		for (auto& shape : m_shapes)
+		for (auto index : m_indexes)
 		{
+			auto* shape = m_picture.GetShape(index);
 			shape->ShiftBy(-m_offset);
 		}
 	}
 
 private:
-	std::vector<Shape*> m_shapes;
+	Picture& m_picture;
+	std::vector<size_t> m_indexes;
 	Bounds m_offset;
 };

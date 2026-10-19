@@ -51,7 +51,7 @@ public:
 		return m_radiusY;
 	}
 
-	bool HitTest(Point point) const override
+	bool IsContains(Point point) const override
 	{
 		float normalizedX = (point.x - m_centre.x) / m_radiusX;
 		float normalizedY = (point.y - m_centre.y) / m_radiusY;
@@ -63,11 +63,16 @@ public:
 	{
 		auto radiusXShift = (offset.w / 2);
 		auto radiusYShift = (offset.h / 2);
-		
+
 		m_centre.x += offset.x + radiusXShift;
 		m_centre.y += offset.y + radiusYShift;
 		m_radiusX += radiusXShift;
 		m_radiusY += radiusYShift;
+	}
+
+	std::unique_ptr<Shape> Clone() const override
+	{
+		return std::make_unique<Ellipse>(m_centre, m_radiusX, m_radiusY, m_color);
 	}
 
 private:

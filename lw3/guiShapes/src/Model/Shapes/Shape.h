@@ -3,6 +3,7 @@
 #include "Bounds.h"
 #include "Color.h"
 #include "IShapeVisitor.h"
+#include <string>
 
 // [x]: Разобраться с четкостью Dran'n'drop
 // [x]: Ограничить рамку
@@ -15,8 +16,9 @@ public:
 	virtual void SetBounds(Bounds bounds) = 0;
 	virtual void ShiftBy(Bounds offset) = 0;
 
-	virtual bool HitTest(Point point) const = 0;
+	virtual bool IsContains(Point point) const = 0;
 	virtual void Accept(IShapeVisitor& visitor) const = 0;
+	virtual std::unique_ptr<Shape> Clone() const = 0;
 
 	Color GetColor() const
 	{

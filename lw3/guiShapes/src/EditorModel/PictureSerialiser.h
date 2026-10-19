@@ -18,7 +18,7 @@ public:
 
 		for (size_t i = 0; i < picture.GetShapesCount(); i++)
 		{
-			picture.GetShape(i).Accept(*this);
+			picture.GetShape(i)->Accept(*this);
 		}
 	}
 

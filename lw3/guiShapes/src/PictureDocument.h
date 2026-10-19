@@ -16,6 +16,12 @@ public:
 		return m_picture;
 	}
 
+	void SetPicture(Picture picture)
+	{
+		m_picture = picture;
+		m_history.Truncate();
+	}
+
 	void Undo()
 	{
 		m_history.Undo();

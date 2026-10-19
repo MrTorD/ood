@@ -33,7 +33,7 @@ public:
 		target.draw(m_text);
 	}
 
-	bool HitTest(sf::Vector2f point) const
+	bool IsContains(sf::Vector2f point) const
 	{
 		return m_buttonShape
 			.getGlobalBounds()

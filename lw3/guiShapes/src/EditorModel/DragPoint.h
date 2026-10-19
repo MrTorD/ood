@@ -10,8 +10,7 @@ struct DragPoint
 	float radius;
 	std::function<Bounds(Point)> GetOffset;
 
-	// TODO: Rename HitTest?
-	bool HitTest(Point point) const
+	bool IsContains(Point point) const
 	{
 		return x - radius <= point.x
 			&& point.x <= x + radius

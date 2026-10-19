@@ -18,6 +18,10 @@ public:
 			  [&document](std::unique_ptr<ICommand> command) {
 				  document.ExecuteCommand(std::move(command));
 			  },
+			  [&](Picture picture) {
+				  document.SetPicture(std::move(picture));
+				  m_model.SetPicture(document.GetPicture());
+			  },
 			  500,
 			  400)
 		, m_canvasView(m_model, { 150, 100, 500, 400 })

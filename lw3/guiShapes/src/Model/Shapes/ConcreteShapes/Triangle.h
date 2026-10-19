@@ -31,7 +31,7 @@ public:
 		m_height = h;
 	}
 
-	bool HitTest(Point p) const override
+	bool IsContains(Point p) const override
 	{
 		Point m_v1 = GetVertex1();
 		Point m_v2 = GetVertex2();
@@ -65,6 +65,11 @@ public:
 	Point GetVertex3() const
 	{
 		return { m_topLeft.x + m_width, m_topLeft.y + m_height };
+	}
+
+	std::unique_ptr<Shape> Clone() const override
+	{
+		return std::make_unique<Triangle>(m_topLeft, m_width, m_height, m_color);
 	}
 
 private:

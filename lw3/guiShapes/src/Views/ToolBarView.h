@@ -83,7 +83,7 @@ public:
 				m_buttons.begin(),
 				m_buttons.end(),
 				[&pressed](const Button& button) {
-					return button.HitTest(static_cast<sf::Vector2f>(pressed->position));
+					return button.IsContains(static_cast<sf::Vector2f>(pressed->position));
 				});
 
 			if (it != m_buttons.end())

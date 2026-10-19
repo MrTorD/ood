@@ -47,9 +47,9 @@ public:
 		m_shape.Accept(adapter);
 	}
 
-	bool HitTest(Point point) const
+	bool IsContains(Point point) const
 	{
-		return m_shape.HitTest({ point.x - m_previewOffset.x,
+		return m_shape.IsContains({ point.x - m_previewOffset.x,
 			point.y - m_previewOffset.y });
 	}
 

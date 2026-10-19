@@ -1,6 +1,7 @@
 #pragma once
 
 #include "AddShapeCommand.h"
+#include "DeleteShapesCommand.h"
 #include "EditorShape.h"
 #include "Picture.h"
 #include "PictureSerialiser.h"
@@ -13,13 +14,35 @@
 class EditorModel
 {
 public:
+	using ScopedConnection = boost::signals2::scoped_connection;
+	using ChangeSignal = boost::signals2::signal<void()>;
 	using CommandSink = std::function<void(std::unique_ptr<ICommand>)>;
+	using SetNewPicture = std::function<void(Picture*)>;
 
-	explicit EditorModel(Picture& picture, CommandSink commandSink, float width, float height)
+	explicit EditorModel(Picture* picture, CommandSink commandSink, SetNewPicture setNewPicture, float width, float height)
 		: m_picture(picture)
 		, m_commandSink(std::move(commandSink))
+		, m_setNewPicture(setNewPicture)
 		, m_width(width)
 		, m_height(height)
+	{
+		SyncShapes();
+
+		m_pictureConnection = m_picture->DoOnChange([this] {
+			OnPictureChanged();
+		});
+	}
+
+	void SetPicture(Picture* picture)
+	{
+		m_picture = picture;
+		m_pictureConnection = m_picture->DoOnChange([this] {
+			OnPictureChanged();
+		});
+		SyncShapes();
+	}
+
+	void OnPictureChanged()
 	{
 		SyncShapes();
 	}
@@ -46,14 +69,14 @@ public:
 			// TODO: Simplify
 			if (shape->IsSelected())
 			{
-				if (shape->GetBounds().HitTest(point))
+				if (shape->GetBounds().IsContains(point))
 				{
 					return shape.get();
 				}
 			}
 			else
 			{
-				if (shape->HitTest(point))
+				if (shape->IsContains(point))
 				{
 					return shape.get();
 				}
@@ -80,19 +103,19 @@ public:
 
 	void AddShape(std::unique_ptr<Shape> shape)
 	{
-		m_picture.AddShape(std::move(shape));
+		auto command = std::make_unique<AddShapeCommand>(
+			m_picture,
+			std::move(shape),
+			m_picture->GetShapesCount());
 
-		// auto command = std::make_unique<AddShapeCommand>();
-		// m_commandSink(std::move(command));
-
-		SyncShapes();
+		m_commandSink(std::move(command));
 	}
 
 	void SaveToFile(const std::string& fileName)
 	{
 		PictureSerialiser serialiser;
 
-		serialiser.Serialise(m_picture, fileName);
+		serialiser.Serialise(*m_picture, fileName);
 	}
 
 	void LoadFromFile(const std::string& fileName)
@@ -103,7 +126,8 @@ public:
 		{
 			auto newPicture = serialiser.Deserialise(fileName);
 
-			std::swap(m_picture, newPicture);
+			m_pictureConnection.disconnect();
+			m_setNewPicture(std::move(newPicture));
 			SyncShapes();
 		}
 		catch (const std::invalid_argument& e)
@@ -116,14 +140,13 @@ public:
 	{
 		m_activeShapes = GetSelectedShapes();
 
-		// TODO: simplify
 		for (auto& shape : m_shapes)
 		{
 			auto dragPoints = shape->GetSelectionBox().GetDragPoints();
 
 			for (auto& dragPoint : dragPoints)
 			{
-				if (dragPoint.HitTest(point))
+				if (dragPoint.IsContains(point))
 				{
 					m_actionFunc = dragPoint.GetOffset;
 					return;
@@ -170,16 +193,18 @@ public:
 			return;
 		}
 
-		std::vector<Shape*> domainShapes;
+		std::vector<size_t> indexes;
 		for (auto& shape : m_activeShapes)
 		{
-			domainShapes.push_back(&shape->GetDomainShape());
+			auto index = m_picture->GetIndex(&shape->GetDomainShape());
+			indexes.push_back(index);
 		}
 
 		m_activeShapes.clear();
 
 		auto command = std::make_unique<ShiftShapesCommand>(
-			domainShapes,
+			m_picture,
+			indexes,
 			offset);
 
 		m_commandSink(std::move(command));
@@ -195,22 +220,24 @@ public:
 
 	void DeleteSelectedShapes()
 	{
-		// std::vector<Shape*> deleteShapes;
+		std::unordered_map<size_t, std::unique_ptr<Shape>> deleteShapes;
 		for (const auto& shape : m_shapes)
 		{
 			if (shape->IsSelected())
 			{
-				m_picture.DeleteShape(&shape->GetDomainShape());
-				// deleteShapes.push_back(&shape->GetDomainShape());
+				auto domainShape = shape->GetDomainShape().Clone();
+				deleteShapes.emplace(m_picture->GetIndex(&shape->GetDomainShape()), std::move(domainShape));
 			}
 		}
 
-		// auto command = std::make_unique<DeleteShapesCommand>(deleteShapes);
-		SyncShapes();
+		auto command = std::make_unique<DeleteShapesCommand>(m_picture, std::move(deleteShapes));
+		m_commandSink(std::move(command));
 	}
 
 private:
-	Picture& m_picture;
+	Picture* m_picture;
+	ScopedConnection m_pictureConnection;
+	SetNewPicture m_setNewPicture;
 	std::vector<std::unique_ptr<EditorShape>> m_shapes;
 	std::vector<EditorShape*> m_activeShapes;
 	std::function<Bounds(Point)> m_actionFunc;
@@ -226,11 +253,11 @@ private:
 	{
 		m_shapes.clear();
 
-		while (m_shapes.size() < m_picture.GetShapesCount())
+		while (m_shapes.size() < m_picture->GetShapesCount())
 		{
-			auto& shape = m_picture.GetShape(m_shapes.size());
+			auto* shape = m_picture->GetShape(m_shapes.size());
 
-			m_shapes.emplace_back(new EditorShape(shape));
+			m_shapes.emplace_back(new EditorShape(*shape));
 		}
 	}
 

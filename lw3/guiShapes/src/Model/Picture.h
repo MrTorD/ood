@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Shape.h"
+#include <boost/signals2/signal.hpp>
 #include <list>
 #include <memory>
 #include <ranges>
@@ -15,6 +16,9 @@
 class Picture
 {
 public:
+	using ScopedConnection = boost::signals2::scoped_connection;
+	using ChangeSignal = boost::signals2::signal<void()>;
+
 	const Shape& GetShape(size_t i) const
 	{
 		if (i >= m_shapes.size())
@@ -28,7 +32,7 @@ public:
 		return *(it->get());
 	}
 
-	Shape& GetShape(size_t i)
+	Shape* GetShape(size_t i)
 	{
 		if (i >= m_shapes.size())
 		{
@@ -38,14 +42,30 @@ public:
 		auto it = m_shapes.begin();
 		std::advance(it, i);
 
-		return *(it->get());
+		return it->get();
+	}
+
+	size_t GetIndex(const Shape* searchShape)
+	{
+		size_t index = 0;
+		for (const auto& shape : m_shapes)
+		{
+			if (shape.get() == searchShape)
+			{
+				return index;
+			}
+
+			index++;
+		}
+
+		return -1;
 	}
 
 	Shape* FindShapeAt(Point point)
 	{
 		for (const auto& shape : m_shapes | std::views::reverse)
 		{
-			if (shape->HitTest(point))
+			if (shape->IsContains(point))
 			{
 				return shape.get();
 			}
@@ -62,15 +82,33 @@ public:
 	void AddShape(std::unique_ptr<Shape> shape)
 	{
 		m_shapes.push_back(std::move(shape));
+		m_changeSignal();
 	}
 
-	void DeleteShape(Shape* removedShape)
+	void AddShape(std::unique_ptr<Shape> shape, size_t index)
 	{
-		m_shapes.remove_if([&removedShape](const std::unique_ptr<Shape>& shape) {
-			return shape.get() == removedShape;
-		});
+		auto it = m_shapes.begin();
+		std::advance(it, index);
+
+		m_shapes.insert(it, std::move(shape));
+		m_changeSignal();
+	}
+
+	void DeleteShape(size_t index)
+	{
+		auto it = m_shapes.begin();
+		std::advance(it, index);
+
+		m_shapes.erase(it);
+		m_changeSignal();
+	}
+
+	[[nodiscard]] ScopedConnection DoOnChange(ChangeSignal::slot_type slot)
+	{
+		return m_changeSignal.connect(std::move(slot));
 	}
 
 private:
 	std::list<std::unique_ptr<Shape>> m_shapes;
+	ChangeSignal m_changeSignal;
 };

@@ -30,9 +30,9 @@ public:
 		m_height = h;
 	}
 
-	bool HitTest(Point point) const override
+	bool IsContains(Point point) const override
 	{
-		return GetBounds().HitTest(point);
+		return GetBounds().IsContains(point);
 	}
 
 	void ShiftBy(Bounds offset) override
@@ -81,6 +81,11 @@ public:
 		}
 
 		m_height = height;
+	}
+
+	std::unique_ptr<Shape> Clone() const override
+	{
+		return std::make_unique<Rectangle>(m_topLeft, m_width, m_height, m_color);
 	}
 
 private:

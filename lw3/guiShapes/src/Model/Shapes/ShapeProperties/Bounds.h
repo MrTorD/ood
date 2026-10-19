@@ -9,7 +9,7 @@ struct Bounds
 	float w = 0;
 	float h = 0;
 
-	bool HitTest(Point point)
+	bool IsContains(Point point)
 	{
 		return x <= point.x
 			&& point.x <= x + w
