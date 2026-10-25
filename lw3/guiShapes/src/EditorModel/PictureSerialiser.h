@@ -12,7 +12,7 @@
 class PictureSerialiser : IShapeVisitor
 {
 public:
-	void Serialise(Picture& picture, const std::string fileName)
+	void Serialise(Picture& picture, const std::string& fileName)
 	{
 		m_file = std::ofstream(fileName);
 
