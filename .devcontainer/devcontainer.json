@@ -20,5 +20,5 @@
 			]
 		}
 	},
-	"postCreateCommand": "sudo apt-get update && sudo apt-get install -y libxrandr-dev libxcursor-dev libxi-dev libxinerama-dev libgl1-mesa-dev libfreetype6-dev libopenal-dev libflac-dev libvorbis-dev libogg-dev libudev-dev"
+	"postCreateCommand": "sudo apt-get update && sudo apt-get install -y libxrandr-dev libxcursor-dev libxi-dev libxinerama-dev libgl1-mesa-dev libfreetype6-dev libopenal-dev libflac-dev libvorbis-dev libogg-dev libudev-dev zenity"
 }
