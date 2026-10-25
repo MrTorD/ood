@@ -17,6 +17,8 @@ public:
 	using ScopedConnection = boost::signals2::scoped_connection;
 	using ChangeSignal = boost::signals2::signal<void()>;
 	using CommandSink = std::function<void(std::unique_ptr<ICommand>)>;
+
+	// TODO: Подумать над избавлением от этого метода
 	using SetNewPicture = std::function<void(std::unique_ptr<Picture>)>;
 
 	explicit EditorModel(Picture* picture, CommandSink commandSink, SetNewPicture setNewPicture, Bounds& m_canvasBounds)
@@ -32,6 +34,7 @@ public:
 		});
 	}
 
+	// TODO: Подумать над избавлением от этого метода
 	void SetPicture(Picture* picture)
 	{
 		m_picture = picture;
@@ -63,21 +66,19 @@ public:
 
 	EditorShape* FindShapeAt(Point point)
 	{
+		for (const auto& shape : GetSelectedShapes() | std::views::reverse)
+		{
+			if (shape->GetBounds().IsContains(point))
+			{
+				return shape;
+			}
+		}
+
 		for (const auto& shape : m_shapes | std::views::reverse)
 		{
-			if (shape->IsSelected())
+			if (shape->IsContains(point))
 			{
-				if (shape->GetBounds().IsContains(point))
-				{
-					return shape.get();
-				}
-			}
-			else
-			{
-				if (shape->IsContains(point))
-				{
-					return shape.get();
-				}
+				return shape.get();
 			}
 		}
 
@@ -116,17 +117,13 @@ public:
 		serialiser.Serialise(*m_picture, fileName);
 	}
 
-	void LoadFromFile(const std::string& fileName)
+	std::unique_ptr<Picture> LoadPictureFromFile(const std::string& fileName)
 	{
 		PictureSerialiser serialiser;
 
 		try
 		{
-			auto newPicture = serialiser.Deserialise(fileName);
-
-			m_pictureConnection.disconnect();
-			m_setNewPicture(std::move(newPicture));
-			SyncShapes();
+			return serialiser.Deserialise(fileName);
 		}
 		catch (const std::invalid_argument& e)
 		{
@@ -218,18 +215,20 @@ public:
 
 	void DeleteSelectedShapes()
 	{
-		std::unordered_map<size_t, std::unique_ptr<Shape>> deleteShapes;
+		std::set<size_t> indexes;
 		for (const auto& shape : m_shapes)
 		{
 			if (shape->IsSelected())
 			{
-				auto domainShape = shape->GetDomainShape().Clone();
-				deleteShapes.emplace(m_picture->GetIndex(&shape->GetDomainShape()), std::move(domainShape));
+				indexes.insert(m_picture->GetIndex(&shape->GetDomainShape()));
 			}
 		}
 
-		auto command = std::make_unique<DeleteShapesCommand>(m_picture, std::move(deleteShapes));
-		m_commandSink(std::move(command));
+		if (!indexes.empty())
+		{
+			auto command = std::make_unique<DeleteShapesCommand>(m_picture, indexes);
+			m_commandSink(std::move(command));
+		}
 	}
 
 private:

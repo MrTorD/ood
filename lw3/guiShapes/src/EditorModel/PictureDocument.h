@@ -6,14 +6,26 @@
 class PictureDocument
 {
 public:
+	PictureDocument()
+	{
+		m_picture = std::make_unique<Picture>();
+	}
+
+	PictureDocument(std::unique_ptr<Picture> picture)
+	{
+		m_picture = std::move(picture);
+	}
+
 	Picture* GetPicture()
 	{
 		return m_picture.get();
 	}
 
+	// TODO: Подумать над тем, чтобы избавиться от метода
 	void SetPicture(std::unique_ptr<Picture> picture)
 	{
 		m_picture = std::move(picture);
+		// TODO: Избавиться от трункейта
 		m_history.Truncate();
 	}
 
@@ -33,6 +45,6 @@ public:
 	}
 
 private:
-	std::unique_ptr<Picture> m_picture = std::make_unique<Picture>();
+	std::unique_ptr<Picture> m_picture;
 	CommandHistory m_history;
 };

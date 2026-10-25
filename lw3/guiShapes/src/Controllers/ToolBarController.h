@@ -1,19 +1,14 @@
 #pragma once
 
-#include "Button.h"
-#include "Ellipse.h"
+#include "EditorModel.h"
 #include "FileDialogues.h"
-#include "Picture.h"
-#include "PictureSerialiser.h"
-#include "Rectangle.h"
-#include "Triangle.h"
-#include <vector>
 
 class ToolBarController
 {
 public:
-	ToolBarController(EditorModel& model)
+	ToolBarController(EditorModel& model, std::function<void(std::unique_ptr<Picture>)> addWindowAction )
 		: m_model(model)
+		, m_addWindowAction(addWindowAction)
 	{
 		// [x]: Контроллер не должен знать про расположение кнопок
 	}
@@ -40,16 +35,24 @@ public:
 
 	void SaveToFile()
 	{
-		auto path = pfd::save_file("Select file").result();
-		m_model.SaveToFile(path);
+		auto path = pfd::save_file("Select a file", ".").result();
+		if (!path.empty())
+		{
+			m_model.SaveToFile(path);
+		}
 	}
 
 	void LoadFromFile()
 	{
-		auto path = pfd::open_file("Select a file").result();
-		m_model.LoadFromFile(path[0]);
+		auto path = pfd::open_file("Select a file", ".").result();
+		if (!path.empty())
+		{
+			auto picture = m_model.LoadPictureFromFile(path[0]);
+			m_addWindowAction(std::move(picture));
+		}
 	}
 
 private:
 	EditorModel& m_model;
+	std::function<void(std::unique_ptr<Picture>)> m_addWindowAction;
 };

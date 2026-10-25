@@ -3,7 +3,7 @@
 #include "Bounds.h"
 #include "Color.h"
 #include "IShapeVisitor.h"
-#include <string>
+#include <memory>
 
 // [x]: Разобраться с четкостью Dran'n'drop
 // [x]: Ограничить рамку

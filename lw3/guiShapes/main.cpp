@@ -1,11 +1,10 @@
-#include "PictureDocument.h"
-#include "EditorWindow.h"
+#include "WindowManager.h"
 
 int main()
 {
-	PictureDocument pictureDoc;
+	WindowManager manager;
 
-	EditorWindow window(pictureDoc);
+	manager.AddWindow();
 
-	window.Run();
+	manager.Run();
 }

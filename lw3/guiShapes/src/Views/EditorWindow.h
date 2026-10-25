@@ -10,7 +10,10 @@
 class EditorWindow
 {
 public:
-	EditorWindow(PictureDocument& document)
+	EditorWindow(
+		PictureDocument& document,
+		std::function<void(EditorWindow*)> closeAction,
+		std::function<void(std::unique_ptr<Picture>)> addWindowAction)
 		: m_window(sf::VideoMode({ 1000, 700 }, 16), "Picture")
 		, m_document(document)
 		, m_canvasBounds(150, 100, 700, 500)
@@ -25,24 +28,34 @@ public:
 			  },
 			  m_canvasBounds)
 		, m_canvasView(m_model, m_canvasBounds)
-		, m_toolBarView(m_model)
+		, m_toolBarView(m_model, addWindowAction)
+		, m_closeAction(closeAction)
+		, m_addWindowAction(addWindowAction)
 	{
 	}
 
 	void Run()
 	{
-		while (m_window.isOpen())
+		while (auto event = m_window.pollEvent())
 		{
-			while (auto event = m_window.pollEvent())
-			{
-				HandleEvent(*event);
-			}
-
-			m_window.clear();
-			m_canvasView.Draw(m_window);
-			m_toolBarView.Draw(m_window);
-			m_window.display();
+			HandleEvent(*event);
 		}
+
+		m_window.clear();
+		m_canvasView.Draw(m_window);
+		m_toolBarView.Draw(m_window);
+		m_window.display();
+	}
+
+	void LoadFromFile(std::unique_ptr<Picture> picture)
+	{
+		m_addWindowAction(std::move(picture));
+		m_closeAction(this);
+	}
+
+	~EditorWindow()
+	{
+		m_closeAction(this);
 	}
 
 private:
@@ -55,11 +68,15 @@ private:
 	CanvasView m_canvasView;
 	ToolBarView m_toolBarView;
 
+	std::function<void(EditorWindow*)> m_closeAction;
+	std::function<void(std::unique_ptr<Picture>)> m_addWindowAction;
+
 	void HandleEvent(const sf::Event& event)
 	{
 		if (event.is<sf::Event::Closed>())
 		{
 			m_window.close();
+			m_closeAction(this);
 			return;
 		}
 

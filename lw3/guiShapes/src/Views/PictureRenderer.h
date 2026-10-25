@@ -23,10 +23,11 @@ public:
 		{
 			auto& shape = model.GetShape(i);
 			shape.Accept(*this);
-			if (shape.IsSelected())
-			{
-				DrawSelection(shape);
-			}
+		}
+
+		for (auto shape : model.GetSelectedShapes())
+		{
+			DrawSelection(*shape);
 		}
 	}
 

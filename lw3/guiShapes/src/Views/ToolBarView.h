@@ -8,8 +8,8 @@
 class ToolBarView
 {
 public:
-	explicit ToolBarView(EditorModel& model)
-		: m_controller(model)
+	ToolBarView(EditorModel& model, std::function<void(std::unique_ptr<Picture>)> addWindowAction)
+		: m_controller(model, addWindowAction)
 		, m_font("arial.ttf")
 	{
 		m_buttons.emplace_back(
@@ -72,18 +72,38 @@ public:
 
 	void HandleEvent(const sf::Event& event)
 	{
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Delete))
+		if (const auto* keyPressed = event.getIf<sf::Event::KeyPressed>())
 		{
-			m_controller.DeleteSelectedShapes();
-		}
+			if (keyPressed->code == sf::Keyboard::Key::Delete)
+			{
+				m_controller.DeleteSelectedShapes();
+				return;
+			}
 
-		if (const auto* pressed = event.getIf<sf::Event::MouseButtonPressed>())
+			if (keyPressed->control)
+			{
+				switch (keyPressed->code)
+				{
+				case sf::Keyboard::Key::S:
+					m_controller.SaveToFile();
+					return;
+				case sf::Keyboard::Key::N:
+					return;
+				case sf::Keyboard::Key::O:
+					m_controller.LoadFromFile();
+					return;
+				default:
+					return;
+				}
+			}
+		}
+		else if (const auto* mousePressed = event.getIf<sf::Event::MouseButtonPressed>())
 		{
 			auto it = std::find_if(
 				m_buttons.begin(),
 				m_buttons.end(),
-				[&pressed](const Button& button) {
-					return button.IsContains(static_cast<sf::Vector2f>(pressed->position));
+				[&mousePressed](const Button& button) {
+					return button.IsContains(static_cast<sf::Vector2f>(mousePressed->position));
 				});
 
 			if (it != m_buttons.end())

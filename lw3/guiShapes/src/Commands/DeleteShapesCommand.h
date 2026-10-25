@@ -4,15 +4,19 @@
 #include "Picture.h"
 #include "Shape.h"
 #include <memory>
-#include <unordered_map>
+#include <set>
 
 class DeleteShapesCommand : public ICommand
 {
 public:
-	DeleteShapesCommand(Picture* picture, std::unordered_map<size_t, std::unique_ptr<Shape>>&& shapes)
+	DeleteShapesCommand(Picture* picture, const std::set<size_t>& indexes)
 		: m_picture(picture)
-		, m_shapes(std::move(shapes))
 	{
+		for (auto index : indexes)
+		{
+			auto shape = picture->GetShape(index)->Clone();
+			m_shapes.emplace(index, std::move(shape));
+		}
 	}
 
 	void Execute() override
