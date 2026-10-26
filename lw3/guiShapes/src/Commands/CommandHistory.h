@@ -7,7 +7,7 @@
 class CommandHistory
 {
 public:
-	// [ ]: Тесты для команд
+	// [х]: Тесты для команд
 	void Execute(std::unique_ptr<ICommand> command)
 	{
 		if (!command)

@@ -8,7 +8,6 @@
 #include "ShiftShapesCommand.h"
 #include <algorithm>
 #include <functional>
-#include <iostream>
 #include <vector>
 
 class EditorModel
@@ -18,13 +17,9 @@ public:
 	using ChangeSignal = boost::signals2::signal<void()>;
 	using CommandSink = std::function<void(std::unique_ptr<ICommand>)>;
 
-	// TODO: Подумать над избавлением от этого метода
-	using SetNewPicture = std::function<void(std::unique_ptr<Picture>)>;
-
-	explicit EditorModel(Picture* picture, CommandSink commandSink, SetNewPicture setNewPicture, Bounds& m_canvasBounds)
+	EditorModel(Picture* picture, CommandSink commandSink, Bounds& m_canvasBounds)
 		: m_picture(picture)
 		, m_commandSink(std::move(commandSink))
-		, m_setNewPicture(setNewPicture)
 		, m_canvasBounds(m_canvasBounds)
 	{
 		SyncShapes();
@@ -32,16 +27,6 @@ public:
 		m_pictureConnection = m_picture->DoOnChange([this] {
 			OnPictureChanged();
 		});
-	}
-
-	// TODO: Подумать над избавлением от этого метода
-	void SetPicture(Picture* picture)
-	{
-		m_picture = picture;
-		m_pictureConnection = m_picture->DoOnChange([this] {
-			OnPictureChanged();
-		});
-		SyncShapes();
 	}
 
 	void OnPictureChanged()
@@ -117,20 +102,6 @@ public:
 		serialiser.Serialise(*m_picture, fileName);
 	}
 
-	std::unique_ptr<Picture> LoadPictureFromFile(const std::string& fileName)
-	{
-		PictureSerialiser serialiser;
-
-		try
-		{
-			return serialiser.Deserialise(fileName);
-		}
-		catch (const std::invalid_argument& e)
-		{
-			std::cout << e.what() << '\n';
-		}
-	}
-
 	void BeginShiftShapes(Point point)
 	{
 		m_activeShapes = GetSelectedShapes();
@@ -199,7 +170,7 @@ public:
 
 		auto command = std::make_unique<ShiftShapesCommand>(
 			m_picture,
-			indexes,
+			std::move(indexes),
 			offset);
 
 		m_commandSink(std::move(command));
@@ -234,7 +205,6 @@ public:
 private:
 	Picture* m_picture;
 	ScopedConnection m_pictureConnection;
-	SetNewPicture m_setNewPicture;
 	std::vector<std::unique_ptr<EditorShape>> m_shapes;
 	std::vector<EditorShape*> m_activeShapes;
 	std::function<Bounds(Point)> m_actionFunc;

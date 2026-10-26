@@ -11,45 +11,32 @@ public:
 	void AddWindow()
 	{
 		auto& document = m_documents.emplace_back();
-		m_windows.emplace_back(
-			document,
-			[&](EditorWindow* window) { RemoveWindow(window); },
-			[&](std::unique_ptr<Picture> picture) { AddWindow(std::move(picture)); });
+		EmplaceWindow(document);
 	}
-
-	// void AddWindow(PictureDocument& document)
-	// {
-	// 	m_windows.emplace_back(document);
-	// }
 
 	void Run()
 	{
 		while (!m_windows.empty())
 		{
-			auto it = m_windows.begin();
-			int pos = 0;
-			while (it != m_windows.end())
+			for (auto& window : m_windows)
 			{
-				it->Run();
-				it = GetIterator(pos++);
+				window.Render();
 			}
-			// for (int i = 0; i < m_windows.size(); i++)
-			// {
-			// 	std::cout << "i: " << i << "\n";
-			// 	auto it = m_windows.begin();
-			// 	std::advance(it, i);
 
-			// 	if (it != m_windows.end())
-			// 	{
-			// 		it->Run();
-			// 	}
-			// }
+			m_windows.remove_if(
+				[this](EditorWindow& window) {
+					return m_toDeleteWindows.contains(&window);
+				});
+
+			m_toDeleteWindows.clear();
 		}
 	}
 
 private:
+	// TODO: Обработка удаления документа если никто за ним не смотрит
 	std::list<PictureDocument> m_documents;
 	std::list<EditorWindow> m_windows;
+	std::set<EditorWindow*> m_toDeleteWindows;
 
 	void RemoveWindow(EditorWindow* window1)
 	{
@@ -59,14 +46,17 @@ private:
 	void AddWindow(std::unique_ptr<Picture> picture)
 	{
 		auto& document = m_documents.emplace_back(std::move(picture));
-		m_windows.emplace_back(
-			document,
-			[&](EditorWindow* window) { RemoveWindow(window); },
-			[&](std::unique_ptr<Picture> picture) { AddWindow(std::move(picture)); });
+		EmplaceWindow(document);
 	}
 
-	std::list<EditorWindow>::iterator GetIterator(int pos)
+	void EmplaceWindow(PictureDocument& document)
 	{
-		return std::next(m_windows.begin(), pos);
+		m_windows.emplace_back(
+			document,
+			[this](EditorWindow* window) {
+				m_toDeleteWindows.insert(window);
+			},
+			[this](std::unique_ptr<Picture> pic) { AddWindow(std::move(pic)); },
+			[this](PictureDocument& doc) { EmplaceWindow(doc); });
 	}
 };

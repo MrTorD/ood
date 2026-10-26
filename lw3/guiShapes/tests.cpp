@@ -87,6 +87,18 @@ public:
 		}
 	}
 
+	Picture CopyPicture(Picture* picture)
+	{
+		Picture pic;
+		for (int i = 0; i < picture->GetShapesCount(); i++)
+		{
+			auto shape = picture->GetShape(i);
+			pic.AddShape(shape->Clone());
+		}
+
+		return pic;
+	}
+
 private:
 	void AssertShape(const Shape& shape1, const Shape& shape2)
 	{
@@ -176,17 +188,58 @@ TEST_F(DocumentFixture, DeleteShapeUndoRedo)
 			0));
 	doc.ExecuteCommand(
 		std::make_unique<DeleteShapesCommand>(
-            doc.GetPicture(),
+			doc.GetPicture(),
 			std::set<size_t>{ 0 }));
 
 	AssertPicture(*doc.GetPicture(), Picture());
 
-    doc.Undo();
+	doc.Undo();
 	Picture expected;
 	expected.AddShape(std::make_unique<Rectangle>(Point(150, 190), 200, 150, 0xB1FF21FF));
 
-    doc.Redo();
+	doc.Redo();
 	AssertPicture(*doc.GetPicture(), Picture());
+}
+
+TEST_F(DocumentFixture, ShiftShapeUndoRedo)
+{
+	Picture beforeAction = CopyPicture(document.GetPicture());
+
+	document.ExecuteCommand(
+		std::make_unique<ShiftShapesCommand>(
+			document.GetPicture(),
+			std::vector<size_t>{ 0, 2 },
+			Bounds(30, 40, 200, 150)));
+
+	Picture afterAction = CopyPicture(&beforeAction);
+	afterAction.GetShape(0)->ShiftBy(Bounds(30, 40, 200, 150));
+	afterAction.GetShape(2)->ShiftBy(Bounds(30, 40, 200, 150));
+
+	AssertPicture(*document.GetPicture(), afterAction);
+
+	document.Undo();
+	AssertPicture(*document.GetPicture(), beforeAction);
+
+	document.Redo();
+	AssertPicture(*document.GetPicture(), afterAction);
+}
+
+TEST_F(DocumentFixture, RedoOnHistoryBorder)
+{
+	auto pic = CopyPicture(document.GetPicture());
+	document.Redo();
+
+	AssertPicture(pic, *document.GetPicture());
+}
+
+TEST_F(DocumentFixture, UndoOnHistoryBorder)
+{
+	PictureDocument doc;
+	auto pic = CopyPicture(doc.GetPicture());
+
+	doc.Undo();
+
+	AssertPicture(pic, *doc.GetPicture());
 }
 
 int main(int argc, char* argv[])

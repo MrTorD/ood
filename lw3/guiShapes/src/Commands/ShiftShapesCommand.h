@@ -6,7 +6,7 @@
 class ShiftShapesCommand : public ICommand
 {
 public:
-	ShiftShapesCommand(Picture* picture, std::vector<size_t>& indexes, Bounds offset)
+	ShiftShapesCommand(Picture* picture, std::vector<size_t>&& indexes, Bounds offset)
 		: m_picture(picture)
 		, m_indexes(std::move(indexes))
 		, m_offset(offset)

@@ -8,8 +8,11 @@
 class ToolBarView
 {
 public:
-	ToolBarView(EditorModel& model, std::function<void(std::unique_ptr<Picture>)> addWindowAction)
-		: m_controller(model, addWindowAction)
+	ToolBarView(EditorModel& model,
+		std::function<void()> createNewWindow,
+		std::function<void(std::unique_ptr<Picture>)> reopenWindow,
+		std::function<void()> makeWindowCopy)
+		: m_controller(model, std::move(createNewWindow), std::move(reopenWindow), std::move(makeWindowCopy))
 		, m_font("arial.ttf")
 	{
 		m_buttons.emplace_back(
@@ -53,11 +56,27 @@ public:
 			sf::Vector2f(110, 40),
 			m_font);
 		m_buttons.emplace_back(
-			"Load from\ndocument",
+			"Open from\nfile",
 			[&]() {
-				m_controller.LoadFromFile();
+				m_controller.OpenFromFile();
 			},
 			sf::Vector2f(10, 260),
+			sf::Vector2f(110, 40),
+			m_font);
+		m_buttons.emplace_back(
+			"Make window\ncopy",
+			[&]() {
+				m_controller.MakeWindowCopy();
+			},
+			sf::Vector2f(10, 310),
+			sf::Vector2f(110, 40),
+			m_font);
+		m_buttons.emplace_back(
+			"Create new\nwindow",
+			[&]() {
+				m_controller.CreateNewWindow();
+			},
+			sf::Vector2f(10, 360),
 			sf::Vector2f(110, 40),
 			m_font);
 	}
@@ -88,9 +107,10 @@ public:
 					m_controller.SaveToFile();
 					return;
 				case sf::Keyboard::Key::N:
+					m_controller.CreateNewWindow();
 					return;
 				case sf::Keyboard::Key::O:
-					m_controller.LoadFromFile();
+					m_controller.OpenFromFile();
 					return;
 				default:
 					return;

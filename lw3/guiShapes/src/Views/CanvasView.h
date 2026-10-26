@@ -3,6 +3,7 @@
 #include "CanvasController.h"
 #include "PictureRenderer.h"
 #include "SfVectorToPoint.h"
+#include <SFML/Graphics.hpp>
 #include <SFML/Window/Event.hpp>
 
 class CanvasView
@@ -15,7 +16,7 @@ public:
 	{
 	}
 
-	void HandleEvent(const sf::Event& event)
+	void HandleEvent(const sf::Event& event, sf::RenderWindow& window)
 	{
 		if (const auto* pressed = event.getIf<sf::Event::MouseButtonPressed>())
 		{
@@ -30,6 +31,10 @@ public:
 		else if (const auto* moved = event.getIf<sf::Event::MouseMoved>())
 		{
 			m_controller.OnMouseMoved(ConvertToPoint(moved->position));
+		}
+		else if (event.is<sf::Event::FocusLost>())
+		{
+			m_controller.OnMouseReleased(ConvertToPoint(sf::Mouse::getPosition(window)));
 		}
 	}
 
