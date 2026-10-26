@@ -1,5 +1,7 @@
 #pragma once
 
+#include <compare>
+
 struct Point
 {
 	float x = 0;

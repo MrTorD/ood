@@ -2,6 +2,8 @@
 
 #include "Point.h"
 
+#include <compare>
+
 struct Bounds
 {
 	float x = 0;
