@@ -47,12 +47,6 @@ public:
 		++m_nextCommandIndex;
 	}
 
-	void Truncate()
-	{
-		m_history.clear();
-		m_nextCommandIndex = 0;
-	}
-
 private:
 	std::deque<std::unique_ptr<ICommand>> m_history;
 	size_t m_nextCommandIndex = 0;

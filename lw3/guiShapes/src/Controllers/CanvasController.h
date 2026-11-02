@@ -7,15 +7,14 @@
 class CanvasController
 {
 public:
-	CanvasController(EditorModel& model, Bounds canvasBounds)
+	CanvasController(EditorModel& model)
 		: m_model(model)
-		, m_bounds(canvasBounds)
 	{
 	}
 
 	void OnMouseWithCtrlPressed(Point point)
 	{
-		auto* shape = m_model.FindShapeAt({ point.x - m_bounds.x, point.y - m_bounds.y });
+		auto* shape = m_model.FindShapeAt(point);
 
 		if (shape)
 		{
@@ -25,57 +24,97 @@ public:
 
 	void OnMousePressed(Point point)
 	{
-		Point normalizedPoint = { point.x - m_bounds.x, point.y - m_bounds.y };
-		auto* shape = m_model.FindShapeAt(normalizedPoint);
-
-		if (shape)
-		{
-			if (!shape->IsSelected())
-			{
-				m_model.UnselectAll();
-				shape->SetSelected(true);
-			}
-
-			m_model.BeginShiftShapes(normalizedPoint);
-
-			m_isShiftingShapes = true;
-			m_shiftStartPosition = point;
-		}
-		else
-		{
-			m_model.UnselectAll();
-			m_isShiftingShapes = false;
-		}
+		m_model.GetCanvasMode() == CanvasMode::SelectShapes
+			? BeginShiftShape(point)
+			: BeginCreateShape(point);
 	}
 
 	void OnMouseMoved(Point point)
 	{
-		if (!m_isShiftingShapes)
+		if (!m_isInAction)
 		{
 			return;
 		}
 
-		m_model.UpdateShiftShapes(point - m_shiftStartPosition);
+		m_model.UpdateActiveShapes(point - m_startPosition);
 	}
 
 	void OnMouseReleased(Point point)
 	{
-		if (!m_isShiftingShapes)
+		if (!m_isInAction)
 		{
 			return;
 		}
 
-		m_model.UpdateShiftShapes(point - m_shiftStartPosition);
+		m_model.UpdateActiveShapes(point - m_startPosition);
 
-		m_model.CommitShiftShapes();
+		m_model.CommitActiveShapes();
 
-		m_isShiftingShapes = false;
+		m_isInAction = false;
 	}
 
 private:
 	EditorModel& m_model;
-	Bounds m_bounds;
 
-	bool m_isShiftingShapes = false;
-	Point m_shiftStartPosition;
+	bool m_isInAction = false;
+	Point m_startPosition;
+
+	std::unique_ptr<Shape> m_tempShape;
+
+	void BeginCreateShape(Point point)
+	{
+		if (!m_model.GetBounds().IsContains(point))
+		{
+			return;
+		}
+
+		CreateTempShape(point);
+		m_model.BeginCreateShape(*m_tempShape.get());
+
+		m_isInAction = true;
+		m_startPosition = point;
+	}
+
+	void BeginShiftShape(Point point)
+	{
+		auto* shape = m_model.FindShapeAt(point);
+
+		if (!shape)
+		{
+			m_model.UnselectAll();
+			m_isInAction = false;
+
+			return;
+		}
+
+		if (!shape->IsSelected())
+		{
+			m_model.UnselectAll();
+			shape->SetSelected(true);
+		}
+
+		m_model.BeginShiftShapes(point);
+
+		m_isInAction = true;
+		m_startPosition = point;
+	}
+
+	using Rectangle = class Rectangle;
+	using Ellipse = class Ellipse;
+
+	void CreateTempShape(Point point)
+	{
+		switch (m_model.GetCanvasMode())
+		{
+		case CanvasMode::CreatingRectangle:
+			m_tempShape = std::make_unique<Rectangle>(point, 1, 1, 0xB1FF21FF);
+			return;
+		case CanvasMode::CreatingEllipse:
+			m_tempShape = std::make_unique<Ellipse>(point, 1, 1, 0xFFDE21FF);
+			return;
+		case CanvasMode::CreatingTriangle:
+			m_tempShape = std::make_unique<Triangle>(point, 1, 1, 0xF9AAC0FF);
+			return;
+		}
+	}
 };

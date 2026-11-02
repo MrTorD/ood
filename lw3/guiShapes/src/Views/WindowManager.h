@@ -33,7 +33,6 @@ public:
 	}
 
 private:
-	// TODO: Обработка удаления документа если никто за ним не смотрит
 	std::list<PictureDocument> m_documents;
 	std::list<EditorWindow> m_windows;
 	std::set<EditorWindow*> m_toDeleteWindows;

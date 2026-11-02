@@ -14,9 +14,23 @@ public:
 	{
 		auto bounds = m_shape.GetBounds();
 
-		bounds += m_previewOffset;
+		return bounds += m_previewOffset;
+	}
 
-		return bounds;
+	Bounds GetTimelineOffset() const
+	{
+		return m_timelineOffset;
+	}
+
+	void SetTimelineOffset(Point point)
+	{
+		m_timelineOffset.x = point.x;
+		m_timelineOffset.y = point.y;
+	}
+
+	void ResetTimelineShift()
+	{
+		m_timelineOffset = Bounds();
 	}
 
 	SelectionBox GetSelectionBox() const
@@ -61,6 +75,7 @@ public:
 private:
 	Shape& m_shape;
 	Bounds m_previewOffset;
+	Bounds m_timelineOffset;
 
 	bool m_isSelected = false;
 

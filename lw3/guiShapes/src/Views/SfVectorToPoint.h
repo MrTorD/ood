@@ -7,3 +7,8 @@ Point ConvertToPoint(sf::Vector2i vec)
 {
 	return { (float)vec.x, (float)vec.y };
 }
+
+Point ConvertToPoint(sf::Vector2f vec)
+{
+	return { vec.x, vec.y };
+}

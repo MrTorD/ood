@@ -8,7 +8,7 @@
 // [x]: Разобраться с четкостью Dran'n'drop
 // [x]: Ограничить рамку
 // [x]: Контекстные окна для загрузки документа
-// [ ]: Диаграмма классов
+// [x]: Диаграмма классов
 class Shape
 {
 public:
@@ -19,6 +19,16 @@ public:
 	virtual bool IsContains(Point point) const = 0;
 	virtual void Accept(IShapeVisitor& visitor) const = 0;
 	virtual std::unique_ptr<Shape> Clone() const = 0;
+	
+	Point GetTimeline() const
+	{
+		return m_timeline;
+	}
+
+	void SetTimeline(Point timeline)
+	{
+		m_timeline = timeline;
+	}
 
 	Color GetColor() const
 	{
@@ -34,4 +44,5 @@ public:
 
 protected:
 	Color m_color;
+	Point m_timeline;
 };

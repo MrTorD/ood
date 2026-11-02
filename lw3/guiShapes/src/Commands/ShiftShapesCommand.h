@@ -2,6 +2,7 @@
 
 #include "ICommand.h"
 #include "Picture.h"
+#include <vector>
 
 class ShiftShapesCommand : public ICommand
 {

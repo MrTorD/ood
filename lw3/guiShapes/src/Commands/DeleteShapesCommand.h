@@ -4,6 +4,7 @@
 #include "Picture.h"
 #include "Shape.h"
 #include <memory>
+#include <unordered_map>
 #include <set>
 
 class DeleteShapesCommand : public ICommand

@@ -11,15 +11,16 @@ public:
 	Button(
 		const std::string& buttonText,
 		std::function<void()> action,
+		std::function<bool()> checkIsActive,
 		sf::Vector2f position,
 		sf::Vector2f size,
 		const sf::Font& font)
-		: m_action(action)
+		: m_action(std::move(action))
+		, m_checkIsActive(std::move(checkIsActive))
 		, m_buttonShape(size)
 		, m_text(font)
 	{
 		m_buttonShape.setPosition(position);
-		m_buttonShape.setFillColor(sf::Color::Cyan);
 
 		m_text.setString(buttonText);
 		m_text.setCharacterSize(16);
@@ -27,8 +28,12 @@ public:
 		m_text.setPosition(position);
 	}
 
-	void Draw(sf::RenderTarget& target) const
+	void Draw(sf::RenderTarget& target)
 	{
+		m_checkIsActive()
+			? m_buttonShape.setFillColor(sf::Color::Cyan)
+			: m_buttonShape.setFillColor(sf::Color(0x808080FF));
+
 		target.draw(m_buttonShape);
 		target.draw(m_text);
 	}
@@ -49,4 +54,5 @@ private:
 	std::function<void()> m_action;
 	sf::RectangleShape m_buttonShape;
 	sf::Text m_text;
+	std::function<bool()> m_checkIsActive;
 };

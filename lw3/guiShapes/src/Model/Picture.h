@@ -10,9 +10,9 @@
 // [x]: поправить диаграмму
 // [x]: узнать почему не работает драг в фулл экр
 // [x]: удаление клавшией delete
-// [ ]: Поправить ux. вынести кнопки в контейнер, сделать обводку для границ
+// [x]: Поправить ux. вынести кнопки в контейнер, сделать обводку для границ
 // [x]: Поправить границу маркера перетягивания
-// [ ]: Обработать ситуацию, когда мышка была отпущена в альтабе
+// [x]: Обработать ситуацию, когда мышка была отпущена в альтабе
 // [x]: Рисовать выделение поверх всего
 class Picture
 {
@@ -92,6 +92,18 @@ public:
 		std::advance(it, index);
 
 		m_shapes.insert(it, std::move(shape));
+		m_changeSignal();
+	}
+
+	void LiftShape(size_t index, int liftLayersCount)
+	{
+		auto it = std::next(m_shapes.begin(), index);
+		auto newPlaceIt = liftLayersCount > 0
+			? std::next(it, liftLayersCount + 1)
+			: std::prev(it, -liftLayersCount);
+
+		m_shapes.splice(newPlaceIt, m_shapes, it);
+
 		m_changeSignal();
 	}
 

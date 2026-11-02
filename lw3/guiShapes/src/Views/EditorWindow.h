@@ -3,6 +3,7 @@
 #include "CanvasController.h"
 #include "CanvasView.h"
 #include "PictureDocument.h"
+#include "TimelineView.h"
 #include "ToolBarController.h"
 #include "ToolBarView.h"
 #include <SFML/Graphics.hpp>
@@ -18,7 +19,7 @@ public:
 		: m_window(sf::VideoMode({ 1000, 700 }, 16), "Picture")
 		, m_document(document)
 		, m_close(std::move(close))
-		, m_canvasBounds(150, 100, 700, 500)
+		, m_canvasBounds(250, 150, 600, 450)
 		, m_model(
 			  document.GetPicture(),
 			  [&document](std::unique_ptr<ICommand> command) {
@@ -38,6 +39,7 @@ public:
 			  [this, makeWindowCopy]() {
 				  makeWindowCopy(m_document);
 			  })
+		, m_timelineView(m_model)
 	{
 	}
 
@@ -51,6 +53,7 @@ public:
 		m_window.clear();
 		m_canvasView.Draw(m_window);
 		m_toolBarView.Draw(m_window);
+		m_timelineView.Draw(m_window);
 		m_window.display();
 	}
 
@@ -64,6 +67,7 @@ private:
 	EditorModel m_model;
 	CanvasView m_canvasView;
 	ToolBarView m_toolBarView;
+	TimelineView m_timelineView;
 
 	void HandleEvent(const sf::Event& event)
 	{
@@ -72,12 +76,6 @@ private:
 			m_close(this);
 			m_window.close();
 			return;
-		}
-
-		if (const auto* resized = event.getIf<sf::Event::Resized>())
-		{
-			sf::FloatRect visibleArea({ 0.f, 0.f }, sf::Vector2f(resized->size));
-			m_window.setView(sf::View(visibleArea));
 		}
 
 		if (const auto* keyPressed = event.getIf<sf::Event::KeyPressed>())
@@ -95,7 +93,8 @@ private:
 			}
 		}
 
-		m_toolBarView.HandleEvent(event);
+		m_toolBarView.HandleEvent(event, m_window);
 		m_canvasView.HandleEvent(event, m_window);
+		m_timelineView.HandleEvent(event, m_window);
 	}
 };

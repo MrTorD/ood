@@ -11,9 +11,8 @@ class PictureRenderer : public IEditorShapeVisitor
 {
 public:
 	// [x]: Избавиться от зависимости View oт Model
-	PictureRenderer(sf::RenderTarget& target, Point offset)
+	PictureRenderer(sf::RenderTarget& target)
 		: m_target(target)
-		, m_offset(offset)
 	{
 	}
 
@@ -33,10 +32,9 @@ public:
 
 private:
 	sf::RenderTarget& m_target;
-	Point m_offset;
 	Color m_selectionColor = 0xFF0000FF;
 	float m_selectionThickness = -7;
-	float m_dragPointRadius = 7;
+	float m_dragPointRadius = 5;
 
 	void VisitRectangle(const EditorShape& rect) override
 	{
@@ -44,7 +42,7 @@ private:
 
 		sf::RectangleShape drawable({ w, h });
 
-		drawable.setPosition({ x + m_offset.x, y + m_offset.y });
+		drawable.setPosition({ x, y });
 		drawable.setFillColor(sf::Color(rect.GetColor()));
 
 		m_target.draw(drawable);
@@ -56,7 +54,7 @@ private:
 
 		sf::CircleShape drawable(w / 2);
 
-		drawable.setPosition({ x + m_offset.x, y + m_offset.y });
+		drawable.setPosition({ x, y });
 		drawable.setScale({ 1, h / w });
 		drawable.setFillColor(sf::Color(ellipse.GetColor()));
 
@@ -71,9 +69,9 @@ private:
 
 		drawable.setPointCount(3);
 
-		drawable.setPoint(0, { x + m_offset.x, y + h + m_offset.y });
-		drawable.setPoint(1, { x + (w / 2) + m_offset.x, y + m_offset.y });
-		drawable.setPoint(2, { x + w + m_offset.x, y + h + m_offset.y });
+		drawable.setPoint(0, { x, y + h });
+		drawable.setPoint(1, { x + (w / 2), y });
+		drawable.setPoint(2, { x + w, y + h });
 
 		drawable.setFillColor(sf::Color(triangle.GetColor()));
 
@@ -85,14 +83,14 @@ private:
 		auto [x, y, w, h] = shape.GetBounds();
 		sf::RectangleShape selection({ w, h });
 
-		selection.setPosition({ x + m_offset.x, y + m_offset.y });
+		selection.setPosition({ x, y });
 		selection.setOutlineColor(sf::Color(m_selectionColor));
 		selection.setOutlineThickness(m_selectionThickness);
 		selection.setFillColor(sf::Color::Transparent);
 
 		m_target.draw(selection);
 
-		for (auto boundPoints = GetBoundPoints(x + m_offset.x, y + m_offset.y, w, h);
+		for (auto boundPoints = GetBoundPoints(x, y, w, h);
 			const auto& point : boundPoints)
 		{
 			m_target.draw(point);

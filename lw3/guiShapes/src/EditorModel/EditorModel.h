@@ -1,20 +1,25 @@
 #pragma once
 
 #include "AddShapeCommand.h"
+#include "CanvasMode.h"
 #include "DeleteShapesCommand.h"
 #include "EditorShape.h"
 #include "Picture.h"
 #include "PictureSerialiser.h"
 #include "ShiftShapesCommand.h"
+#include "ShiftTimelineCommand.h"
 #include <algorithm>
 #include <functional>
 #include <vector>
+
+// TODO: TEMP
+#include <format>
+#include <iostream>
 
 class EditorModel
 {
 public:
 	using ScopedConnection = boost::signals2::scoped_connection;
-	using ChangeSignal = boost::signals2::signal<void()>;
 	using CommandSink = std::function<void(std::unique_ptr<ICommand>)>;
 
 	EditorModel(Picture* picture, CommandSink commandSink, Bounds& m_canvasBounds)
@@ -34,6 +39,11 @@ public:
 		SyncShapes();
 	}
 
+	Bounds GetBounds() const
+	{
+		return { 0, 0, m_canvasBounds.w - m_minShapeWidth, m_canvasBounds.h - m_minShapeHeight };
+	}
+
 	size_t GetShapesCount() const
 	{
 		return m_shapes.size();
@@ -42,6 +52,16 @@ public:
 	EditorShape& GetShape(size_t index)
 	{
 		return *m_shapes.at(index);
+	}
+
+	CanvasMode GetCanvasMode() const
+	{
+		return m_canvasMode;
+	}
+
+	void SetCanvasMode(CanvasMode mode)
+	{
+		m_canvasMode = mode;
 	}
 
 	const EditorShape& GetShape(size_t index) const
@@ -53,7 +73,7 @@ public:
 	{
 		for (const auto& shape : GetSelectedShapes() | std::views::reverse)
 		{
-			if (shape->GetBounds().IsContains(point))
+			if (shape->GetSelectionBox().IsContains(point))
 			{
 				return shape;
 			}
@@ -106,7 +126,7 @@ public:
 	{
 		m_activeShapes = GetSelectedShapes();
 
-		for (auto& shape : m_shapes)
+		for (auto& shape : m_activeShapes)
 		{
 			auto dragPoints = shape->GetSelectionBox().GetDragPoints();
 
@@ -125,7 +145,56 @@ public:
 		};
 	}
 
-	void UpdateShiftShapes(Point point)
+	void BeginCreateShape(Shape& shape)
+	{
+		m_shapes.emplace_back(new EditorShape(shape));
+		m_activeShapes = { m_shapes.back().get() };
+
+		m_actionFunc = [](Point point) {
+			return Bounds(0, 0, point.x, point.y);
+		};
+	}
+
+	void BeginTimelineShift()
+	{
+		m_activeShapes = GetSelectedShapes();
+	}
+
+	void UpdateTimelineShift(Point point)
+	{
+		for (auto& shape : m_activeShapes)
+		{
+			shape->SetTimelineOffset(point);
+		}
+	}
+
+	void CommitTimelineShift(Bounds giveMeName)
+	{
+		if (m_activeShapes.empty())
+		{
+			return;
+		}
+
+		auto timelineOffset = m_activeShapes[0]->GetTimelineOffset();
+
+		std::vector<size_t> indexes;
+		int liftLayersCount = -timelineOffset.y / giveMeName.y;
+
+		for (auto* shape : m_activeShapes)
+		{
+			auto index = m_picture->GetIndex(&shape->GetDomainShape());
+			indexes.push_back(index);
+			ClampTimeline(index, liftLayersCount);
+			shape->ResetTimelineShift();
+		}
+
+		auto command = std::make_unique<ShiftTimelineCommand>(m_picture, std::move(indexes), liftLayersCount, Point(0, 0));
+
+		m_activeShapes.clear();
+		m_commandSink(std::move(command));
+	}
+
+	void UpdateActiveShapes(Point point)
 	{
 		auto offset = m_actionFunc(point);
 
@@ -140,7 +209,7 @@ public:
 		}
 	}
 
-	void CommitShiftShapes()
+	void CommitActiveShapes()
 	{
 		if (m_activeShapes.empty())
 		{
@@ -148,30 +217,20 @@ public:
 		}
 
 		auto offset = m_activeShapes[0]->GetPreviewOffset();
-
-		for (auto& shape : m_activeShapes)
-		{
-			shape->ResetPreview();
-		}
-
 		if (offset == Bounds(0, 0, 0, 0))
 		{
 			return;
 		}
 
-		std::vector<size_t> indexes;
 		for (auto& shape : m_activeShapes)
 		{
-			auto index = m_picture->GetIndex(&shape->GetDomainShape());
-			indexes.push_back(index);
+			shape->ResetPreview();
 		}
+		auto command = m_canvasMode == CanvasMode::SelectShapes
+			? CreateShiftCommand(offset)
+			: CreateShapeCommand(offset);
 
 		m_activeShapes.clear();
-
-		auto command = std::make_unique<ShiftShapesCommand>(
-			m_picture,
-			std::move(indexes),
-			offset);
 
 		m_commandSink(std::move(command));
 	}
@@ -211,6 +270,7 @@ private:
 
 	CommandSink m_commandSink;
 	Bounds& m_canvasBounds;
+	CanvasMode m_canvasMode = CanvasMode::SelectShapes;
 
 	float m_minShapeWidth = 50.f;
 	float m_minShapeHeight = 50.f;
@@ -224,6 +284,50 @@ private:
 			auto* shape = m_picture->GetShape(m_shapes.size());
 
 			m_shapes.emplace_back(new EditorShape(*shape));
+		}
+	}
+
+	std::unique_ptr<ICommand> CreateShiftCommand(Bounds offset)
+	{
+		std::vector<size_t> indexes;
+		for (auto& shape : m_activeShapes)
+		{
+			auto index = m_picture->GetIndex(&shape->GetDomainShape());
+			indexes.push_back(index);
+		}
+
+		m_activeShapes.clear();
+
+		return std::make_unique<ShiftShapesCommand>(
+			m_picture,
+			std::move(indexes),
+			offset);
+	}
+
+	std::unique_ptr<ICommand> CreateShapeCommand(Bounds offset)
+	{
+		auto& shape = m_activeShapes.back()->GetDomainShape();
+		shape.ShiftBy(offset);
+
+		return std::make_unique<AddShapeCommand>(
+			m_picture,
+			std::move(shape.Clone()),
+			m_picture->GetShapesCount());
+	}
+
+	// TODO: Подумать
+	void ClampTimeline(size_t index, int& liftLayersCount)
+	{
+		std::cout << std::format("shapeIndex: {} layersCount: {}\n", index, liftLayersCount);
+		int newIndex = index + liftLayersCount;
+
+		if (newIndex < 0)
+		{
+			liftLayersCount = -index;
+		}
+		else if (newIndex >= m_picture->GetShapesCount())
+		{
+			liftLayersCount = m_picture->GetShapesCount() - 1 - index;
 		}
 	}
 

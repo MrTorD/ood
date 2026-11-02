@@ -83,6 +83,14 @@ public:
 		return m_bounds;
 	}
 
+	bool IsContains(Point point) const
+	{
+		auto [x, y, w, h] = m_bounds;
+		Bounds innerBounds(x + m_thickness, y + m_thickness, w - (2 * m_thickness), h - (2 * m_thickness));
+
+		return m_bounds.IsContains(point) && !innerBounds.IsContains(point);
+	}
+
 	const std::vector<DragPoint>& GetDragPoints() const
 	{
 		return m_dragPoints;
@@ -91,5 +99,6 @@ public:
 private:
 	Bounds m_bounds;
 	float m_dragPointRadius = 10;
+	float m_thickness = 7;
 	std::vector<DragPoint> m_dragPoints;
 };

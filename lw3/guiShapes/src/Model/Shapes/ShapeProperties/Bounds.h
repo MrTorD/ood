@@ -11,7 +11,7 @@ struct Bounds
 	float w = 0;
 	float h = 0;
 
-	bool IsContains(Point point)
+	bool IsContains(Point point) const
 	{
 		return x <= point.x
 			&& point.x <= x + w
