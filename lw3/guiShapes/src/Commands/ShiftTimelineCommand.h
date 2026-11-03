@@ -4,10 +4,6 @@
 #include "Picture.h"
 #include <vector>
 
-// TODO: TEMP
-#include <format>
-#include <iostream>
-
 class ShiftTimelineCommand : public ICommand
 {
 public:
@@ -23,7 +19,6 @@ public:
 	{
 		for (auto index : m_shapeIndexes)
 		{
-			std::cout << std::format("Lifting: {} to {}\n", index, m_liftLayersCount);
 			m_picture->LiftShape(index, m_liftLayersCount);
 		}
 	}
@@ -32,8 +27,6 @@ public:
 	{
 		for (auto index : m_shapeIndexes)
 		{
-			std::cout << std::format("Unlifting: {} to {}\n", index + m_liftLayersCount, -m_liftLayersCount);
-
 			m_picture->LiftShape(m_liftLayersCount + index, -m_liftLayersCount);
 		}
 	}

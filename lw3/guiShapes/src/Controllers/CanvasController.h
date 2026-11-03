@@ -24,6 +24,11 @@ public:
 
 	void OnMousePressed(Point point)
 	{
+		if (!m_model.GetBounds().IsContains(point))
+		{
+			return;
+		}
+		
 		m_model.GetCanvasMode() == CanvasMode::SelectShapes
 			? BeginShiftShape(point)
 			: BeginCreateShape(point);
@@ -63,11 +68,6 @@ private:
 
 	void BeginCreateShape(Point point)
 	{
-		if (!m_model.GetBounds().IsContains(point))
-		{
-			return;
-		}
-
 		CreateTempShape(point);
 		m_model.BeginCreateShape(*m_tempShape.get());
 

@@ -12,10 +12,6 @@
 #include <functional>
 #include <vector>
 
-// TODO: TEMP
-#include <format>
-#include <iostream>
-
 class EditorModel
 {
 public:
@@ -168,7 +164,7 @@ public:
 		}
 	}
 
-	void CommitTimelineShift(Bounds giveMeName)
+	void CommitTimelineShift(Bounds shapeOffset)
 	{
 		if (m_activeShapes.empty())
 		{
@@ -178,7 +174,7 @@ public:
 		auto timelineOffset = m_activeShapes[0]->GetTimelineOffset();
 
 		std::vector<size_t> indexes;
-		int liftLayersCount = -timelineOffset.y / giveMeName.y;
+		int liftLayersCount = -timelineOffset.y / shapeOffset.y;
 
 		for (auto* shape : m_activeShapes)
 		{
@@ -187,11 +183,13 @@ public:
 			ClampTimeline(index, liftLayersCount);
 			shape->ResetTimelineShift();
 		}
-
-		auto command = std::make_unique<ShiftTimelineCommand>(m_picture, std::move(indexes), liftLayersCount, Point(0, 0));
-
 		m_activeShapes.clear();
-		m_commandSink(std::move(command));
+
+		if (liftLayersCount != 0)
+		{
+			auto command = std::make_unique<ShiftTimelineCommand>(m_picture, std::move(indexes), liftLayersCount, Point(0, 0));
+			m_commandSink(std::move(command));
+		}
 	}
 
 	void UpdateActiveShapes(Point point)
@@ -315,10 +313,8 @@ private:
 			m_picture->GetShapesCount());
 	}
 
-	// TODO: Подумать
 	void ClampTimeline(size_t index, int& liftLayersCount)
 	{
-		std::cout << std::format("shapeIndex: {} layersCount: {}\n", index, liftLayersCount);
 		int newIndex = index + liftLayersCount;
 
 		if (newIndex < 0)
@@ -336,85 +332,57 @@ private:
 		auto [x0, y0, w0, h0] = shapeBounds;
 		auto [dx, dy, dw, dh] = offset;
 
+		auto [x, w] = ClampDimension(x0, w0, dx, dw, m_canvasBounds.w, m_minShapeWidth);
+		auto [y, h] = ClampDimension(y0, h0, dy, dh, m_canvasBounds.h, m_minShapeHeight);
+
+		offset = { x, y, w, h };
+	}
+
+	std::pair<float, float> ClampDimension(float x0, float w0, float dx, float dw, float maxX, float minW)
+	{
+		std::pair<float, float> offset(dx, dw);
+
 		float x = x0 + dx;
-		float y = y0 + dy;
 		float w = w0 + dw;
-		float h = h0 + dh;
 
-		if (x < 0)
-			x = 0;
-		if (y < 0)
-			y = 0;
+		x = x >= 0 ? x : 0; 
 
-		if (x + w > m_canvasBounds.w)
+		if (x + w > maxX)
 		{
 			if (dw == 0)
 			{
-				x = m_canvasBounds.w - w;
+				x = maxX - w;
 			}
 			else
 			{
-				w = m_canvasBounds.w - x;
+				w = maxX - x;
 			}
 		}
 
-		if (y + h > m_canvasBounds.h)
-		{
-			if (dh == 0)
-			{
-				y = m_canvasBounds.h - h;
-			}
-			else
-			{
-				h = m_canvasBounds.h - y;
-			}
-		}
+		offset.first = x - x0;
+		offset.second = w - w0;
 
-		offset.x = x - x0;
-		offset.y = y - y0;
-		offset.w = w - w0;
-		offset.h = h - h0;
-
-		if (w <= m_minShapeWidth)
+		if (w <= minW)
 		{
-			offset.w = m_minShapeWidth - w0;
-			offset.x += offset.x > 0
-				? dw - offset.w
-				: 0;
-		}
-
-		if (h <= m_minShapeHeight)
-		{
-			offset.h = m_minShapeHeight - h0;
-			offset.y += offset.y > 0
-				? dh - offset.h
+			offset.second = minW - w0;
+			offset.first += offset.first > 0
+				? dw - offset.second
 				: 0;
 		}
 
 		if (dx != 0 && dw != 0)
 		{
-			auto minAbsOffset = std::min(std::abs(offset.x), std::abs(offset.w));
+			auto minAbsOffset = std::min(std::abs(offset.first), std::abs(offset.second));
 
-			offset.x = offset.x > 0
+			offset.first = offset.first > 0
 				? minAbsOffset
 				: -minAbsOffset;
 
-			offset.w = offset.w > 0
-				? minAbsOffset
-				: -minAbsOffset;
-		}
-
-		if (dy != 0 && dh != 0)
-		{
-			auto minAbsOffset = std::min(std::abs(offset.y), std::abs(offset.h));
-
-			offset.y = offset.y > 0
-				? minAbsOffset
-				: -minAbsOffset;
-
-			offset.h = offset.h > 0
+			offset.second = offset.second > 0
 				? minAbsOffset
 				: -minAbsOffset;
 		}
+
+		return offset;
 	}
 };

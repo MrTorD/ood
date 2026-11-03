@@ -67,10 +67,10 @@ private:
 	{
 		switch (key)
 		{
-		case sf::Keyboard::Key::Num1:
+		case sf::Keyboard::Key::Equal:
 			m_view.zoom(m_zoomStep);
 			return;
-		case sf::Keyboard::Key::Num2:
+		case sf::Keyboard::Key::Hyphen:
 			m_view.zoom(1 / m_zoomStep);
 			return;
 		case sf::Keyboard::Key::Left:

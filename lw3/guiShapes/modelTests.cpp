@@ -83,6 +83,14 @@ TEST_F(ModelFixture, InvalidPictureGetIndex)
 	ASSERT_EQ(-1, picture.GetIndex(shape.get()));
 }
 
+TEST_F(ModelFixture, PictureGetShapesCount)
+{
+	Picture pic;
+
+	ASSERT_EQ(picture.GetShapesCount(), 3);
+	ASSERT_EQ(pic.GetShapesCount(), 0);
+}
+
 int main(int argc, char* argv[])
 {
 	testing::InitGoogleTest(&argc, argv);
