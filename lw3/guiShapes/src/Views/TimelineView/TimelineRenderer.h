@@ -7,7 +7,7 @@
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
 
-class TimelineRenderer : public IEditorShapeVisitor
+class TimelineRenderer final : public IEditorShapeVisitor
 {
 public:
 	TimelineRenderer(sf::RenderTarget& target, float shapeBoxWidth, float shapeBoxHeight, float shapeBoxPadding)
@@ -26,12 +26,14 @@ public:
 			DrawShapeBox(shape);
 			shape.Accept(*this);
 		}
+
+		m_drawnShapesCount = 0;
 	}
 
 private:
 	sf::RenderTarget& m_target;
 
-	int m_drawedShapesCount = 0;
+	int m_drawnShapesCount = 0;
 	float m_shapePreviewWidth = 40;
 
 	float m_shapeBoxWidth;
@@ -41,10 +43,10 @@ private:
 	void VisitRectangle(const EditorShape& rect) override
 	{
 		auto [x, y, w, h] = rect.GetTimelineOffset();
-		
+
 		sf::RectangleShape drawable({ m_shapePreviewWidth, m_shapeBoxHeight });
 
-		drawable.setPosition({ x, y + m_drawedShapesCount * (m_shapeBoxHeight + m_shapeBoxPadding) });
+		drawable.setPosition({ x, y + m_drawnShapesCount * (m_shapeBoxHeight + m_shapeBoxPadding) });
 		drawable.setFillColor(sf::Color(rect.GetColor()));
 
 		m_target.draw(drawable);
@@ -58,9 +60,9 @@ private:
 
 		drawable.setPointCount(3);
 
-		drawable.setPoint(0, { x, y + m_drawedShapesCount * (m_shapeBoxHeight + m_shapeBoxPadding) + m_shapeBoxHeight });
-		drawable.setPoint(1, { x + m_shapePreviewWidth / 2, y + m_drawedShapesCount * (m_shapeBoxHeight + m_shapeBoxPadding) });
-		drawable.setPoint(2, { x + m_shapePreviewWidth, y + m_drawedShapesCount * (m_shapeBoxHeight + m_shapeBoxPadding) + m_shapeBoxHeight });
+		drawable.setPoint(0, { x, y + m_drawnShapesCount * (m_shapeBoxHeight + m_shapeBoxPadding) + m_shapeBoxHeight });
+		drawable.setPoint(1, { x + m_shapePreviewWidth / 2, y + m_drawnShapesCount * (m_shapeBoxHeight + m_shapeBoxPadding) });
+		drawable.setPoint(2, { x + m_shapePreviewWidth, y + m_drawnShapesCount * (m_shapeBoxHeight + m_shapeBoxPadding) + m_shapeBoxHeight });
 
 		drawable.setFillColor(sf::Color(triangle.GetColor()));
 
@@ -73,7 +75,7 @@ private:
 
 		sf::CircleShape drawable(m_shapePreviewWidth / 2);
 
-		drawable.setPosition({ x, m_drawedShapesCount * (m_shapeBoxHeight + m_shapeBoxPadding) + y });
+		drawable.setPosition({ x, m_drawnShapesCount * (m_shapeBoxHeight + m_shapeBoxPadding) + y });
 		drawable.setScale({ 1, m_shapeBoxHeight / m_shapePreviewWidth });
 		drawable.setFillColor(sf::Color(ellipse.GetColor()));
 
@@ -85,7 +87,7 @@ private:
 		sf::RectangleShape drawable({ m_shapeBoxWidth, m_shapeBoxHeight });
 		auto [x, y, w, h] = shape.GetTimelineOffset();
 
-		drawable.setPosition({ x, ++m_drawedShapesCount * (m_shapeBoxHeight + m_shapeBoxPadding) + y });
+		drawable.setPosition({ x, ++m_drawnShapesCount * (m_shapeBoxHeight + m_shapeBoxPadding) + y });
 		drawable.setOutlineThickness(3);
 
 		drawable.setOutlineColor(shape.IsSelected() ? sf::Color::Red : sf::Color::White);

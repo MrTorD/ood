@@ -1,9 +1,9 @@
 #pragma once
 
-#include "IEditorShapeVisitor.h"
+#include "../IEditorShapeVisitor.h"
+#include "../VisitorAdapter.h"
 #include "SelectionBox.h"
 #include "Shape.h"
-#include "VisitorAdapter.h"
 
 class EditorModel;
 
@@ -35,7 +35,7 @@ public:
 
 	SelectionBox GetSelectionBox() const
 	{
-		return SelectionBox(GetBounds());
+		return { GetBounds() };
 	}
 
 	Color GetColor() const

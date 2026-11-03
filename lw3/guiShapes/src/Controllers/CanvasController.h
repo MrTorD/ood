@@ -1,13 +1,13 @@
 #pragma once
 
+#include "../EditorModel/EditorShape/SelectionBox.h"
 #include "PictureRenderer.h"
-#include "SelectionBox.h"
 #include <algorithm>
 
 class CanvasController
 {
 public:
-	CanvasController(EditorModel& model)
+	explicit CanvasController(EditorModel& model)
 		: m_model(model)
 	{
 	}
@@ -28,7 +28,7 @@ public:
 		{
 			return;
 		}
-		
+
 		m_model.GetCanvasMode() == CanvasMode::SelectShapes
 			? BeginShiftShape(point)
 			: BeginCreateShape(point);
@@ -68,6 +68,14 @@ private:
 
 	void BeginCreateShape(Point point)
 	{
+		auto [x, y, w, h] = m_model.GetBounds();
+		auto [minShapeW, minShapeH] = m_model.GetMinimalShapeSize();
+
+		if (Bounds availableBounds = { x, y, w - minShapeW, h - minShapeH }; !availableBounds.IsContains(point))
+		{
+			return;
+		}
+
 		CreateTempShape(point);
 		m_model.BeginCreateShape(*m_tempShape.get());
 
@@ -107,14 +115,13 @@ private:
 		switch (m_model.GetCanvasMode())
 		{
 		case CanvasMode::CreatingRectangle:
-			m_tempShape = std::make_unique<Rectangle>(point, 1, 1, 0xB1FF21FF);
+			m_tempShape = std::make_unique<Rectangle>(point, 1, 1, 0xFFC000FF);
 			return;
 		case CanvasMode::CreatingEllipse:
-			m_tempShape = std::make_unique<Ellipse>(point, 1, 1, 0xFFDE21FF);
+			m_tempShape = std::make_unique<Ellipse>(point, 1, 1, 0x4472C4FF);
 			return;
 		case CanvasMode::CreatingTriangle:
-			m_tempShape = std::make_unique<Triangle>(point, 1, 1, 0xF9AAC0FF);
-			return;
+			m_tempShape = std::make_unique<Triangle>(point, 1, 1, 0x70AD47FF);
 		}
 	}
 };

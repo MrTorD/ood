@@ -6,11 +6,11 @@
 #include <memory>
 #include <ranges>
 
-// [x]: Узнать про аналоги mvc
-// [x]: поправить диаграмму
-// [x]: узнать почему не работает драг в фулл экр
-// [x]: удаление клавшией delete
-// [x]: Поправить ux. вынести кнопки в контейнер, сделать обводку для границ
+// [x]: Узнать про аналоги MVC
+// [x]: Поправить диаграмму классов
+// [x]: Узнать почему не работает драг в полном экране
+// [x]: Удаление выделенных фигур клавишей delete
+// [x]: Поправить UX. Вынести кнопки в контейнер, сделать обводку для границ
 // [x]: Поправить границу маркера перетягивания
 // [x]: Обработать ситуацию, когда мышка была отпущена в альтабе
 // [x]: Рисовать выделение поверх всего
@@ -30,7 +30,7 @@ public:
 		auto it = m_shapes.begin();
 		std::advance(it, i);
 
-		return *(it->get());
+		return *(*it);
 	}
 
 	Shape* GetShape(size_t i)
@@ -46,7 +46,7 @@ public:
 		return it->get();
 	}
 
-	size_t GetIndex(const Shape* searchShape)
+	size_t GetIndex(const Shape* searchShape) const
 	{
 		size_t index = 0;
 		for (const auto& shape : m_shapes)
@@ -118,7 +118,7 @@ public:
 
 	[[nodiscard]] ScopedConnection DoOnChange(ChangeSignal::slot_type slot)
 	{
-		return m_changeSignal.connect(std::move(slot));
+		return m_changeSignal.connect(slot);
 	}
 
 private:

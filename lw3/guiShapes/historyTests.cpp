@@ -12,7 +12,7 @@
 class ShapeComparer : public IShapeVisitor
 {
 public:
-	ShapeComparer(const Shape& shape)
+	explicit ShapeComparer(const Shape& shape)
 		: m_shape(shape)
 	{
 	}
@@ -44,7 +44,7 @@ public:
 private:
 	const Shape& m_shape;
 
-	void AssertShapeProperties(const Shape& shape1, const Shape& shape2)
+	static void AssertShapeProperties(const Shape& shape1, const Shape& shape2)
 	{
 		ASSERT_EQ(shape1.GetBounds(), shape2.GetBounds());
 		ASSERT_EQ(shape1.GetColor(), shape2.GetColor());
@@ -53,7 +53,7 @@ private:
 
 class DocumentFixture : public ::testing::Test
 {
-public:
+protected:
 	PictureDocument document;
 
 	void SetUp() override
@@ -77,7 +77,7 @@ public:
 				2));
 	}
 
-	void AssertPicture(const Picture& pic1, const Picture& pic2)
+	static void AssertPicture(const Picture& pic1, const Picture& pic2)
 	{
 		ASSERT_EQ(pic1.GetShapesCount(), pic2.GetShapesCount());
 
@@ -87,7 +87,7 @@ public:
 		}
 	}
 
-	Picture CopyPicture(Picture* picture)
+	static Picture CopyPicture(Picture* picture)
 	{
 		Picture pic;
 		for (int i = 0; i < picture->GetShapesCount(); i++)
@@ -100,7 +100,7 @@ public:
 	}
 
 private:
-	void AssertShape(const Shape& shape1, const Shape& shape2)
+	static void AssertShape(const Shape& shape1, const Shape& shape2)
 	{
 		ShapeComparer comparer(shape2);
 

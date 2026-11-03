@@ -5,7 +5,7 @@
 #include "DeleteShapesCommand.h"
 #include "EditorShape.h"
 #include "Picture.h"
-#include "PictureSerialiser.h"
+#include "PictureSerializer.h"
 #include "ShiftShapesCommand.h"
 #include "ShiftTimelineCommand.h"
 #include <algorithm>
@@ -37,7 +37,7 @@ public:
 
 	Bounds GetBounds() const
 	{
-		return { 0, 0, m_canvasBounds.w - m_minShapeWidth, m_canvasBounds.h - m_minShapeHeight };
+		return { 0, 0, m_canvasBounds.w, m_canvasBounds.h };
 	}
 
 	size_t GetShapesCount() const
@@ -63,6 +63,11 @@ public:
 	const EditorShape& GetShape(size_t index) const
 	{
 		return *m_shapes.at(index);
+	}
+
+	Point GetMinimalShapeSize() const
+	{
+		return { m_minShapeWidth, m_minShapeHeight };
 	}
 
 	EditorShape* FindShapeAt(Point point)
@@ -113,9 +118,9 @@ public:
 
 	void SaveToFile(const std::string& fileName)
 	{
-		PictureSerialiser serialiser;
+		PictureSerializer serializer;
 
-		serialiser.Serialise(*m_picture, fileName);
+		serializer.Serialize(*m_picture, fileName);
 	}
 
 	void BeginShiftShapes(Point point)
@@ -229,6 +234,7 @@ public:
 			: CreateShapeCommand(offset);
 
 		m_activeShapes.clear();
+		m_canvasMode = CanvasMode::SelectShapes;
 
 		m_commandSink(std::move(command));
 	}
@@ -345,7 +351,7 @@ private:
 		float x = x0 + dx;
 		float w = w0 + dw;
 
-		x = x >= 0 ? x : 0; 
+		x = x >= 0 ? x : 0;
 
 		if (x + w > maxX)
 		{

@@ -1,43 +1,27 @@
 #pragma once
 
-#include "EditorModel.h"
 #include "FileDialogues.h"
+#include "EditorModel.h"
 
 class ToolBarController
 {
 public:
 	ToolBarController(
 		EditorModel& model,
-		std::function<void()> createNewWindow,
-		std::function<void(std::unique_ptr<Picture>)> reopenWindow,
-		std::function<void()> makeWindowCopy)
+		const std::function<void()>& createNewWindow,
+		const std::function<void(std::unique_ptr<Picture>)>& reopenWindow,
+		const std::function<void()>& makeWindowCopy)
 		: m_model(model)
-		, m_createNewWindow(std::move(createNewWindow))
-		, m_reopenWindow(std::move(reopenWindow))
-		, m_makeWindowCopy(std::move(makeWindowCopy))
+		, m_createNewWindow(createNewWindow)
+		, m_reopenWindow(reopenWindow)
+		, m_makeWindowCopy(makeWindowCopy)
 	{
 		// [x]: Контроллер не должен знать про расположение кнопок
 	}
 
-
-	void SetSelectMode()
+	void SetCanvasMode(CanvasMode mode)
 	{
-		m_model.SetCanvasMode(CanvasMode::SelectShapes);
-	}
-
-	void SetRectangleMode()
-	{
-		m_model.SetCanvasMode(CanvasMode::CreatingRectangle);
-	}
-
-	void SetEllipseMode()
-	{
-		m_model.SetCanvasMode(CanvasMode::CreatingEllipse);
-	}
-
-	void SetTriangleMode()
-	{
-		m_model.SetCanvasMode(CanvasMode::CreatingTriangle);
+		m_model.SetCanvasMode(mode);
 	}
 
 	void DeleteSelectedShapes()
@@ -53,29 +37,28 @@ public:
 		}
 	}
 
-	void OpenFromFile()
+	void OpenFromFile() const
 	{
 		if (auto path = pfd::open_file("Select a file", ".").result(); !path.empty())
 		{
-			PictureSerialiser serialiser;
-			auto picture = serialiser.Deserialise(path[0]);
+			auto picture = PictureSerializer::Deserialize(path[0]);
 			m_reopenWindow(std::move(picture));
 		}
 	}
 
-	void CreateNewWindow()
+	void CreateNewWindow() const
 	{
 		m_createNewWindow();
 	}
 
-	void MakeWindowCopy()
+	void MakeWindowCopy() const
 	{
 		m_makeWindowCopy();
 	}
 
 private:
 	EditorModel& m_model;
-	std::function<void()> m_createNewWindow;
-	std::function<void(std::unique_ptr<Picture>)> m_reopenWindow;
-	std::function<void()> m_makeWindowCopy;
+	const std::function<void()>& m_createNewWindow;
+	const std::function<void(std::unique_ptr<Picture>)>& m_reopenWindow;
+	const std::function<void()>& m_makeWindowCopy;
 };

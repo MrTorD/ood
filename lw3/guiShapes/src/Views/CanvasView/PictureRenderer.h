@@ -7,11 +7,11 @@
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
 
-class PictureRenderer : public IEditorShapeVisitor
+class PictureRenderer final : public IEditorShapeVisitor
 {
 public:
 	// [x]: Избавиться от зависимости View oт Model
-	PictureRenderer(sf::RenderTarget& target)
+	explicit PictureRenderer(sf::RenderTarget& target)
 		: m_target(target)
 	{
 	}
@@ -119,10 +119,5 @@ private:
 		boundPoints[7].setPosition({ x, y + ((h - pointD) / 2) });
 
 		return boundPoints;
-	}
-
-	sf::Vector2f ToSfVector(Point point) const
-	{
-		return { point.x, point.y };
 	}
 };

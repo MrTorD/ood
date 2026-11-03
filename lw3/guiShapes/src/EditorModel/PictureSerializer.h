@@ -6,13 +6,12 @@
 #include "Triangle.h"
 #include <format>
 #include <fstream>
-#include <map>
 #include <sstream>
 
-class PictureSerialiser : IShapeVisitor
+class PictureSerializer : IShapeVisitor
 {
 public:
-	void Serialise(Picture& picture, const std::string& fileName)
+	void Serialize(Picture& picture, const std::string& fileName)
 	{
 		m_file = std::ofstream(fileName);
 
@@ -22,7 +21,7 @@ public:
 		}
 	}
 
-	std::unique_ptr<Picture> Deserialise(const std::string& fileName)
+	static std::unique_ptr<Picture> Deserialize(const std::string& fileName)
 	{
 		std::ifstream file(fileName);
 
@@ -47,7 +46,7 @@ public:
 			}
 
 			auto shapeData = ReadShapeData(ss);
-			auto shape = SHAPES_MAP[shapeName](shapeData);
+			auto shape = SHAPES_MAP.at(shapeName)(shapeData);
 
 			pic->AddShape(std::move(shape));
 		}
@@ -83,7 +82,7 @@ private:
 		Color color;
 	};
 
-	ShapeData ReadShapeData(std::stringstream& ss)
+	static ShapeData ReadShapeData(std::stringstream& ss)
 	{
 		std::string str;
 
@@ -113,7 +112,7 @@ private:
 		return shapeData;
 	}
 
-	std::unordered_map<std::string, std::function<std::unique_ptr<Shape>(ShapeData)>> SHAPES_MAP{
+	const static inline std::unordered_map<std::string, std::function<std::unique_ptr<Shape>(ShapeData)>> SHAPES_MAP{
 		{ "rectangle", [](const ShapeData& data) {
 			 if (data.bounds.size() != 4)
 			 {

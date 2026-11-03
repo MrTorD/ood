@@ -1,11 +1,11 @@
 #pragma once
 
-#include "ICommand.h"
+#include "../ICommand.h"
 #include "Picture.h"
 #include "Shape.h"
 #include <memory>
-#include <unordered_map>
 #include <set>
+#include <unordered_map>
 
 class DeleteShapesCommand : public ICommand
 {

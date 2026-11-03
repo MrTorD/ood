@@ -11,7 +11,7 @@ struct Bounds
 	float w = 0;
 	float h = 0;
 
-	bool IsContains(Point point) const
+	[[nodiscard]] bool IsContains(Point point) const
 	{
 		return x <= point.x
 			&& point.x <= x + w
@@ -31,7 +31,7 @@ struct Bounds
 		return *this;
 	}
 
-	Bounds operator-()
+	Bounds operator-() const
 	{
 		return { -x, -y, -w, -h };
 	}

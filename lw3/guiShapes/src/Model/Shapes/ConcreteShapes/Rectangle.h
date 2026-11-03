@@ -6,7 +6,7 @@
 class Rectangle : public Visitable<Rectangle, Shape>
 {
 public:
-	Rectangle(Point topLeft, double width, double height, Color color)
+	Rectangle(Point topLeft, float width, float height, Color color)
 	{
 		SetTopLeft(topLeft);
 		SetWidth(width);

@@ -5,10 +5,15 @@
 
 Point ConvertToPoint(sf::Vector2i vec)
 {
-	return { (float)vec.x, (float)vec.y };
+	return { .x = static_cast<float>(vec.x), .y = static_cast<float>(vec.y) };
 }
 
 Point ConvertToPoint(sf::Vector2f vec)
 {
-	return { vec.x, vec.y };
+	return { .x = vec.x, .y = vec.y };
+}
+
+sf::Vector2f ConvertToVector(Point point)
+{
+	return { point.x, point.y };
 }

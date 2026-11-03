@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ICommand.h"
+#include "../ICommand.h"
 #include "Picture.h"
 #include <vector>
 

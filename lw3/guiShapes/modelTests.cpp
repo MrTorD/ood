@@ -7,7 +7,7 @@
 
 class ModelFixture : public ::testing::Test
 {
-public:
+protected:
 	Picture picture;
 
 	void SetUp() override
@@ -16,8 +16,6 @@ public:
 		picture.AddShape(std::make_unique<Ellipse>(Point(100, 100), 50, 50, 0));
 		picture.AddShape(std::make_unique<Triangle>(Point(100, 100), 50, 50, 0));
 	}
-
-private:
 };
 
 TEST_F(ModelFixture, ShapeIsContains)

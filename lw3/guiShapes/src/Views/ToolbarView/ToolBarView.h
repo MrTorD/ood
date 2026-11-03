@@ -9,12 +9,12 @@ class ToolBarView
 {
 public:
 	ToolBarView(EditorModel& model,
-		std::function<void()> createNewWindow,
-		std::function<void(std::unique_ptr<Picture>)> reopenWindow,
-		std::function<void()> makeWindowCopy)
+		const std::function<void()>& createNewWindow,
+		const std::function<void(std::unique_ptr<Picture>)>& reopenWindow,
+		const std::function<void()>& makeWindowCopy)
 		: m_model(model)
-		, m_controller(model, std::move(createNewWindow), std::move(reopenWindow), std::move(makeWindowCopy))
-		, m_font("arial.ttf")
+		, m_controller(model, createNewWindow, reopenWindow, makeWindowCopy)
+		, m_font(m_assetsPath / "arial.ttf")
 		, m_view({ 55, 200 }, { 120, 400 })
 	{
 		m_buttons = GetButtonsConfiguration();
@@ -24,6 +24,8 @@ public:
 	void Draw(sf::RenderTarget& target)
 	{
 		target.setView(m_view);
+
+		DrawBackground(target);
 
 		for (auto& button : m_buttons)
 		{
@@ -38,10 +40,8 @@ public:
 			if (keyPressed->code == sf::Keyboard::Key::Delete)
 			{
 				m_controller.DeleteSelectedShapes();
-				return;
 			}
-
-			if (keyPressed->control)
+			else if (keyPressed->control)
 			{
 				switch (keyPressed->code)
 				{
@@ -53,9 +53,6 @@ public:
 					return;
 				case sf::Keyboard::Key::O:
 					m_controller.OpenFromFile();
-					return;
-				default:
-					return;
 				}
 			}
 		}
@@ -64,10 +61,8 @@ public:
 			window.setView(m_view);
 			auto viewPos = window.mapPixelToCoords(mousePressed->position);
 
-			auto it = std::find_if(
-				m_buttons.begin(),
-				m_buttons.end(),
-				[&mousePressed, viewPos](const Button& button) {
+			auto it = std::ranges::find_if(m_buttons,
+				[viewPos](const Button& button) {
 					return button.IsContains(viewPos);
 				});
 
@@ -81,54 +76,70 @@ public:
 private:
 	EditorModel& m_model;
 	ToolBarController m_controller;
+
+	std::filesystem::path m_assetsPath = "../../../lw3/guiShapes/assets/";
+
 	sf::Font m_font;
 	sf::View m_view;
 
 	std::vector<Button> m_buttons;
 
+	void DrawBackground(sf::RenderTarget& target) const
+	{
+		sf::RectangleShape drawable(m_view.getSize());
+
+		drawable.setFillColor(sf::Color(0xF3F2F1FF));
+
+		target.draw(drawable);
+	}
+
 	std::vector<Button> GetButtonsConfiguration()
 	{
 		return {
-			{ "Select mode",
+			{ "",
 				[&]() {
-					m_controller.SetSelectMode();
+					m_controller.SetCanvasMode(CanvasMode::SelectShapes);
 				},
 				[&]() {
 					return m_model.GetCanvasMode() == CanvasMode::SelectShapes;
 				},
 				sf::Vector2f(10, 10),
-				sf::Vector2f(100, 35),
-				m_font },
-			{ "Rectangle\nmode",
+				sf::Vector2f(30, 30),
+				m_font,
+				m_assetsPath / "cursor.png" },
+			{ "",
 				[&]() {
-					m_controller.SetRectangleMode();
+					m_controller.SetCanvasMode(CanvasMode::CreatingRectangle);
 				},
 				[&]() {
 					return m_model.GetCanvasMode() == CanvasMode::CreatingRectangle;
 				},
-				sf::Vector2f(10, 50),
-				sf::Vector2f(100, 35),
-				m_font },
-			{ "Ellipse\nmode",
+				sf::Vector2f(10, 45),
+				sf::Vector2f(30, 30),
+				m_font,
+				m_assetsPath / "rectangle.png" },
+			{ "",
 				[&]() {
-					m_controller.SetEllipseMode();
+					m_controller.SetCanvasMode(CanvasMode::CreatingEllipse);
 				},
 				[&]() {
 					return m_model.GetCanvasMode() == CanvasMode::CreatingEllipse;
 				},
 				sf::Vector2f(10, 90),
-				sf::Vector2f(100, 35),
-				m_font },
-			{ "Triangle\nmode",
+				sf::Vector2f(30, 30),
+				m_font,
+				m_assetsPath / "ellipse.png" },
+			{ "",
 				[&]() {
-					m_controller.SetTriangleMode();
+					m_controller.SetCanvasMode(CanvasMode::CreatingTriangle);
 				},
 				[&]() {
 					return m_model.GetCanvasMode() == CanvasMode::CreatingTriangle;
 				},
 				sf::Vector2f(10, 130),
-				sf::Vector2f(100, 35),
-				m_font },
+				sf::Vector2f(30, 30),
+				m_font,
+				m_assetsPath / "triangle.png" },
 			{ "Delete\nselected",
 				[&]() {
 					m_controller.DeleteSelectedShapes();
@@ -137,40 +148,44 @@ private:
 					return !m_model.GetSelectedShapes().empty();
 				},
 				sf::Vector2f(10, 170),
-				sf::Vector2f(100, 35),
-				m_font },
+				sf::Vector2f(30, 30),
+				m_font,
+				m_assetsPath / "cursor.png" },
 			{ "Save to\ndocument",
 				[&]() {
 					m_controller.SaveToFile();
 				},
 				[]() { return true; },
 				sf::Vector2f(10, 210),
-				sf::Vector2f(100, 35),
-				m_font },
+				sf::Vector2f(30, 30),
+				m_font, m_assetsPath / "cursor.png" },
 			{ "Open from\nfile",
 				[&]() {
 					m_controller.OpenFromFile();
 				},
 				[]() { return true; },
 				sf::Vector2f(10, 250),
-				sf::Vector2f(100, 35),
-				m_font },
+				sf::Vector2f(30, 30),
+				m_font,
+				m_assetsPath / "cursor.png" },
 			{ "Make window\ncopy",
 				[&]() {
 					m_controller.MakeWindowCopy();
 				},
 				[]() { return true; },
 				sf::Vector2f(10, 290),
-				sf::Vector2f(100, 35),
-				m_font },
+				sf::Vector2f(30, 30),
+				m_font,
+				m_assetsPath / "cursor.png" },
 			{ "Create new\nwindow",
 				[&]() {
 					m_controller.CreateNewWindow();
 				},
 				[]() { return true; },
 				sf::Vector2f(10, 330),
-				sf::Vector2f(100, 35),
-				m_font }
+				sf::Vector2f(30, 30),
+				m_font,
+				m_assetsPath / "cursor.png" }
 		};
 	}
 };

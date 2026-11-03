@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.15)
 cmake_policy(SET CMP0135 NEW)
 
-set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD 26)
 
 set(ROOT_PROJECT_NAME "OOD-2026")
 project(${ROOT_PROJECT_NAME})

@@ -8,12 +8,17 @@
 class TimelineView
 {
 public:
-	TimelineView(EditorModel& model)
+	TimelineView(EditorModel& model, sf::RenderTarget& target)
 		: m_model(model)
-		, m_view({ 225, 300 }, { 500, 600 })
+		, m_target(target)
 		, m_controller(model, m_shapeBoxWidth, m_shapeBoxHeight, m_shapeBoxPadding)
+		, m_renderer(target, m_shapeBoxWidth, m_shapeBoxHeight, m_shapeBoxPadding)
+		, m_view({ 150, 150 }, { 300, 300 })
+		, m_zoomHandler(m_view)
+		, m_background(m_view.getSize())
 	{
 		m_view.setViewport(sf::FloatRect({ 0, 0.6 }, { 1, 0.4 }));
+		m_background.setFillColor(sf::Color(0xF3F3F3FF));
 	}
 
 	void HandleEvent(const sf::Event& event, sf::RenderTarget& target)
@@ -44,51 +49,56 @@ public:
 		}
 	}
 
-	void Draw(sf::RenderTarget& target)
+	void Draw()
 	{
-		target.setView(m_view);
-		TimelineRenderer renderer(target, m_shapeBoxWidth, m_shapeBoxHeight, m_shapeBoxPadding);
-		renderer.Draw(m_model);
+		m_target.setView(m_view);
+		m_target.draw(m_background);
+		m_renderer.Draw(m_model);
 	}
 
 private:
-	EditorModel& m_model;
-	sf::View m_view;
-
-	float m_zoomStep = 0.9;
-	float m_moveStep = 25;
+	float m_moveStepX = 10;
+	float m_moveStepY = 25;
 	float m_shapeBoxHeight = 50;
 	float m_shapeBoxWidth = 200;
 	float m_shapeBoxPadding = 15;
 
+	EditorModel& m_model;
+	sf::RenderTarget& m_target;
+	TimelineRenderer m_renderer;
 	TimelineController m_controller;
+	sf::View m_view;
+	ZoomHandler m_zoomHandler;
+	sf::RectangleShape m_background;
 
 	void OnKeyPressed(sf::Keyboard::Key key)
 	{
 		switch (key)
 		{
 		case sf::Keyboard::Key::Equal:
-			m_view.zoom(m_zoomStep);
+			m_zoomHandler.Zoom();
 			return;
 		case sf::Keyboard::Key::Hyphen:
-			m_view.zoom(1 / m_zoomStep);
+			m_zoomHandler.Unzoom();
+			return;
+		case sf::Keyboard::Key::Num0:
+			m_zoomHandler.ResetZoom();
 			return;
 		case sf::Keyboard::Key::Left:
-			m_view.move({ -m_moveStep, 0 });
+			m_view.move({ -m_moveStepX, 0 });
 			return;
 		case sf::Keyboard::Key::Right:
-			m_view.move({ m_moveStep, 0 });
+			m_view.move({ m_moveStepX, 0 });
 			return;
 		case sf::Keyboard::Key::Up:
-			m_view.move({ 0, -m_moveStep });
+			m_view.move({ 0, -m_moveStepY });
 			return;
 		case sf::Keyboard::Key::Down:
-			m_view.move({ 0, m_moveStep });
-			return;
+			m_view.move({ 0, m_moveStepY });
 		}
 	}
 
-	Point NormalizeMousePos(const sf::RenderTarget& target, sf::Vector2i position)
+	static Point NormalizeMousePos(const sf::RenderTarget& target, sf::Vector2i position)
 	{
 		return ConvertToPoint(target.mapPixelToCoords(position));
 	}
