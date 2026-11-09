@@ -31,14 +31,14 @@ private:
 	sf::RenderTarget& m_target;
 
 	int m_drawnShapesCount = 0;
-	// float m_shapePreviewWidth = 40;
+	float m_shapePreviewWidth = 20;
 	float m_dragPointRadius = 5;
 
 	void VisitRectangle(const EditorShape& rect) override
 	{
 		auto [t, dy, dt, _] = rect.GetTimeline();
 
-		sf::RectangleShape drawable({ dt, TimelineBox::GetHeight() });
+		sf::RectangleShape drawable({ m_shapePreviewWidth, TimelineBox::GetHeight() });
 
 		drawable.setPosition({ t, dy + m_drawnShapesCount * TimelineBox::GetTotalHeight() });
 		drawable.setFillColor(sf::Color(rect.GetColor()));
@@ -55,8 +55,8 @@ private:
 		drawable.setPointCount(3);
 
 		drawable.setPoint(0, { t, dy + m_drawnShapesCount * TimelineBox::GetTotalHeight() + TimelineBox::GetHeight() });
-		drawable.setPoint(1, { t + dt / 2, dy + m_drawnShapesCount * TimelineBox::GetTotalHeight() });
-		drawable.setPoint(2, { t + dt, dy + m_drawnShapesCount * TimelineBox::GetTotalHeight() + TimelineBox::GetHeight() });
+		drawable.setPoint(1, { t + m_shapePreviewWidth / 2, dy + m_drawnShapesCount * TimelineBox::GetTotalHeight() });
+		drawable.setPoint(2, { t + m_shapePreviewWidth, dy + m_drawnShapesCount * TimelineBox::GetTotalHeight() + TimelineBox::GetHeight() });
 
 		drawable.setFillColor(sf::Color(triangle.GetColor()));
 
@@ -67,10 +67,10 @@ private:
 	{
 		auto [t, dy, dt, _] = ellipse.GetTimeline();
 
-		sf::CircleShape drawable(dt / 2);
+		sf::CircleShape drawable(m_shapePreviewWidth / 2);
 
 		drawable.setPosition({ t, dy + m_drawnShapesCount * TimelineBox::GetTotalHeight() });
-		drawable.setScale({ 1, TimelineBox::GetHeight() / dt });
+		drawable.setScale({ 1, TimelineBox::GetHeight() / m_shapePreviewWidth });
 		drawable.setFillColor(sf::Color(ellipse.GetColor()));
 
 		m_target.draw(drawable);

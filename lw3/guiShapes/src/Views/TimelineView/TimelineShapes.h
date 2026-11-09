@@ -5,7 +5,6 @@
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Window/Event.hpp>
 
-// TODO: Подумать над названием?
 class TimelineShapes
 {
 public:
@@ -34,8 +33,6 @@ public:
 		m_target.setView(m_view);
 		m_target.draw(m_background);
 		m_renderer.Draw(m_model);
-
-		// TODO: TempSetting new Time???
 		m_timeArrow.setPosition({ m_model.GetCurrentTime(), 0 });
 		m_target.draw(m_timeArrow);
 	}

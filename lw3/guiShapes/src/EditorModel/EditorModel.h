@@ -189,14 +189,13 @@ public:
 	}
 
 	void UpdateTimelineShift(Point point)
-	// TODO: Think about
 	{
 		auto [dx, dy, dw, dh] = m_actionFunc(point);
 
 		for (auto& shape : m_activeShapes)
 		{
 			auto [x, w] = shape->GetDomainShape().GetTimeline();
-			auto [newX, newW] = ClampDimension(x, w, dx, dw, 1000, m_minShapeDuration); // TODO: Min & Max offset
+			auto [newX, newW] = ClampDimension(x, w, dx, dw, std::numeric_limits<float>::infinity(), m_minShapeDuration);
 			dx = newX;
 			dw = newW;
 		}

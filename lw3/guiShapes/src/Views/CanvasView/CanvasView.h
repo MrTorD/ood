@@ -12,7 +12,7 @@ public:
 		: m_view({ 2 * canvasBounds.x, 1.66f * canvasBounds.y }, { 1.5f * canvasBounds.w, 1.5f * canvasBounds.h })
 		, m_window(window)
 		, m_canvas(model, window, canvasBounds)
-		, m_font("../../../lw3/guiShapes/assets/arial.ttf") // TODO: Temp
+		, m_font("../../../lw3/guiShapes/assets/arial.ttf")
 		, m_zoomInfo(m_font)
 	{
 		m_view.setViewport(sf::FloatRect({ 0.2, 0 }, { 0.8, 0.6 }));

@@ -12,7 +12,6 @@ public:
 		: m_view(view)
 		, m_zoomStep({ 0.25f * m_view.getSize().x, 0.25f * m_view.getSize().y })
 		, m_initialSize(view.getSize())
-	// TODO: ?
 	{
 	}
 

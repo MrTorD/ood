@@ -24,18 +24,17 @@ public:
 			  []() { return false; },
 			  { 0.5f * m_view.getSize().x, 0.3f * m_view.getSize().y },
 			  { 60, 60 },
-			  m_font, // TODO: Temp
+			  m_font,
 			  m_assetsPath / "pause.png")
 		, m_zoomInfo(m_font)
 	{
 		m_view.setViewport(sf::FloatRect({ 0.2, 0.6 }, { 0.8, 0.07 }));
-		m_background.setFillColor(sf::Color(0x6ac8e1FF));
+		m_background.setFillColor(sf::Color(0xDBDBDBFF));
 		m_background.setSize({ m_view.getSize().x, m_view.getSize().y });
 
-		// TODO: TEMP
-		m_zoomInfo.setCharacterSize(40);
+		m_zoomInfo.setCharacterSize(30);
 		m_zoomInfo.setFillColor(sf::Color::Black);
-		m_zoomInfo.setPosition({ 0.8f * m_view.getSize().x, 0.25f * m_view.getSize().y });
+		m_zoomInfo.setPosition({ 0.92f * m_view.getSize().x, 0.25f * m_view.getSize().y });
 
 		m_zoomInfo.setString("100%");
 
@@ -47,9 +46,6 @@ public:
 	void Draw()
 	{
 		m_target.setView(m_view);
-		// TODO:
-		// m_background.setSize({m_view.getSize()}); // TODO: Подумать нормально ли?
-		// m_background.setPosition(m_view.getCenter());
 		m_target.draw(m_background);
 		m_timelineShapes.Draw();
 		m_target.setView(m_view);
@@ -69,7 +65,7 @@ private:
 	sf::View m_view;
 	TimelineShapes m_timelineShapes;
 
-	std::filesystem::path m_assetsPath; // TODO: Подумать о выносе в какое-то глобальное супер пространство?
+	std::filesystem::path m_assetsPath;
 	sf::Font m_font;
 	Button m_pauseButton;
 	sf::Text m_zoomInfo;

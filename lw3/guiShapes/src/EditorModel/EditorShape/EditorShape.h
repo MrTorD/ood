@@ -23,7 +23,7 @@ public:
 		return SelectionBox(GetBounds());
 	};
 
-	TimelineBox GetTimelineBox(size_t index) const // TODO: Think about
+	TimelineBox GetTimelineBox(size_t index) const
 	{
 		return TimelineBox(index, m_shape.GetTimeline());
 	}
@@ -98,7 +98,6 @@ private:
 		return m_previewOffset;
 	}
 
-	// TODO: Подумать над тем нужен ли метод, судя по всему нужен
 	Bounds GetTimelineOffset() const
 	{
 		return m_timelineOffset;

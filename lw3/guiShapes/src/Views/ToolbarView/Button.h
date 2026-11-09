@@ -23,9 +23,6 @@ public:
 		, m_texture(imagePath)
 		, m_sprite(m_texture)
 	{
-
-		// TODO: Упростить, разобраться с текстурами и спрайтами (проверить, обязательно ли нужно каждый раз setTexture заново)
-		// TODO: Возможно добавить несколько наследников-реализаций Button, одна работает с текстом, другая с картинками
 		m_sprite.setPosition(position);
 		m_sprite.setScale({ 0.5, 0.5 });
 

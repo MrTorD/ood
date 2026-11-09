@@ -37,7 +37,6 @@ public:
 	{
 		if (const auto* keyPressed = event.getIf<sf::Event::KeyPressed>())
 		{
-			// TODO: Вынести?
 			if (keyPressed->code == sf::Keyboard::Key::Delete)
 			{
 				m_controller.DeleteSelectedShapes();
@@ -115,7 +114,7 @@ private:
 				[&]() {
 					return m_model.GetCanvasMode() == CanvasMode::CreatingRectangle;
 				},
-				sf::Vector2f(10, 45),
+				sf::Vector2f(10, 50),
 				sf::Vector2f(30, 30),
 				m_font,
 				m_assetsPath / "rectangle.png" },
@@ -141,52 +140,52 @@ private:
 				sf::Vector2f(30, 30),
 				m_font,
 				m_assetsPath / "triangle.png" },
-			{ "Delete\nselected",
+			{ "",
 				[&]() {
 					m_controller.DeleteSelectedShapes();
 				},
 				[&]() {
-					return !m_model.GetSelectedShapes().empty();
+					return false;
 				},
 				sf::Vector2f(10, 170),
 				sf::Vector2f(30, 30),
 				m_font,
-				m_assetsPath / "cursor.png" },
-			{ "Save to\ndocument",
+				m_assetsPath / "delete.png" },
+			{ "",
 				[&]() {
 					m_controller.SaveToFile();
 				},
-				[]() { return true; },
+				[]() { return false; },
 				sf::Vector2f(10, 210),
 				sf::Vector2f(30, 30),
-				m_font, m_assetsPath / "cursor.png" },
-			{ "Open from\nfile",
+				m_font, m_assetsPath / "save.png" },
+			{ "",
 				[&]() {
 					m_controller.OpenFromFile();
 				},
-				[]() { return true; },
+				[]() { return false; },
 				sf::Vector2f(10, 250),
 				sf::Vector2f(30, 30),
 				m_font,
-				m_assetsPath / "cursor.png" },
-			{ "Make window\ncopy",
+				m_assetsPath / "open.png" },
+			{ "",
 				[&]() {
 					m_controller.MakeWindowCopy();
 				},
-				[]() { return true; },
+				[]() { return false; },
 				sf::Vector2f(10, 290),
 				sf::Vector2f(30, 30),
 				m_font,
-				m_assetsPath / "cursor.png" },
-			{ "Create new\nwindow",
+				m_assetsPath / "copy.png" },
+			{ "",
 				[&]() {
 					m_controller.CreateNewWindow();
 				},
-				[]() { return true; },
+				[]() { return false; },
 				sf::Vector2f(10, 330),
 				sf::Vector2f(30, 30),
 				m_font,
-				m_assetsPath / "cursor.png" }
+				m_assetsPath / "new.png" }
 		};
 	}
 };

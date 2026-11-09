@@ -12,7 +12,7 @@ public:
 
 	void OnMouseWithCtrlPressed(Point point)
 	{
-		if (point.x < 0 || point.y < 0) // TODO: Подумать обязателен ли он тут?
+		if (point.x < 0 || point.y < 0)
 		{
 			return;
 		}
@@ -32,7 +32,7 @@ public:
 
 	void OnMousePressed(Point point)
 	{
-		if (point.x < 0 || point.y < 0) // TODO: Подумать обязателен ли он тут?
+		if (point.x < 0 || point.y < 0)
 		{
 			return;
 		}
