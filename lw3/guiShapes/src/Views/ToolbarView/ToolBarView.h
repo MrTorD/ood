@@ -5,10 +5,10 @@
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <vector>
 
-class ToolBarView
+class ToolbarView
 {
 public:
-	ToolBarView(EditorModel& model,
+	ToolbarView(EditorModel& model,
 		const std::function<void()>& createNewWindow,
 		const std::function<void(std::unique_ptr<Picture>)>& reopenWindow,
 		const std::function<void()>& makeWindowCopy)
@@ -37,6 +37,7 @@ public:
 	{
 		if (const auto* keyPressed = event.getIf<sf::Event::KeyPressed>())
 		{
+			// TODO: Вынести?
 			if (keyPressed->code == sf::Keyboard::Key::Delete)
 			{
 				m_controller.DeleteSelectedShapes();

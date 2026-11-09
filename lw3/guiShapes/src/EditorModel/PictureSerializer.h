@@ -119,7 +119,8 @@ private:
 				 throw std::invalid_argument("Invalid arguments while reading rectangle data");
 			 }
 
-			 return std::make_unique<Rectangle>(Point(data.bounds[0], data.bounds[1]), data.bounds[2], data.bounds[3], data.color);
+			 return std::make_unique<Rectangle>(
+				 Point(data.bounds[0], data.bounds[1]), data.bounds[2], data.bounds[3], Point(0, 40), data.color);
 		 } },
 
 		{ "ellipse", [](const ShapeData& data) {
@@ -128,7 +129,8 @@ private:
 				 throw std::invalid_argument("Invalid arguments while reading ellipse data");
 			 }
 
-			 return std::make_unique<Ellipse>(Point(data.bounds[0], data.bounds[1]), data.bounds[2], data.bounds[3], data.color);
+			 return std::make_unique<Ellipse>(
+				 Point(data.bounds[0], data.bounds[1]), data.bounds[2], data.bounds[3], Point(0, 40), data.color);
 		 } },
 
 		{ "triangle", [](const ShapeData& data) {
@@ -137,7 +139,8 @@ private:
 				 throw std::invalid_argument("Invalid arguments while reading triangle data");
 			 }
 
-			 return std::make_unique<Triangle>(Point(data.bounds[0], data.bounds[1]), data.bounds[2], data.bounds[3], data.color);
+			 return std::make_unique<Triangle>(
+				 Point(data.bounds[0], data.bounds[1]), data.bounds[2], data.bounds[3], Point(0, 40), data.color);
 		 } },
 	};
 };

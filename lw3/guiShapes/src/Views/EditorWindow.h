@@ -3,7 +3,6 @@
 #include "CanvasView.h"
 #include "PictureDocument.h"
 #include "TimelineView.h"
-#include "ToolBarController.h"
 #include "ToolBarView.h"
 #include <SFML/Graphics.hpp>
 
@@ -65,7 +64,7 @@ private:
 
 	EditorModel m_model;
 	CanvasView m_canvasView;
-	ToolBarView m_toolBarView;
+	ToolbarView m_toolBarView;
 	TimelineView m_timelineView;
 
 	void HandleEvent(const sf::Event& event)
@@ -91,7 +90,7 @@ private:
 		}
 
 		m_toolBarView.HandleEvent(event, m_window);
-		m_canvasView.HandleEvent(event, m_window);
-		m_timelineView.HandleEvent(event, m_window);
+		m_canvasView.HandleEvent(event);
+		m_timelineView.HandleEvent(event);
 	}
 };

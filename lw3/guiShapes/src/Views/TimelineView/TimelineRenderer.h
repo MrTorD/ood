@@ -10,11 +10,8 @@
 class TimelineRenderer final : public IEditorShapeVisitor
 {
 public:
-	TimelineRenderer(sf::RenderTarget& target, float shapeBoxWidth, float shapeBoxHeight, float shapeBoxPadding)
+	TimelineRenderer(sf::RenderTarget& target)
 		: m_target(target)
-		, m_shapeBoxWidth(shapeBoxWidth)
-		, m_shapeBoxHeight(shapeBoxHeight)
-		, m_shapeBoxPadding(shapeBoxPadding)
 	{
 	}
 
@@ -23,8 +20,8 @@ public:
 		for (int i = model.GetShapesCount() - 1; i >= 0; i--)
 		{
 			auto& shape = model.GetShape(i);
-			DrawShapeBox(shape);
 			shape.Accept(*this);
+			DrawShapeBox(shape);
 		}
 
 		m_drawnShapesCount = 0;
@@ -34,19 +31,16 @@ private:
 	sf::RenderTarget& m_target;
 
 	int m_drawnShapesCount = 0;
-	float m_shapePreviewWidth = 40;
-
-	float m_shapeBoxWidth;
-	float m_shapeBoxHeight;
-	float m_shapeBoxPadding;
+	// float m_shapePreviewWidth = 40;
+	float m_dragPointRadius = 5;
 
 	void VisitRectangle(const EditorShape& rect) override
 	{
-		auto [x, y, w, h] = rect.GetTimelineOffset();
+		auto [t, dy, dt, _] = rect.GetTimeline();
 
-		sf::RectangleShape drawable({ m_shapePreviewWidth, m_shapeBoxHeight });
+		sf::RectangleShape drawable({ dt, TimelineBox::GetHeight() });
 
-		drawable.setPosition({ x, y + m_drawnShapesCount * (m_shapeBoxHeight + m_shapeBoxPadding) });
+		drawable.setPosition({ t, dy + m_drawnShapesCount * TimelineBox::GetTotalHeight() });
 		drawable.setFillColor(sf::Color(rect.GetColor()));
 
 		m_target.draw(drawable);
@@ -54,15 +48,15 @@ private:
 
 	void VisitTriangle(const EditorShape& triangle) override
 	{
-		auto [x, y, w, h] = triangle.GetTimelineOffset();
+		auto [t, dy, dt, _] = triangle.GetTimeline();
 
 		sf::ConvexShape drawable;
 
 		drawable.setPointCount(3);
 
-		drawable.setPoint(0, { x, y + m_drawnShapesCount * (m_shapeBoxHeight + m_shapeBoxPadding) + m_shapeBoxHeight });
-		drawable.setPoint(1, { x + m_shapePreviewWidth / 2, y + m_drawnShapesCount * (m_shapeBoxHeight + m_shapeBoxPadding) });
-		drawable.setPoint(2, { x + m_shapePreviewWidth, y + m_drawnShapesCount * (m_shapeBoxHeight + m_shapeBoxPadding) + m_shapeBoxHeight });
+		drawable.setPoint(0, { t, dy + m_drawnShapesCount * TimelineBox::GetTotalHeight() + TimelineBox::GetHeight() });
+		drawable.setPoint(1, { t + dt / 2, dy + m_drawnShapesCount * TimelineBox::GetTotalHeight() });
+		drawable.setPoint(2, { t + dt, dy + m_drawnShapesCount * TimelineBox::GetTotalHeight() + TimelineBox::GetHeight() });
 
 		drawable.setFillColor(sf::Color(triangle.GetColor()));
 
@@ -71,12 +65,12 @@ private:
 
 	void VisitEllipse(const EditorShape& ellipse) override
 	{
-		auto [x, y, w, h] = ellipse.GetTimelineOffset();
+		auto [t, dy, dt, _] = ellipse.GetTimeline();
 
-		sf::CircleShape drawable(m_shapePreviewWidth / 2);
+		sf::CircleShape drawable(dt / 2);
 
-		drawable.setPosition({ x, m_drawnShapesCount * (m_shapeBoxHeight + m_shapeBoxPadding) + y });
-		drawable.setScale({ 1, m_shapeBoxHeight / m_shapePreviewWidth });
+		drawable.setPosition({ t, dy + m_drawnShapesCount * TimelineBox::GetTotalHeight() });
+		drawable.setScale({ 1, TimelineBox::GetHeight() / dt });
 		drawable.setFillColor(sf::Color(ellipse.GetColor()));
 
 		m_target.draw(drawable);
@@ -84,15 +78,40 @@ private:
 
 	void DrawShapeBox(const EditorShape& shape)
 	{
-		sf::RectangleShape drawable({ m_shapeBoxWidth, m_shapeBoxHeight });
-		auto [x, y, w, h] = shape.GetTimelineOffset();
+		auto [t, dy, dt, _] = shape.GetTimeline();
 
-		drawable.setPosition({ x, ++m_drawnShapesCount * (m_shapeBoxHeight + m_shapeBoxPadding) + y });
-		drawable.setOutlineThickness(3);
+		sf::RectangleShape drawable({ dt, TimelineBox::GetHeight() });
+
+		float y = m_drawnShapesCount++ * TimelineBox::GetTotalHeight() + dy;
+		drawable.setPosition({ t, y });
+		drawable.setOutlineThickness(-3);
 
 		drawable.setOutlineColor(shape.IsSelected() ? sf::Color::Red : sf::Color::White);
 		drawable.setFillColor(sf::Color::Transparent);
 
 		m_target.draw(drawable);
+		for (auto boundPoints = GetBoundPoints(t, y, dt, TimelineBox::GetHeight());
+			const auto& point : boundPoints)
+		{
+			m_target.draw(point);
+		}
+	}
+
+	std::vector<sf::CircleShape> GetBoundPoints(float x, float y, float w, float h) const
+	{
+		std::vector<sf::CircleShape> boundPoints;
+
+		for (int i = 0; i < 2; i++)
+		{
+			boundPoints.emplace_back(m_dragPointRadius);
+			boundPoints[i].setFillColor(sf::Color::White);
+		}
+
+		auto pointD = 2 * m_dragPointRadius;
+
+		boundPoints[0].setPosition({ x, y + ((h - pointD) / 2) });
+		boundPoints[1].setPosition({ x + w - pointD, y + ((h - pointD) / 2) });
+
+		return boundPoints;
 	}
 };

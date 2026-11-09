@@ -1,8 +1,6 @@
 #pragma once
 
-#include "../EditorModel/EditorShape/SelectionBox.h"
 #include "PictureRenderer.h"
-#include <algorithm>
 
 class CanvasController
 {
@@ -14,9 +12,7 @@ public:
 
 	void OnMouseWithCtrlPressed(Point point)
 	{
-		auto* shape = m_model.FindShapeAt(point);
-
-		if (shape)
+		if (auto* shape = m_model.FindShapeAt(point); shape)
 		{
 			shape->SetSelected(!shape->IsSelected());
 		}
@@ -77,7 +73,7 @@ private:
 		}
 
 		CreateTempShape(point);
-		m_model.BeginCreateShape(*m_tempShape.get());
+		m_model.BeginCreateShape(*m_tempShape);
 
 		m_isInAction = true;
 		m_startPosition = point;
@@ -115,13 +111,13 @@ private:
 		switch (m_model.GetCanvasMode())
 		{
 		case CanvasMode::CreatingRectangle:
-			m_tempShape = std::make_unique<Rectangle>(point, 1, 1, 0xFFC000FF);
+			m_tempShape = std::make_unique<Rectangle>(point, 1, 1, Point(m_model.GetCurrentTime(), 40), 0xFFC000FF);
 			return;
 		case CanvasMode::CreatingEllipse:
-			m_tempShape = std::make_unique<Ellipse>(point, 1, 1, 0x4472C4FF);
+			m_tempShape = std::make_unique<Ellipse>(point, 1, 1, Point(m_model.GetCurrentTime(), 40), 0x4472C4FF);
 			return;
 		case CanvasMode::CreatingTriangle:
-			m_tempShape = std::make_unique<Triangle>(point, 1, 1, 0x70AD47FF);
+			m_tempShape = std::make_unique<Triangle>(point, 1, 1, Point(m_model.GetCurrentTime(), 40), 0x70AD47FF);
 		}
 	}
 };

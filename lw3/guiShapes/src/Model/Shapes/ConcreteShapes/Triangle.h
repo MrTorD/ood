@@ -7,11 +7,12 @@
 class Triangle : public Visitable<Triangle, Shape>
 {
 public:
-	Triangle(Point topLeft, float width, float height, Color color)
+	Triangle(Point topLeft, float width, float height, Point timeline, Color color)
 	{
 		m_topLeft = topLeft;
 		m_width = width;
 		m_height = height;
+		m_timeline = timeline;
 		m_color = color;
 	}
 
@@ -69,7 +70,7 @@ public:
 
 	std::unique_ptr<Shape> Clone() const override
 	{
-		return std::make_unique<Triangle>(m_topLeft, m_width, m_height, m_color);
+		return std::make_unique<Triangle>(m_topLeft, m_width, m_height, m_timeline, m_color);
 	}
 
 private:

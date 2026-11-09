@@ -19,7 +19,7 @@ public:
 	virtual bool IsContains(Point point) const = 0;
 	virtual void Accept(IShapeVisitor& visitor) const = 0;
 	virtual std::unique_ptr<Shape> Clone() const = 0;
-	
+
 	Point GetTimeline() const
 	{
 		return m_timeline;

@@ -12,9 +12,9 @@ protected:
 
 	void SetUp() override
 	{
-		picture.AddShape(std::make_unique<Rectangle>(Point(100, 100), 50, 50, 0));
-		picture.AddShape(std::make_unique<Ellipse>(Point(100, 100), 50, 50, 0));
-		picture.AddShape(std::make_unique<Triangle>(Point(100, 100), 50, 50, 0));
+		picture.AddShape(std::make_unique<Rectangle>(Point(100, 100), 50, 50, Point(0, 0), 0));
+		picture.AddShape(std::make_unique<Ellipse>(Point(100, 100), 50, 50, Point(0, 0), 0));
+		picture.AddShape(std::make_unique<Triangle>(Point(100, 100), 50, 50, Point(0, 0), 0));
 	}
 };
 
@@ -76,7 +76,7 @@ TEST_F(ModelFixture, ValidPictureGetIndex)
 
 TEST_F(ModelFixture, InvalidPictureGetIndex)
 {
-	auto shape = std::make_unique<Rectangle>(Point(0, 0), 10, 10, 0);
+	auto shape = std::make_unique<Rectangle>(Point(0, 0), 10, 10, Point(0, 0), 0);
 
 	ASSERT_EQ(-1, picture.GetIndex(shape.get()));
 }

@@ -17,3 +17,8 @@ sf::Vector2f ConvertToVector(Point point)
 {
 	return { point.x, point.y };
 }
+
+Point NormalizeMousePos(const sf::RenderTarget& target, sf::Vector2i position)
+{
+	return ConvertToPoint(target.mapPixelToCoords(position));
+}

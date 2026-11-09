@@ -70,11 +70,33 @@ public:
 		return { m_minShapeWidth, m_minShapeHeight };
 	}
 
+	float GetCurrentTime() const
+	{
+		return m_currTime;
+	}
+
+	void SetCurrentTime(float time)
+	{
+		m_currTime = time;
+	}
+
+	size_t GetIndex(const EditorShape& shape) const
+	{
+		return m_picture->GetIndex(&shape.GetDomainShape());
+	}
+
+	bool IsShapeTimeBetween(const EditorShape* shape) const
+	{
+		auto [t, _, dt, _] = shape->GetTimeline();
+
+		return t <= m_currTime && m_currTime <= t + dt;
+	}
+
 	EditorShape* FindShapeAt(Point point)
 	{
 		for (const auto& shape : GetSelectedShapes() | std::views::reverse)
 		{
-			if (shape->GetSelectionBox().IsContains(point))
+			if (shape->GetSelectionBox().IsContains(point) && IsShapeTimeBetween(shape))
 			{
 				return shape;
 			}
@@ -82,7 +104,7 @@ public:
 
 		for (const auto& shape : m_shapes | std::views::reverse)
 		{
-			if (shape->IsContains(point))
+			if (shape->IsContains(point) && IsShapeTimeBetween(shape.get()))
 			{
 				return shape.get();
 			}
@@ -99,7 +121,7 @@ public:
 		{
 			if (shape->IsSelected())
 			{
-				selectedShapes.push_back(shape.get());
+				selectedShapes.emplace_back(shape.get());
 			}
 		}
 
@@ -116,7 +138,7 @@ public:
 		m_commandSink(std::move(command));
 	}
 
-	void SaveToFile(const std::string& fileName)
+	void SaveToFile(const std::string& fileName) const
 	{
 		PictureSerializer serializer;
 
@@ -127,23 +149,33 @@ public:
 	{
 		m_activeShapes = GetSelectedShapes();
 
-		for (auto& shape : m_activeShapes)
+		if (!TrySetAction(
+				point,
+				[](const EditorShape& sh) {
+					return sh.GetSelectionBox().GetDragPoints();
+				}))
 		{
-			auto dragPoints = shape->GetSelectionBox().GetDragPoints();
-
-			for (auto& dragPoint : dragPoints)
-			{
-				if (dragPoint.IsContains(point))
-				{
-					m_actionFunc = dragPoint.GetOffset;
-					return;
-				}
-			}
+			m_actionFunc = [](Point point) {
+				return Bounds(point.x, point.y, 0, 0);
+			};
 		}
+	}
 
-		m_actionFunc = [](Point point) {
-			return Bounds(point.x, point.y, 0, 0);
-		};
+	void BeginTimelineShift(Point point)
+	{
+		m_activeShapes = GetSelectedShapes();
+
+		if (!TrySetAction(
+				point,
+				[this](const EditorShape& shape) -> std::vector<DragPoint> {
+					auto index = GetIndex(shape);
+					return shape.GetTimelineBox(m_shapes.size() - 1 - index).GetDragPoints();
+				}))
+		{
+			m_actionFunc = [](Point point) {
+				return Bounds(point.x, point.y, 0, 0);
+			};
+		}
 	}
 
 	void BeginCreateShape(Shape& shape)
@@ -156,20 +188,26 @@ public:
 		};
 	}
 
-	void BeginTimelineShift()
-	{
-		m_activeShapes = GetSelectedShapes();
-	}
-
 	void UpdateTimelineShift(Point point)
+	// TODO: Think about
 	{
+		auto [dx, dy, dw, dh] = m_actionFunc(point);
+
 		for (auto& shape : m_activeShapes)
 		{
-			shape->SetTimelineOffset(point);
+			auto [x, w] = shape->GetDomainShape().GetTimeline();
+			auto [newX, newW] = ClampDimension(x, w, dx, dw, 1000, m_minShapeDuration); // TODO: Min & Max offset
+			dx = newX;
+			dw = newW;
+		}
+
+		for (auto& shape : m_activeShapes)
+		{
+			shape->SetTimelineOffset({ dx, dy, dw, dh });
 		}
 	}
 
-	void CommitTimelineShift(Bounds shapeOffset)
+	void CommitTimelineShift()
 	{
 		if (m_activeShapes.empty())
 		{
@@ -179,22 +217,29 @@ public:
 		auto timelineOffset = m_activeShapes[0]->GetTimelineOffset();
 
 		std::vector<size_t> indexes;
-		int liftLayersCount = -timelineOffset.y / shapeOffset.y;
+		int liftLayersCount = -timelineOffset.y / TimelineBox::GetTotalHeight();
 
 		for (auto* shape : m_activeShapes)
 		{
-			auto index = m_picture->GetIndex(&shape->GetDomainShape());
-			indexes.push_back(index);
-			ClampTimeline(index, liftLayersCount);
 			shape->ResetTimelineShift();
+			auto index = GetIndex(*shape);
+			indexes.push_back(index);
+			ClampLiftLayers(index, liftLayersCount);
 		}
 		m_activeShapes.clear();
 
-		if (liftLayersCount != 0)
+		if (liftLayersCount == 0 && timelineOffset.x == 0 && timelineOffset.w == 0)
 		{
-			auto command = std::make_unique<ShiftTimelineCommand>(m_picture, std::move(indexes), liftLayersCount, Point(0, 0));
-			m_commandSink(std::move(command));
+			return;
 		}
+
+		auto command = std::make_unique<ShiftTimelineCommand>(
+			m_picture,
+			std::move(indexes),
+			liftLayersCount,
+			Point(timelineOffset.x, timelineOffset.w));
+			
+		m_commandSink(std::move(command));
 	}
 
 	void UpdateActiveShapes(Point point)
@@ -229,6 +274,7 @@ public:
 		{
 			shape->ResetPreview();
 		}
+
 		auto command = m_canvasMode == CanvasMode::SelectShapes
 			? CreateShiftCommand(offset)
 			: CreateShapeCommand(offset);
@@ -276,6 +322,8 @@ private:
 	Bounds& m_canvasBounds;
 	CanvasMode m_canvasMode = CanvasMode::SelectShapes;
 
+	float m_currTime = 0;
+	float m_minShapeDuration = 20;
 	float m_minShapeWidth = 50.f;
 	float m_minShapeHeight = 50.f;
 
@@ -319,7 +367,28 @@ private:
 			m_picture->GetShapesCount());
 	}
 
-	void ClampTimeline(size_t index, int& liftLayersCount)
+	bool TrySetAction(
+		Point point,
+		const std::function<std::vector<DragPoint>(const EditorShape&)>& GetDragPoints)
+	{
+		for (const auto& shape : m_activeShapes)
+		{
+			auto dragPoints = GetDragPoints(*shape);
+
+			if (auto it = std::ranges::find_if(dragPoints, [&point](const DragPoint& p) {
+					return p.IsContains(point);
+				});
+				it != dragPoints.end())
+			{
+				m_actionFunc = it->GetOffset;
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	void ClampLiftLayers(size_t index, int& liftLayersCount)
 	{
 		int newIndex = index + liftLayersCount;
 
@@ -344,7 +413,7 @@ private:
 		offset = { x, y, w, h };
 	}
 
-	std::pair<float, float> ClampDimension(float x0, float w0, float dx, float dw, float maxX, float minW)
+	static std::pair<float, float> ClampDimension(float x0, float w0, float dx, float dw, float maxX, float minW)
 	{
 		std::pair<float, float> offset(dx, dw);
 

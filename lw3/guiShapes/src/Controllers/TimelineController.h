@@ -5,35 +5,55 @@
 class TimelineController
 {
 public:
-	TimelineController(EditorModel& model, float shapeBoxWidth, float shapeBoxHeight, float shapeBoxPadding)
+	TimelineController(EditorModel& model)
 		: m_model(model)
-		, m_shapeBoxWidth(shapeBoxWidth)
-		, m_shapeBoxHeight(shapeBoxHeight)
-		, m_shapeBoxPadding(shapeBoxPadding)
 	{
 	}
 
 	void OnMouseWithCtrlPressed(Point point)
 	{
-		int index = point.y / (m_shapeBoxHeight + m_shapeBoxPadding) - 1;
+		if (point.x < 0 || point.y < 0) // TODO: Подумать обязателен ли он тут?
+		{
+			return;
+		}
+
+		int index = point.y / TimelineBox::GetTotalHeight();
 		if (index >= m_model.GetShapesCount())
 		{
 			return;
 		}
 
 		auto& shape = m_model.GetShape(m_model.GetShapesCount() - 1 - index);
-		shape.SetSelected(!shape.IsSelected());
+		if (shape.GetTimelineBox(index).IsContains(point))
+		{
+			shape.SetSelected(!shape.IsSelected());
+		}
 	}
 
 	void OnMousePressed(Point point)
 	{
-		int index = point.y / (m_shapeBoxHeight + m_shapeBoxPadding) - 1;
-		if (index >= m_model.GetShapesCount())
+		if (point.x < 0 || point.y < 0) // TODO: Подумать обязателен ли он тут?
 		{
 			return;
 		}
 
+		int index = point.y / TimelineBox::GetTotalHeight();
+		if (index >= m_model.GetShapesCount())
+		{
+			m_model.UnselectAll();
+			m_model.SetCurrentTime(point.x);
+			return;
+		}
+
 		auto& shape = m_model.GetShape(m_model.GetShapesCount() - 1 - index);
+		auto timelineBox = shape.GetTimelineBox(index);
+
+		if (!timelineBox.IsContains(point))
+		{
+			m_model.UnselectAll();
+			m_model.SetCurrentTime(point.x);
+			return;
+		}
 
 		if (!shape.IsSelected())
 		{
@@ -41,7 +61,7 @@ public:
 			shape.SetSelected(true);
 		}
 
-		m_model.BeginTimelineShift();
+		m_model.BeginTimelineShift(point);
 		m_isInAction = true;
 		m_startPosition = point;
 	}
@@ -64,17 +84,13 @@ public:
 		}
 
 		m_model.UpdateTimelineShift(point - m_startPosition);
-		// TODO: Разобраться с магическим числом
-		m_model.CommitTimelineShift({ 0, 65 });
+		m_model.CommitTimelineShift();
 
 		m_isInAction = false;
 	}
 
 private:
 	EditorModel& m_model;
-	float m_shapeBoxWidth;
-	float m_shapeBoxHeight;
-	float m_shapeBoxPadding;
 
 	bool m_isInAction = false;
 	Point m_startPosition;

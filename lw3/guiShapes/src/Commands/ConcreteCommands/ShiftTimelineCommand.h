@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../ICommand.h"
+#include "ICommand.h"
 #include "Picture.h"
 #include <vector>
 
@@ -19,7 +19,12 @@ public:
 	{
 		for (auto index : m_shapeIndexes)
 		{
-			m_picture->LiftShape(index, m_liftLayersCount);
+			auto newTimeline = m_picture->GetShape(index)->GetTimeline() + m_offset;
+			m_picture->SetShapeTimeline(index, newTimeline);
+			if (m_liftLayersCount != 0)
+			{
+				m_picture->LiftShape(index, m_liftLayersCount);
+			}
 		}
 	}
 
@@ -27,7 +32,12 @@ public:
 	{
 		for (auto index : m_shapeIndexes)
 		{
-			m_picture->LiftShape(m_liftLayersCount + index, -m_liftLayersCount);
+			if (m_liftLayersCount != 0)
+			{
+				m_picture->LiftShape(m_liftLayersCount + index, -m_liftLayersCount);
+			}
+			auto newTimeline = m_picture->GetShape(index)->GetTimeline() - m_offset;
+			m_picture->SetShapeTimeline(index, newTimeline);
 		}
 	}
 

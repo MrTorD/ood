@@ -1,9 +1,10 @@
 #pragma once
 
-#include "../IEditorShapeVisitor.h"
-#include "../VisitorAdapter.h"
+#include "IEditorShapeVisitor.h"
 #include "SelectionBox.h"
 #include "Shape.h"
+#include "TimelineBox.h"
+#include "VisitorAdapter.h"
 
 class EditorModel;
 
@@ -17,25 +18,14 @@ public:
 		return bounds += m_previewOffset;
 	}
 
-	Bounds GetTimelineOffset() const
-	{
-		return m_timelineOffset;
-	}
-
-	void SetTimelineOffset(Point point)
-	{
-		m_timelineOffset.x = point.x;
-		m_timelineOffset.y = point.y;
-	}
-
-	void ResetTimelineShift()
-	{
-		m_timelineOffset = Bounds();
-	}
-
 	SelectionBox GetSelectionBox() const
 	{
-		return { GetBounds() };
+		return SelectionBox(GetBounds());
+	};
+
+	TimelineBox GetTimelineBox(size_t index) const // TODO: Think about
+	{
+		return TimelineBox(index, m_shape.GetTimeline());
 	}
 
 	Color GetColor() const
@@ -67,9 +57,16 @@ public:
 			point.y - m_previewOffset.y });
 	}
 
-	bool ResetPreview()
+	Bounds GetTimeline() const
 	{
-		return SetPreviewOffset({});
+		auto [t, dt] = m_shape.GetTimeline();
+
+		return { t + m_timelineOffset.x, m_timelineOffset.y, dt + m_timelineOffset.w, 0 };
+	}
+
+	void ResetPreview()
+	{
+		SetPreviewOffset({});
 	}
 
 private:
@@ -101,10 +98,24 @@ private:
 		return m_previewOffset;
 	}
 
-	bool SetPreviewOffset(Bounds offset)
+	// TODO: Подумать над тем нужен ли метод, судя по всему нужен
+	Bounds GetTimelineOffset() const
 	{
-		std::swap(m_previewOffset, offset);
+		return m_timelineOffset;
+	}
 
-		return m_previewOffset != offset;
+	void SetPreviewOffset(Bounds offset)
+	{
+		m_previewOffset = offset;
+	}
+
+	void SetTimelineOffset(Bounds offset)
+	{
+		m_timelineOffset = offset;
+	}
+
+	void ResetTimelineShift()
+	{
+		m_timelineOffset = Bounds();
 	}
 };

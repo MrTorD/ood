@@ -1,20 +1,20 @@
 #pragma once
 
-#include "FileDialogues.h"
 #include "EditorModel.h"
+#include "FileDialogues.h"
 
 class ToolBarController
 {
 public:
 	ToolBarController(
 		EditorModel& model,
-		const std::function<void()>& createNewWindow,
-		const std::function<void(std::unique_ptr<Picture>)>& reopenWindow,
-		const std::function<void()>& makeWindowCopy)
+		std::function<void()> createNewWindow,
+		std::function<void(std::unique_ptr<Picture>)> reopenWindow,
+		std::function<void()> makeWindowCopy)
 		: m_model(model)
-		, m_createNewWindow(createNewWindow)
-		, m_reopenWindow(reopenWindow)
-		, m_makeWindowCopy(makeWindowCopy)
+		, m_createNewWindow(std::move(createNewWindow))
+		, m_reopenWindow(std::move(reopenWindow))
+		, m_makeWindowCopy(std::move(makeWindowCopy))
 	{
 		// [x]: Контроллер не должен знать про расположение кнопок
 	}
@@ -58,7 +58,7 @@ public:
 
 private:
 	EditorModel& m_model;
-	const std::function<void()>& m_createNewWindow;
-	const std::function<void(std::unique_ptr<Picture>)>& m_reopenWindow;
-	const std::function<void()>& m_makeWindowCopy;
+	std::function<void()> m_createNewWindow;
+	std::function<void(std::unique_ptr<Picture>)> m_reopenWindow;
+	std::function<void()> m_makeWindowCopy;
 };

@@ -6,11 +6,12 @@
 class Rectangle : public Visitable<Rectangle, Shape>
 {
 public:
-	Rectangle(Point topLeft, float width, float height, Color color)
+	Rectangle(Point topLeft, float width, float height, Point timeline, Color color)
 	{
 		SetTopLeft(topLeft);
 		SetWidth(width);
 		SetHeight(height);
+		m_timeline = timeline;
 		SetColor(color);
 	}
 
@@ -85,7 +86,7 @@ public:
 
 	std::unique_ptr<Shape> Clone() const override
 	{
-		return std::make_unique<Rectangle>(m_topLeft, m_width, m_height, m_color);
+		return std::make_unique<Rectangle>(m_topLeft, m_width, m_height, m_timeline, m_color);
 	}
 
 private:

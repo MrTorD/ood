@@ -61,19 +61,19 @@ protected:
 		document.ExecuteCommand(
 			std::make_unique<AddShapeCommand>(
 				document.GetPicture(),
-				std::make_unique<Rectangle>(Point(150, 190), 200, 150, 0xB1FF21FF),
+				std::make_unique<Rectangle>(Point(150, 190), 200, 150, Point(0, 0), 0xB1FF21FF),
 				0));
 
 		document.ExecuteCommand(
 			std::make_unique<AddShapeCommand>(
 				document.GetPicture(),
-				std::make_unique<Ellipse>(Point(320, 220), 60, 30, 0xFFDE21FF),
+				std::make_unique<Ellipse>(Point(320, 220), 60, 30, Point(0, 0), 0xFFDE21FF),
 				1));
 
 		document.ExecuteCommand(
 			std::make_unique<AddShapeCommand>(
 				document.GetPicture(),
-				std::make_unique<Triangle>(Point(300, 250), 60, 60, 0xF9AAC0FF),
+				std::make_unique<Triangle>(Point(300, 250), 60, 60, Point(0, 0), 0xF9AAC0FF),
 				2));
 	}
 
@@ -114,7 +114,7 @@ TEST_F(DocumentFixture, SeveralUndo)
 	document.Undo();
 
 	Picture expected;
-	expected.AddShape(std::make_unique<Rectangle>(Point(150, 190), 200, 150, 0xB1FF21FF));
+	expected.AddShape(std::make_unique<Rectangle>(Point(150, 190), 200, 150, Point(0, 0), 0xB1FF21FF));
 
 	AssertPicture(*document.GetPicture(), expected);
 }
@@ -127,9 +127,9 @@ TEST_F(DocumentFixture, SeveralRedo)
 	document.Redo();
 
 	Picture expected;
-	expected.AddShape(std::make_unique<Rectangle>(Point(150, 190), 200, 150, 0xB1FF21FF));
-	expected.AddShape(std::make_unique<Ellipse>(Point(320, 220), 60, 30, 0xFFDE21FF));
-	expected.AddShape(std::make_unique<Triangle>(Point(300, 250), 60, 60, 0xF9AAC0FF));
+	expected.AddShape(std::make_unique<Rectangle>(Point(150, 190), 200, 150, Point(0, 0), 0xB1FF21FF));
+	expected.AddShape(std::make_unique<Ellipse>(Point(320, 220), 60, 30, Point(0, 0), 0xFFDE21FF));
+	expected.AddShape(std::make_unique<Triangle>(Point(300, 250), 60, 60, Point(0, 0), 0xF9AAC0FF));
 
 	AssertPicture(*document.GetPicture(), expected);
 }
@@ -143,14 +143,14 @@ TEST_F(DocumentFixture, RedoDoesNothingAfterAction)
 	document.ExecuteCommand(
 		std::make_unique<AddShapeCommand>(
 			document.GetPicture(),
-			std::make_unique<Rectangle>(Point(150, 190), 200, 150, 0xB1FF21FF),
+			std::make_unique<Rectangle>(Point(150, 190), 200, 150, Point(0, 0), 0xB1FF21FF),
 			2));
 
 	document.Redo();
 	document.Redo();
 
 	Picture expected;
-	expected.AddShape(std::make_unique<Rectangle>(Point(150, 190), 200, 150, 0xB1FF21FF));
+	expected.AddShape(std::make_unique<Rectangle>(Point(150, 190), 200, 150, Point(0, 0), 0xB1FF21FF));
 
 	AssertPicture(*document.GetPicture(), expected);
 }
@@ -161,11 +161,11 @@ TEST_F(DocumentFixture, AddShapeUndoRedo)
 	doc.ExecuteCommand(
 		std::make_unique<AddShapeCommand>(
 			doc.GetPicture(),
-			std::make_unique<Rectangle>(Point(150, 190), 200, 150, 0xB1FF21FF),
+			std::make_unique<Rectangle>(Point(150, 190), 200, 150, Point(0, 0), 0xB1FF21FF),
 			0));
 
 	Picture expected;
-	expected.AddShape(std::make_unique<Rectangle>(Point(150, 190), 200, 150, 0xB1FF21FF));
+	expected.AddShape(std::make_unique<Rectangle>(Point(150, 190), 200, 150, Point(0, 0), 0xB1FF21FF));
 
 	AssertPicture(*doc.GetPicture(), expected);
 
@@ -184,7 +184,7 @@ TEST_F(DocumentFixture, DeleteShapeUndoRedo)
 	doc.ExecuteCommand(
 		std::make_unique<AddShapeCommand>(
 			doc.GetPicture(),
-			std::make_unique<Rectangle>(Point(150, 190), 200, 150, 0xB1FF21FF),
+			std::make_unique<Rectangle>(Point(150, 190), 200, 150, Point(0, 0), 0xB1FF21FF),
 			0));
 	doc.ExecuteCommand(
 		std::make_unique<DeleteShapesCommand>(
@@ -195,7 +195,7 @@ TEST_F(DocumentFixture, DeleteShapeUndoRedo)
 
 	doc.Undo();
 	Picture expected;
-	expected.AddShape(std::make_unique<Rectangle>(Point(150, 190), 200, 150, 0xB1FF21FF));
+	expected.AddShape(std::make_unique<Rectangle>(Point(150, 190), 200, 150, Point(0, 0), 0xB1FF21FF));
 
 	doc.Redo();
 	AssertPicture(*doc.GetPicture(), Picture());

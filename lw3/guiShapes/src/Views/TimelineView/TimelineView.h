@@ -1,105 +1,79 @@
 #pragma once
 
-#include "TimelineController.h"
-#include "TimelineRenderer.h"
+#include "Button.h"
+#include "EditorModel.h"
+#include "TimelineShapes.h"
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Window/Event.hpp>
 
 class TimelineView
 {
 public:
+	using ScopedConnection = boost::signals2::scoped_connection;
+
 	TimelineView(EditorModel& model, sf::RenderTarget& target)
 		: m_model(model)
 		, m_target(target)
-		, m_controller(model, m_shapeBoxWidth, m_shapeBoxHeight, m_shapeBoxPadding)
-		, m_renderer(target, m_shapeBoxWidth, m_shapeBoxHeight, m_shapeBoxPadding)
-		, m_view({ 150, 150 }, { 300, 300 })
-		, m_zoomHandler(m_view)
-		, m_background(m_view.getSize())
+		, m_view({ 500, 50 }, { 1000, 100 })
+		, m_timelineShapes(model, target)
+		, m_assetsPath("../../../lw3/guiShapes/assets/")
+		, m_font(m_assetsPath / "arial.ttf")
+		, m_pauseButton(
+			  "",
+			  []() {},
+			  []() { return false; },
+			  { 0.5f * m_view.getSize().x, 0.3f * m_view.getSize().y },
+			  { 60, 60 },
+			  m_font, // TODO: Temp
+			  m_assetsPath / "pause.png")
+		, m_zoomInfo(m_font)
 	{
-		m_view.setViewport(sf::FloatRect({ 0, 0.6 }, { 1, 0.4 }));
-		m_background.setFillColor(sf::Color(0xF3F3F3FF));
-	}
+		m_view.setViewport(sf::FloatRect({ 0.2, 0.6 }, { 0.8, 0.07 }));
+		m_background.setFillColor(sf::Color(0x6ac8e1FF));
+		m_background.setSize({ m_view.getSize().x, m_view.getSize().y });
 
-	void HandleEvent(const sf::Event& event, sf::RenderTarget& target)
-	{
-		target.setView(m_view);
+		// TODO: TEMP
+		m_zoomInfo.setCharacterSize(40);
+		m_zoomInfo.setFillColor(sf::Color::Black);
+		m_zoomInfo.setPosition({ 0.8f * m_view.getSize().x, 0.25f * m_view.getSize().y });
 
-		if (const auto* mousePressed = event.getIf<sf::Event::MouseButtonPressed>())
-		{
-			auto pos = NormalizeMousePos(target, mousePressed->position);
+		m_zoomInfo.setString("100%");
 
-			sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LControl)
-				? m_controller.OnMouseWithCtrlPressed(pos)
-				: m_controller.OnMousePressed(pos);
-		}
-		else if (const auto* mouseMoved = event.getIf<sf::Event::MouseMoved>())
-		{
-			auto pos = NormalizeMousePos(target, mouseMoved->position);
-			m_controller.OnMouseMoved(pos);
-		}
-		else if (const auto* mouseReleased = event.getIf<sf::Event::MouseButtonReleased>())
-		{
-			auto pos = NormalizeMousePos(target, mouseReleased->position);
-			m_controller.OnMouseReleased(pos);
-		}
-		else if (const auto* buttonPressed = event.getIf<sf::Event::KeyPressed>())
-		{
-			OnKeyPressed(buttonPressed->code);
-		}
+		m_zoomConnection = m_timelineShapes.OnZoomChange([&](int newZoom) {
+			m_zoomInfo.setString(std::format("{}%", newZoom));
+		});
 	}
 
 	void Draw()
 	{
 		m_target.setView(m_view);
+		// TODO:
+		// m_background.setSize({m_view.getSize()}); // TODO: Подумать нормально ли?
+		// m_background.setPosition(m_view.getCenter());
 		m_target.draw(m_background);
-		m_renderer.Draw(m_model);
+		m_timelineShapes.Draw();
+		m_target.setView(m_view);
+		m_pauseButton.Draw(m_target);
+
+		m_target.draw(m_zoomInfo);
+	}
+
+	void HandleEvent(const sf::Event& event)
+	{
+		m_timelineShapes.HandleEvent(event);
 	}
 
 private:
-	float m_moveStepX = 10;
-	float m_moveStepY = 25;
-	float m_shapeBoxHeight = 50;
-	float m_shapeBoxWidth = 200;
-	float m_shapeBoxPadding = 15;
-
 	EditorModel& m_model;
 	sf::RenderTarget& m_target;
-	TimelineRenderer m_renderer;
-	TimelineController m_controller;
 	sf::View m_view;
-	ZoomHandler m_zoomHandler;
+	TimelineShapes m_timelineShapes;
+
+	std::filesystem::path m_assetsPath; // TODO: Подумать о выносе в какое-то глобальное супер пространство?
+	sf::Font m_font;
+	Button m_pauseButton;
+	sf::Text m_zoomInfo;
 	sf::RectangleShape m_background;
 
-	void OnKeyPressed(sf::Keyboard::Key key)
-	{
-		switch (key)
-		{
-		case sf::Keyboard::Key::Equal:
-			m_zoomHandler.Zoom();
-			return;
-		case sf::Keyboard::Key::Hyphen:
-			m_zoomHandler.Unzoom();
-			return;
-		case sf::Keyboard::Key::Num0:
-			m_zoomHandler.ResetZoom();
-			return;
-		case sf::Keyboard::Key::Left:
-			m_view.move({ -m_moveStepX, 0 });
-			return;
-		case sf::Keyboard::Key::Right:
-			m_view.move({ m_moveStepX, 0 });
-			return;
-		case sf::Keyboard::Key::Up:
-			m_view.move({ 0, -m_moveStepY });
-			return;
-		case sf::Keyboard::Key::Down:
-			m_view.move({ 0, m_moveStepY });
-		}
-	}
-
-	static Point NormalizeMousePos(const sf::RenderTarget& target, sf::Vector2i position)
-	{
-		return ConvertToPoint(target.mapPixelToCoords(position));
-	}
+	ScopedConnection m_zoomConnection;
 };

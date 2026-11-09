@@ -6,11 +6,12 @@
 class Ellipse : public Visitable<Ellipse, Shape>
 {
 public:
-	Ellipse(Point centre, float radiusX, float radiusY, Color color)
+	Ellipse(Point centre, float radiusX, float radiusY, Point timeline, Color color)
 	{
 		m_centre = centre;
 		m_radiusX = radiusX;
 		m_radiusY = radiusY;
+		m_timeline = timeline;
 		m_color = color;
 	}
 
@@ -72,7 +73,7 @@ public:
 
 	std::unique_ptr<Shape> Clone() const override
 	{
-		return std::make_unique<Ellipse>(m_centre, m_radiusX, m_radiusY, m_color);
+		return std::make_unique<Ellipse>(m_centre, m_radiusX, m_radiusY, m_timeline, m_color);
 	}
 
 private:

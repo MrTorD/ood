@@ -103,7 +103,6 @@ public:
 			: std::prev(it, -liftLayersCount);
 
 		m_shapes.splice(newPlaceIt, m_shapes, it);
-
 		m_changeSignal();
 	}
 
@@ -116,9 +115,15 @@ public:
 		m_changeSignal();
 	}
 
-	[[nodiscard]] ScopedConnection DoOnChange(ChangeSignal::slot_type slot)
+	[[nodiscard]] ScopedConnection DoOnChange(const ChangeSignal::slot_type& slot)
 	{
 		return m_changeSignal.connect(slot);
+	}
+
+	void SetShapeTimeline(size_t index, Point newTimeline)
+	{
+		GetShape(index)->SetTimeline(newTimeline);
+		// m_changeSignal();
 	}
 
 private:

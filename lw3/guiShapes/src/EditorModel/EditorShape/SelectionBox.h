@@ -7,7 +7,7 @@
 class SelectionBox
 {
 public:
-	SelectionBox(Bounds bounds)
+	explicit SelectionBox(Bounds bounds)
 		: m_bounds(bounds)
 	{
 		auto [x, y, w, h] = bounds;

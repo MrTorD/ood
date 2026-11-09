@@ -18,15 +18,22 @@ public:
 
 	void Draw(const EditorModel& model)
 	{
+		// TODO: Fix??
 		for (int i = 0; i < model.GetShapesCount(); i++)
 		{
-			auto& shape = model.GetShape(i);
-			shape.Accept(*this);
+			if (auto& shape = model.GetShape(i); model.IsShapeTimeBetween(&shape))
+			{
+				shape.Accept(*this);
+			}
 		}
 
+		// TODO: Fix??
 		for (auto shape : model.GetSelectedShapes())
 		{
-			DrawSelection(*shape);
+			if (model.IsShapeTimeBetween(shape))
+			{
+				DrawSelection(*shape);
+			}
 		}
 	}
 
