@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Shape.h"
+#include "IShape.h"
+#include "ShapeCollection.h"
 #include <boost/signals2/signal.hpp>
 #include <list>
 #include <memory>
@@ -20,98 +21,57 @@ public:
 	using ScopedConnection = boost::signals2::scoped_connection;
 	using ChangeSignal = boost::signals2::signal<void()>;
 
-	const Shape& GetShape(size_t i) const
+	const IShape& GetShape(size_t i) const
 	{
-		if (i >= m_shapes.size())
-		{
-			throw std::out_of_range("Index is out of shape list bounds");
-		}
-
-		auto it = m_shapes.begin();
-		std::advance(it, i);
-
-		return *(*it);
+		return m_shapes.GetShape(i);
 	}
 
-	Shape* GetShape(size_t i)
+	IShape& GetShape(size_t i)
 	{
-		if (i >= m_shapes.size())
-		{
-			throw std::out_of_range("Index is out of shape list bounds");
-		}
-
-		auto it = m_shapes.begin();
-		std::advance(it, i);
-
-		return it->get();
+		return m_shapes.GetShape(i);
 	}
 
-	size_t GetIndex(const Shape* searchShape) const
+	size_t GetIndex(const IShape* searchShape) const
 	{
-		size_t index = 0;
-		for (const auto& shape : m_shapes)
-		{
-			if (shape.get() == searchShape)
-			{
-				return index;
-			}
-
-			index++;
-		}
-
-		return -1;
+		return m_shapes.GetIndex(searchShape);
 	}
 
-	Shape* FindShapeAt(Point point)
+	IShape* FindShapeAt(Point point)
 	{
-		for (const auto& shape : m_shapes | std::views::reverse)
-		{
-			if (shape->IsContains(point))
-			{
-				return shape.get();
-			}
-		}
-
-		return nullptr;
+		return m_shapes.FindShapeAt(point);
 	}
 
 	size_t GetShapesCount() const
 	{
-		return m_shapes.size();
+		return m_shapes.GetShapesCount();
 	}
 
-	void AddShape(std::unique_ptr<Shape> shape)
+	void AddShape(std::unique_ptr<IShape> shape)
 	{
-		m_shapes.push_back(std::move(shape));
+		m_shapes.AddShape(std::move(shape));
 		m_changeSignal();
 	}
 
-	void AddShape(std::unique_ptr<Shape> shape, size_t index)
+	void AddShape(std::unique_ptr<IShape> shape, size_t index)
 	{
-		auto it = m_shapes.begin();
-		std::advance(it, index);
-
-		m_shapes.insert(it, std::move(shape));
+		m_shapes.AddShape(std::move(shape), index);
 		m_changeSignal();
+	}
+
+	[[nodiscard]] std::unique_ptr<IShape> ExtractShape(size_t index)
+	{
+		return m_shapes.ExtractShape(index);
 	}
 
 	void LiftShape(size_t index, int liftLayersCount)
 	{
-		auto it = std::next(m_shapes.begin(), index);
-		auto newPlaceIt = liftLayersCount > 0
-			? std::next(it, liftLayersCount + 1)
-			: std::prev(it, -liftLayersCount);
-
-		m_shapes.splice(newPlaceIt, m_shapes, it);
+		m_shapes.LiftShape(index, liftLayersCount);
 		m_changeSignal();
 	}
 
 	void DeleteShape(size_t index)
 	{
-		auto it = m_shapes.begin();
-		std::advance(it, index);
-
-		m_shapes.erase(it);
+		m_shapes.DeleteShape(index);
 		m_changeSignal();
 	}
 
@@ -120,13 +80,7 @@ public:
 		return m_changeSignal.connect(slot);
 	}
 
-	void SetShapeTimeline(size_t index, Point newTimeline)
-	{
-		GetShape(index)->SetTimeline(newTimeline);
-		// m_changeSignal();
-	}
-
 private:
-	std::list<std::unique_ptr<Shape>> m_shapes;
+	ShapeCollection m_shapes;
 	ChangeSignal m_changeSignal;
 };

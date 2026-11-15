@@ -15,7 +15,7 @@ public:
 	{
 		for (auto index : indexes)
 		{
-			auto shape = picture->GetShape(index)->Clone();
+			auto shape = picture->GetShape(index).Clone();
 			m_shapes.emplace(index, std::move(shape));
 		}
 	}
@@ -38,5 +38,5 @@ public:
 
 private:
 	Picture* m_picture;
-	std::unordered_map<size_t, std::unique_ptr<Shape>> m_shapes;
+	std::unordered_map<size_t, std::unique_ptr<IShape>> m_shapes;
 };

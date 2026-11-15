@@ -110,6 +110,13 @@ private:
 		case sf::Keyboard::Key::S:
 			m_view.move({ 0, m_moveStep });
 			return;
+		case sf::Keyboard::Key::G:
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LControl))
+			{
+				sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LShift)
+					? m_controller.OnUngroupPressed()
+					: m_controller.OnGroupPressed();
+			}
 		}
 	}
 };

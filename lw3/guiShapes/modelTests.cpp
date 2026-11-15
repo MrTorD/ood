@@ -25,36 +25,36 @@ TEST_F(ModelFixture, ShapeIsContains)
 	Point p3(100, 125);
 	Point p4(150, 150);
 
-	auto* rect = picture.GetShape(0);
-	auto* ellipse = picture.GetShape(1);
-	auto* triangle = picture.GetShape(2);
+	auto& rect = picture.GetShape(0);
+	auto& ellipse = picture.GetShape(1);
+	auto& triangle = picture.GetShape(2);
 
-	ASSERT_EQ(rect->IsContains(p1), false);
-	ASSERT_EQ(rect->IsContains(p2), true);
-	ASSERT_EQ(rect->IsContains(p3), true);
-	ASSERT_EQ(rect->IsContains(p4), true);
+	ASSERT_EQ(rect.IsContains(p1), false);
+	ASSERT_EQ(rect.IsContains(p2), true);
+	ASSERT_EQ(rect.IsContains(p3), true);
+	ASSERT_EQ(rect.IsContains(p4), true);
 
-	ASSERT_EQ(ellipse->IsContains(p1), false);
-	ASSERT_EQ(ellipse->IsContains(p2), true);
-	ASSERT_EQ(ellipse->IsContains(p3), true);
-	ASSERT_EQ(ellipse->IsContains(p4), false);
+	ASSERT_EQ(ellipse.IsContains(p1), false);
+	ASSERT_EQ(ellipse.IsContains(p2), true);
+	ASSERT_EQ(ellipse.IsContains(p3), true);
+	ASSERT_EQ(ellipse.IsContains(p4), false);
 
-	ASSERT_EQ(triangle->IsContains(p1), false);
-	ASSERT_EQ(triangle->IsContains(p2), false);
-	ASSERT_EQ(triangle->IsContains(p3), false);
-	ASSERT_EQ(triangle->IsContains(p4), true);
+	ASSERT_EQ(triangle.IsContains(p1), false);
+	ASSERT_EQ(triangle.IsContains(p2), false);
+	ASSERT_EQ(triangle.IsContains(p3), false);
+	ASSERT_EQ(triangle.IsContains(p4), true);
 }
 
 TEST_F(ModelFixture, PictureLiftShape)
 {
-	auto* shape0 = picture.GetShape(0);
-	auto* shape1 = picture.GetShape(1);
-	auto* shape2 = picture.GetShape(2);
+	auto& shape0 = picture.GetShape(0);
+	auto& shape1 = picture.GetShape(1);
+	auto& shape2 = picture.GetShape(2);
 	picture.LiftShape(0, 2);
 
-	ASSERT_EQ(shape0, picture.GetShape(2));
-	ASSERT_EQ(shape1, picture.GetShape(0));
-	ASSERT_EQ(shape2, picture.GetShape(1));
+	ASSERT_EQ(&shape0, &picture.GetShape(2));
+	ASSERT_EQ(&shape1, &picture.GetShape(0));
+	ASSERT_EQ(&shape2, &picture.GetShape(1));
 }
 
 TEST_F(ModelFixture, InvalidGetShape)
@@ -65,13 +65,13 @@ TEST_F(ModelFixture, InvalidGetShape)
 
 TEST_F(ModelFixture, ValidPictureGetIndex)
 {
-	auto* shape0 = picture.GetShape(0);
-	auto* shape1 = picture.GetShape(1);
-	auto* shape2 = picture.GetShape(2);
+	auto& shape0 = picture.GetShape(0);
+	auto& shape1 = picture.GetShape(1);
+	auto& shape2 = picture.GetShape(2);
 
-	ASSERT_EQ(0, picture.GetIndex(shape0));
-	ASSERT_EQ(1, picture.GetIndex(shape1));
-	ASSERT_EQ(2, picture.GetIndex(shape2));
+	ASSERT_EQ(0, picture.GetIndex(&shape0));
+	ASSERT_EQ(1, picture.GetIndex(&shape1));
+	ASSERT_EQ(2, picture.GetIndex(&shape2));
 }
 
 TEST_F(ModelFixture, InvalidPictureGetIndex)

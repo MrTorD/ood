@@ -12,6 +12,7 @@ class TimelineRenderer final : public IEditorShapeVisitor
 public:
 	TimelineRenderer(sf::RenderTarget& target)
 		: m_target(target)
+		, m_texture("../../../lw3/guiShapes/assets/group.png")
 	{
 	}
 
@@ -29,10 +30,10 @@ public:
 
 private:
 	sf::RenderTarget& m_target;
+	sf::Texture m_texture;
 
 	int m_drawnShapesCount = 0;
-	float m_shapePreviewWidth = 20;
-	float m_dragPointRadius = 5;
+	static constexpr float m_shapePreviewWidth = 40;
 
 	void VisitRectangle(const EditorShape& rect) override
 	{
@@ -76,6 +77,18 @@ private:
 		m_target.draw(drawable);
 	}
 
+	void VisitGroupShape(const EditorShape& shape, const GroupShape& group) override
+	{
+		auto [t, dy, dt, _] = shape.GetTimeline();
+
+		sf::Sprite drawable(m_texture);
+		drawable.setPosition({ t, dy + m_drawnShapesCount * TimelineBox::GetTotalHeight() });
+		auto [w, h] = drawable.getLocalBounds().size;
+		drawable.setScale({ m_shapePreviewWidth / w, TimelineBox::GetHeight() / h });
+
+		m_target.draw(drawable);
+	}
+
 	void DrawShapeBox(const EditorShape& shape)
 	{
 		auto [t, dy, dt, _] = shape.GetTimeline();
@@ -97,20 +110,20 @@ private:
 		}
 	}
 
-	std::vector<sf::CircleShape> GetBoundPoints(float x, float y, float w, float h) const
+	static std::vector<sf::CircleShape> GetBoundPoints(float x, float y, float w, float h)
 	{
 		std::vector<sf::CircleShape> boundPoints;
 
 		for (int i = 0; i < 2; i++)
 		{
-			boundPoints.emplace_back(m_dragPointRadius);
-			boundPoints[i].setFillColor(sf::Color::White);
+			boundPoints.emplace_back(TimelineBox::GetDragPointRadius());
+			boundPoints[i].setFillColor(sf::Color(0x852EF8FF));
 		}
 
-		auto pointD = 2 * m_dragPointRadius;
+		auto pointD = 2 * TimelineBox::GetDragPointRadius();
 
-		boundPoints[0].setPosition({ x, y + ((h - pointD) / 2) });
-		boundPoints[1].setPosition({ x + w - pointD, y + ((h - pointD) / 2) });
+		boundPoints[0].setPosition({ x, y + (h - pointD) / 2 });
+		boundPoints[1].setPosition({ x + w - pointD, y + (h - pointD) / 2 });
 
 		return boundPoints;
 	}

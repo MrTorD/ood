@@ -84,7 +84,7 @@ public:
 		m_height = height;
 	}
 
-	std::unique_ptr<Shape> Clone() const override
+	std::unique_ptr<IShape> Clone() const override
 	{
 		return std::make_unique<Rectangle>(m_topLeft, m_width, m_height, m_timeline, m_color);
 	}

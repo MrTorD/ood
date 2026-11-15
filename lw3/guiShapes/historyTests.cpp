@@ -1,6 +1,7 @@
 #include "AddShapeCommand.h"
 #include "DeleteShapesCommand.h"
 #include "Ellipse.h"
+#include "GroupShape.h"
 #include "PictureDocument.h"
 #include "Rectangle.h"
 #include "ShiftShapesCommand.h"
@@ -12,7 +13,7 @@
 class ShapeComparer : public IShapeVisitor
 {
 public:
-	explicit ShapeComparer(const Shape& shape)
+	explicit ShapeComparer(const IShape& shape)
 		: m_shape(shape)
 	{
 	}
@@ -41,8 +42,12 @@ public:
 		AssertShapeProperties(*shapePtr, tr);
 	}
 
+	void Visit(const GroupShape&) override
+	{
+	}
+
 private:
-	const Shape& m_shape;
+	const IShape& m_shape;
 
 	static void AssertShapeProperties(const Shape& shape1, const Shape& shape2)
 	{
@@ -92,15 +97,15 @@ protected:
 		Picture pic;
 		for (int i = 0; i < picture->GetShapesCount(); i++)
 		{
-			auto shape = picture->GetShape(i);
-			pic.AddShape(shape->Clone());
+			auto& shape = picture->GetShape(i);
+			pic.AddShape(shape.Clone());
 		}
 
 		return pic;
 	}
 
 private:
-	static void AssertShape(const Shape& shape1, const Shape& shape2)
+	static void AssertShape(const IShape& shape1, const IShape& shape2)
 	{
 		ShapeComparer comparer(shape2);
 
@@ -212,8 +217,8 @@ TEST_F(DocumentFixture, ShiftShapeUndoRedo)
 			Bounds(30, 40, 200, 150)));
 
 	Picture afterAction = CopyPicture(&beforeAction);
-	afterAction.GetShape(0)->ShiftBy(Bounds(30, 40, 200, 150));
-	afterAction.GetShape(2)->ShiftBy(Bounds(30, 40, 200, 150));
+	afterAction.GetShape(0).ShiftBy(Bounds(30, 40, 200, 150));
+	afterAction.GetShape(2).ShiftBy(Bounds(30, 40, 200, 150));
 
 	AssertPicture(*document.GetPicture(), afterAction);
 

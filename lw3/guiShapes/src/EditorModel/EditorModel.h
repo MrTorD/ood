@@ -4,10 +4,13 @@
 #include "CanvasMode.h"
 #include "DeleteShapesCommand.h"
 #include "EditorShape.h"
+#include "GroupShapesCommand.h"
 #include "Picture.h"
 #include "PictureSerializer.h"
 #include "ShiftShapesCommand.h"
 #include "ShiftTimelineCommand.h"
+#include "UngroupShapesCommand.h"
+
 #include <algorithm>
 #include <functional>
 #include <vector>
@@ -145,6 +148,72 @@ public:
 		serializer.Serialize(*m_picture, fileName);
 	}
 
+	void GroupSelected()
+	{
+		std::vector<size_t> indexes;
+		for (size_t i = 0; i < m_shapes.size(); ++i)
+		{
+			if (m_shapes[i]->IsSelected())
+			{
+				indexes.push_back(i);
+			}
+		}
+
+		if (indexes.size() < 2)
+		{
+			return;
+		}
+
+		auto command = std::make_unique<GroupShapesCommand>(*m_picture, std::move(indexes));
+		const IShape* groupPtr = command->GetGroupShape();
+
+		m_commandSink(std::move(command));
+
+		UnselectAll();
+
+		for (const auto& shape : m_shapes)
+		{
+			if (&shape->GetDomainShape() == groupPtr)
+			{
+				UnselectAll();
+				shape->SetSelected(true);
+				return;
+			}
+		}
+	}
+
+	void UngroupSelected()
+	{
+		size_t groupIndex = m_shapes.size();
+		for (size_t i = 0; i < m_shapes.size(); ++i)
+		{
+			if (m_shapes[i]->IsSelected())
+			{
+				if (groupIndex != m_shapes.size())
+				{
+					return;
+				}
+				groupIndex = i;
+			}
+		}
+
+		if (groupIndex == m_shapes.size()
+			|| !dynamic_cast<GroupShape*>(&m_shapes[groupIndex]->GetDomainShape()))
+		{
+			return;
+		}
+
+		auto command = std::make_unique<UngroupShapesCommand>(*m_picture, groupIndex);
+		std::vector<IShape*> children = command->GetChildrenShapes();
+		m_commandSink(std::move(command));
+
+		for (const auto& shape : m_shapes)
+		{
+			bool isSelected = std::ranges::find(children, &shape->GetDomainShape()) != children.end();
+			shape->SetSelected(isSelected);
+		}
+	}
+
 	void BeginShiftShapes(Point point)
 	{
 		m_activeShapes = GetSelectedShapes();
@@ -237,7 +306,7 @@ public:
 			std::move(indexes),
 			liftLayersCount,
 			Point(timelineOffset.x, timelineOffset.w));
-			
+
 		m_commandSink(std::move(command));
 	}
 
@@ -247,7 +316,7 @@ public:
 
 		for (auto& shape : m_activeShapes)
 		{
-			ClampOffset(shape->GetDomainShape().GetBounds(), offset);
+			ClampOffset(shape->GetDomainShape(), offset);
 		}
 
 		for (auto& shape : m_activeShapes)
@@ -322,7 +391,7 @@ private:
 	CanvasMode m_canvasMode = CanvasMode::SelectShapes;
 
 	float m_currTime = 0;
-	float m_minShapeDuration = 20;
+	float m_minShapeDuration = 40;
 	float m_minShapeWidth = 50.f;
 	float m_minShapeHeight = 50.f;
 
@@ -332,9 +401,9 @@ private:
 
 		while (m_shapes.size() < m_picture->GetShapesCount())
 		{
-			auto* shape = m_picture->GetShape(m_shapes.size());
+			auto& shape = m_picture->GetShape(m_shapes.size());
 
-			m_shapes.emplace_back(new EditorShape(*shape));
+			m_shapes.emplace_back(new EditorShape(shape));
 		}
 	}
 
@@ -401,9 +470,18 @@ private:
 		}
 	}
 
-	void ClampOffset(Bounds shapeBounds, Bounds& offset)
+	void ClampOffset(IShape& shape, Bounds& offset)
 	{
-		auto [x0, y0, w0, h0] = shapeBounds;
+		if (auto group = dynamic_cast<GroupShape*>(&shape); group)
+		{
+			for (size_t i = 0; i < group->GetShapeCount(); i++)
+			{
+				auto& child = group->GetShape(i);
+				ClampOffset(child, offset);
+			}
+		}
+
+		auto [x0, y0, w0, h0] = shape.GetBounds();
 		auto [dx, dy, dw, dh] = offset;
 
 		auto [x, w] = ClampDimension(x0, w0, dx, dw, m_canvasBounds.w, m_minShapeWidth);

@@ -70,7 +70,7 @@ public:
 	}
 
 private:
-	Shape& m_shape;
+	IShape& m_shape;
 	Bounds m_previewOffset;
 	Bounds m_timelineOffset;
 
@@ -78,17 +78,17 @@ private:
 
 	friend class EditorModel;
 
-	explicit EditorShape(Shape& shape)
+	explicit EditorShape(IShape& shape)
 		: m_shape(shape)
 	{
 	}
 
-	Shape& GetDomainShape()
+	IShape& GetDomainShape()
 	{
 		return m_shape;
 	}
 
-	const Shape& GetDomainShape() const
+	const IShape& GetDomainShape() const
 	{
 		return m_shape;
 	}

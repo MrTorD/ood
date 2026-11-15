@@ -36,3 +36,13 @@ struct Bounds
 		return { -x, -y, -w, -h };
 	}
 };
+
+Bounds operator+(Bounds left, Bounds right)
+{
+	return left += right;
+}
+
+Bounds operator-(Bounds left, Bounds right)
+{
+	return left += -right;
+}

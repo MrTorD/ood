@@ -27,6 +27,11 @@ public:
 		m_visitor.VisitTriangle(m_shape);
 	}
 
+	void Visit(const GroupShape& group) override
+	{
+		m_visitor.VisitGroupShape(m_shape, group);
+	}
+
 private:
 	const EditorShape& m_shape;
 	IEditorShapeVisitor& m_visitor;

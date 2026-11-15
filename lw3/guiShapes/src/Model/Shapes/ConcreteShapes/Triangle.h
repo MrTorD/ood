@@ -2,7 +2,6 @@
 
 #include "Shape.h"
 #include "Visitable.h"
-#include <algorithm>
 
 class Triangle : public Visitable<Triangle, Shape>
 {
@@ -68,7 +67,7 @@ public:
 		return { m_topLeft.x + m_width, m_topLeft.y + m_height };
 	}
 
-	std::unique_ptr<Shape> Clone() const override
+	std::unique_ptr<IShape> Clone() const override
 	{
 		return std::make_unique<Triangle>(m_topLeft, m_width, m_height, m_timeline, m_color);
 	}

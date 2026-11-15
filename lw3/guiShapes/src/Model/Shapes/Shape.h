@@ -1,36 +1,27 @@
 #pragma once
 
-#include "Bounds.h"
-#include "Color.h"
-#include "IShapeVisitor.h"
-#include <memory>
+#include "IShape.h"
 
 // [x]: Разобраться с четкостью Dran'n'drop
 // [x]: Ограничить рамку
 // [x]: Контекстные окна для загрузки документа
 // [x]: Диаграмма классов
-class Shape
+class Shape : public IShape
 {
 public:
-	virtual Bounds GetBounds() const = 0;
 	virtual void SetBounds(Bounds bounds) = 0;
-	virtual void ShiftBy(Bounds offset) = 0;
 
-	virtual bool IsContains(Point point) const = 0;
-	virtual void Accept(IShapeVisitor& visitor) const = 0;
-	virtual std::unique_ptr<Shape> Clone() const = 0;
-
-	Point GetTimeline() const
+	Point GetTimeline() const override
 	{
 		return m_timeline;
 	}
 
-	void SetTimeline(Point timeline)
+	void SetTimeline(Point timeline) override
 	{
 		m_timeline = timeline;
 	}
 
-	Color GetColor() const
+	Color GetColor() const override
 	{
 		return m_color;
 	}
@@ -39,8 +30,6 @@ public:
 	{
 		m_color = color;
 	}
-
-	virtual ~Shape() = default;
 
 protected:
 	Color m_color;

@@ -19,8 +19,8 @@ public:
 	{
 		for (auto index : m_shapeIndexes)
 		{
-			auto newTimeline = m_picture->GetShape(index)->GetTimeline() + m_offset;
-			m_picture->SetShapeTimeline(index, newTimeline);
+			auto& shape = m_picture->GetShape(index);
+			shape.SetTimeline(shape.GetTimeline() + m_offset);
 			if (m_liftLayersCount != 0)
 			{
 				m_picture->LiftShape(index, m_liftLayersCount);
@@ -30,14 +30,15 @@ public:
 
 	void Unexecute() override
 	{
-		for (auto index : m_shapeIndexes)
+		for (auto index : m_shapeIndexes | std::views::reverse)
 		{
 			if (m_liftLayersCount != 0)
 			{
 				m_picture->LiftShape(m_liftLayersCount + index, -m_liftLayersCount);
 			}
-			auto newTimeline = m_picture->GetShape(index)->GetTimeline() - m_offset;
-			m_picture->SetShapeTimeline(index, newTimeline);
+
+			auto& shape = m_picture->GetShape(index);
+			shape.SetTimeline(shape.GetTimeline() - m_offset);
 		}
 	}
 

@@ -3,8 +3,9 @@
 #include "Point.h"
 #include <functional>
 
-struct DragPoint
+class DragPoint
 {
+public:
 	float x;
 	float y;
 	float radius;

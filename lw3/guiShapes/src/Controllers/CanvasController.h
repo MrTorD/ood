@@ -30,6 +30,16 @@ public:
 			: BeginCreateShape(point);
 	}
 
+	void OnGroupPressed()
+	{
+		m_model.GroupSelected();
+	}
+
+	void OnUngroupPressed()
+	{
+		m_model.UngroupSelected();
+	}
+
 	void OnMouseMoved(Point point)
 	{
 		if (!m_isInAction)

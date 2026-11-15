@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../ICommand.h"
+#include "ICommand.h"
 #include "Picture.h"
 #include <vector>
 
@@ -18,8 +18,8 @@ public:
 	{
 		for (auto index : m_indexes)
 		{
-			auto* shape = m_picture->GetShape(index);
-			shape->ShiftBy(m_offset);
+			auto& shape = m_picture->GetShape(index);
+			shape.ShiftBy(m_offset);
 		}
 	}
 
@@ -27,8 +27,8 @@ public:
 	{
 		for (auto index : m_indexes)
 		{
-			auto* shape = m_picture->GetShape(index);
-			shape->ShiftBy(-m_offset);
+			auto& shape = m_picture->GetShape(index);
+			shape.ShiftBy(-m_offset);
 		}
 	}
 

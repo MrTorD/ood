@@ -17,7 +17,7 @@ public:
 
 		for (size_t i = 0; i < picture.GetShapesCount(); i++)
 		{
-			picture.GetShape(i)->Accept(*this);
+			picture.GetShape(i).Accept(*this);
 		}
 	}
 
@@ -74,6 +74,11 @@ private:
 		auto [x, y, w, h] = tr.GetBounds();
 
 		m_file << std::format("triangle {} {} {} {} {}\n", x, y, w, h, tr.GetColor());
+	}
+
+	void Visit(const GroupShape& gr) override
+	{
+		m_file << std::format("WIP");
 	}
 
 	struct ShapeData

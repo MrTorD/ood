@@ -71,7 +71,7 @@ public:
 		m_radiusY += radiusYShift;
 	}
 
-	std::unique_ptr<Shape> Clone() const override
+	std::unique_ptr<IShape> Clone() const override
 	{
 		return std::make_unique<Ellipse>(m_centre, m_radiusX, m_radiusY, m_timeline, m_color);
 	}

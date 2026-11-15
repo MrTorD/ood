@@ -1,12 +1,12 @@
 #pragma once
 
-#include "../ICommand.h"
+#include "ICommand.h"
 #include "Picture.h"
 
 class AddShapeCommand : public ICommand
 {
 public:
-	AddShapeCommand(Picture* picture, std::unique_ptr<Shape> shape, size_t index)
+	AddShapeCommand(Picture* picture, std::unique_ptr<IShape> shape, size_t index)
 		: m_picture(picture)
 		, m_shape(std::move(shape))
 		, m_index(index)
@@ -25,6 +25,6 @@ public:
 
 private:
 	Picture* m_picture;
-	std::unique_ptr<Shape> m_shape;
+	std::unique_ptr<IShape> m_shape;
 	size_t m_index;
 };

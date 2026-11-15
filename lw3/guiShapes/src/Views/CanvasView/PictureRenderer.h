@@ -8,6 +8,7 @@
 #include <SFML/Graphics/RenderTarget.hpp>
 
 class PictureRenderer final : public IEditorShapeVisitor
+	, private IShapeVisitor
 {
 public:
 	// [x]: Избавиться от зависимости View oт Model
@@ -40,35 +41,70 @@ private:
 	Color m_selectionColor = 0xFF0000FF;
 	float m_selectionThickness = -7;
 	float m_dragPointRadius = 5;
+	Bounds m_groupOffset;
 
 	void VisitRectangle(const EditorShape& rect) override
 	{
-		auto [x, y, w, h] = rect.GetBounds();
-
-		sf::RectangleShape drawable({ w, h });
-
-		drawable.setPosition({ x, y });
-		drawable.setFillColor(sf::Color(rect.GetColor()));
-
-		m_target.draw(drawable);
+		DrawRectangle(rect.GetBounds(), rect.GetColor());
 	}
 
 	void VisitEllipse(const EditorShape& ellipse) override
 	{
-		auto [x, y, w, h] = ellipse.GetBounds();
+		DrawEllipse(ellipse.GetBounds(), ellipse.GetColor());
+	}
+
+	void VisitTriangle(const EditorShape& triangle) override
+	{
+		DrawTriangle(triangle.GetBounds(), triangle.GetColor());
+	}
+
+	void VisitGroupShape(const EditorShape& shape, const GroupShape& group) override
+	{
+		m_groupOffset = shape.GetBounds() - group.GetBounds();
+
+		group.Accept(*this);
+		m_groupOffset = {};
+	}
+
+	void Visit(const Rectangle& rect) override
+	{
+		DrawRectangle(rect.GetBounds() + m_groupOffset, rect.GetColor());
+	}
+
+	void Visit(const Ellipse& ellipse) override
+	{
+		DrawEllipse(ellipse.GetBounds() + m_groupOffset, ellipse.GetColor());
+	}
+
+	void Visit(const Triangle& triangle) override
+	{
+		DrawTriangle(triangle.GetBounds() + m_groupOffset, triangle.GetColor());
+	}
+
+	void Visit(const GroupShape& group) override
+	{
+		for (size_t i = 0; i < group.GetShapeCount(); i++)
+		{
+			group.GetShape(i).Accept(*this);
+		}
+	}
+
+	void DrawEllipse(Bounds bounds, Color color)
+	{
+		auto [x, y, w, h] = bounds;
 
 		sf::CircleShape drawable(w / 2);
 
 		drawable.setPosition({ x, y });
 		drawable.setScale({ 1, h / w });
-		drawable.setFillColor(sf::Color(ellipse.GetColor()));
+		drawable.setFillColor(sf::Color(color));
 
 		m_target.draw(drawable);
 	}
 
-	void VisitTriangle(const EditorShape& triangle) override
+	void DrawTriangle(Bounds bounds, Color color)
 	{
-		auto [x, y, w, h] = triangle.GetBounds();
+		auto [x, y, w, h] = bounds;
 
 		sf::ConvexShape drawable;
 
@@ -78,7 +114,19 @@ private:
 		drawable.setPoint(1, { x + (w / 2), y });
 		drawable.setPoint(2, { x + w, y + h });
 
-		drawable.setFillColor(sf::Color(triangle.GetColor()));
+		drawable.setFillColor(sf::Color(color));
+
+		m_target.draw(drawable);
+	}
+
+	void DrawRectangle(Bounds bounds, Color color)
+	{
+		auto [x, y, w, h] = bounds;
+
+		sf::RectangleShape drawable({ w, h });
+
+		drawable.setPosition({ x, y });
+		drawable.setFillColor(sf::Color(color));
 
 		m_target.draw(drawable);
 	}

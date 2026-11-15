@@ -45,6 +45,11 @@ public:
 		return m_height + m_padding;
 	}
 
+	static float GetDragPointRadius()
+	{
+		return m_dragPointRadius;
+	}
+
 	bool IsContains(Point point) const
 	{
 		return m_bounds.IsContains(point);
@@ -57,12 +62,12 @@ public:
 
 private:
 	Bounds m_bounds;
-	static constexpr float m_height = 40;
+	static constexpr float m_height = 50;
+	static constexpr float m_dragPointRadius = 4;
 	static constexpr float m_padding = 15;
-	float m_dragPointRadius = 10;
 	std::vector<DragPoint> m_dragPoints;
 
-	float CalcY(size_t index)
+	static float CalcY(size_t index)
 	{
 		return index * (m_height + m_padding);
 	}
