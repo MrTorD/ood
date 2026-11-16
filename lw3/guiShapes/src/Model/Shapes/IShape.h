@@ -6,6 +6,7 @@
 #include <memory>
 
 class IShape
+// [ ]: Добавить метод GetGroup возвращающий ptr и избавиться от dynamic_cast
 {
 public:
 	virtual Bounds GetBounds() const = 0;

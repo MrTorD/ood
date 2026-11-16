@@ -14,7 +14,7 @@ public:
 		std::function<void(EditorWindow*)> close,
 		const std::function<void(std::unique_ptr<Picture>)>& addSeparateWindow,
 		const std::function<void(PictureDocument&)>& makeWindowCopy)
-		: m_window(sf::VideoMode({ 1200, 900 }, 16), "Picture")
+		: m_window(sf::VideoMode({ 1100, 750 }, 16), "Picture")
 		, m_document(document)
 		, m_close(std::move(close))
 		, m_canvasBounds(250, 150, 900, 700)

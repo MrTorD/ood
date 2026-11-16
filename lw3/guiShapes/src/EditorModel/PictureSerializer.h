@@ -78,6 +78,7 @@ private:
 
 	void Visit(const GroupShape& gr) override
 	{
+		// [ ] Реалиовать сохранение в файл 
 		m_file << std::format("WIP");
 	}
 
