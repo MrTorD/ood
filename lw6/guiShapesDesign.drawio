@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net">
   <diagram name="Страница-1" id="1ydchJMR_UP26Sr-GqUI">
-    <mxGraphModel dx="2005" dy="648" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="1644" dy="449" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -23,7 +23,7 @@
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="PpOvrOjPETuo-7P6tm4k-2" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="EditorModel&lt;br&gt;EditorShape&lt;br&gt;IEditorShapeVisitor&lt;br&gt;VisitorAdapter&lt;br&gt;Хранит текущее состояние работы с редактором (Выделенные фигуры, смещения и тд.). Подписан на Model, не меняет состояние Model напрямую, а создает команды, которые передает в PictureDocuement" vertex="1">
+        <mxCell id="PpOvrOjPETuo-7P6tm4k-2" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="EditorModel&lt;br&gt;EditorShape&lt;br&gt;IEditorShapeVisitor&lt;br&gt;VisitorAdapter&lt;div&gt;[Boost]&lt;br&gt;Хранит текущее состояние работы с редактором (Выделенные фигуры, смещения и тд.). Подписан на Model, не меняет состояние Model напрямую, а создает команды, которые передает в PictureDocuement&lt;/div&gt;" vertex="1">
           <mxGeometry height="140" width="320" x="280" y="585" as="geometry" />
         </mxCell>
         <mxCell id="PpOvrOjPETuo-7P6tm4k-31" edge="1" parent="1" source="PpOvrOjPETuo-7P6tm4k-3" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.75;entryY=0;entryDx=0;entryDy=0;defaultLabelBackgroundColor=page;labelPadding=0 4;exitX=0.913;exitY=1.011;exitDx=0;exitDy=0;exitPerimeter=0;" target="PpOvrOjPETuo-7P6tm4k-2">
@@ -34,7 +34,7 @@
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="PpOvrOjPETuo-7P6tm4k-3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Model&lt;br&gt;Picture, ShapeCollection&lt;br&gt;Shape,&lt;br&gt;Ellipse, Rect, Triangle, ShapeGroup&lt;br&gt;IShapeVisitor&lt;br&gt;&lt;br&gt;Представляет предметную область приложения, геометрические фигуры хранящие свои координаты, и композицию фигур - Picture" vertex="1">
+        <mxCell id="PpOvrOjPETuo-7P6tm4k-3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Model&lt;br&gt;Picture, ShapeCollection&lt;br&gt;Shape,&lt;br&gt;Ellipse, Rect, Triangle, ShapeGroup&lt;br&gt;IShapeVisitor&lt;div&gt;[Boost]&lt;br&gt;&lt;br&gt;Представляет предметную область приложения, геометрические фигуры хранящие свои координаты, и композицию фигур - Picture&lt;/div&gt;" vertex="1">
           <mxGeometry height="170" width="270" x="250" y="200" as="geometry" />
         </mxCell>
         <mxCell id="PpOvrOjPETuo-7P6tm4k-6" edge="1" parent="1" source="PpOvrOjPETuo-7P6tm4k-4" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.75;entryY=1;entryDx=0;entryDy=0;defaultLabelBackgroundColor=page;labelPadding=0 4;" target="PpOvrOjPETuo-7P6tm4k-2">
@@ -61,7 +61,7 @@
             <mxPoint x="12" y="1" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="PpOvrOjPETuo-7P6tm4k-4" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Views&lt;br&gt;CanvasView&lt;br&gt;ToolbarView&lt;br&gt;TimelineView&lt;br&gt;Отрисовывает текущее состояние EditorModel, передает события контроллерам в форме, независимой от SFML" vertex="1">
+        <mxCell id="PpOvrOjPETuo-7P6tm4k-4" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Views&lt;br&gt;CanvasView&lt;br&gt;ToolbarView&lt;br&gt;TimelineView&lt;div&gt;[SFML]&lt;br&gt;Отрисовывает текущее состояние EditorModel, передает события контроллерам в форме, независимой от SFML&lt;/div&gt;" vertex="1">
           <mxGeometry height="140" width="310" x="510" y="820" as="geometry" />
         </mxCell>
         <mxCell id="PpOvrOjPETuo-7P6tm4k-34" edge="1" parent="1" source="PpOvrOjPETuo-7P6tm4k-5" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1.008;entryY=0.304;entryDx=0;entryDy=0;defaultLabelBackgroundColor=page;labelPadding=0 4;entryPerimeter=0;" target="PpOvrOjPETuo-7P6tm4k-22">
@@ -80,7 +80,7 @@
             <mxPoint y="12" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="PpOvrOjPETuo-7P6tm4k-5" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Controllers&lt;br&gt;CanvasController&lt;br&gt;ToolbarController&lt;br&gt;TimelineController&lt;div&gt;Принимает события от вью, не зависит от SFML, вызывает необходимые методы у EditorModel&lt;/div&gt;" vertex="1">
+        <mxCell id="PpOvrOjPETuo-7P6tm4k-5" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Controllers&lt;br&gt;CanvasController&lt;br&gt;ToolbarController&lt;br&gt;TimelineController&lt;div&gt;Принимает события от View, вызывает необходимые методы у EditorModel&lt;/div&gt;" vertex="1">
           <mxGeometry height="110" width="250" x="110" y="800" as="geometry" />
         </mxCell>
         <mxCell id="PpOvrOjPETuo-7P6tm4k-42" edge="1" parent="1" source="PpOvrOjPETuo-7P6tm4k-22" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;defaultLabelBackgroundColor=page;labelPadding=0 4;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" target="PpOvrOjPETuo-7P6tm4k-23">
@@ -110,7 +110,7 @@
             <mxPoint x="-13" y="10" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="PpOvrOjPETuo-7P6tm4k-23" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="EditorWindow&lt;br&gt;Владеет EditorModel, всеми Views и Controllers, имеет ссылку на PictureDocument, к которому относится EditorModel&lt;br&gt;Принимает и делегирует обработку событий, хранит окно SFML" vertex="1">
+        <mxCell id="PpOvrOjPETuo-7P6tm4k-23" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="EditorWindow&lt;br&gt;[SFML]&lt;br&gt;Владеет EditorModel, всеми Views и Controllers, имеет ссылку на PictureDocument, к которому относится EditorModel&lt;br&gt;Принимает и делегирует обработку событий, хранит окно SFML" vertex="1">
           <mxGeometry height="130" width="240" x="320" y="1020" as="geometry" />
         </mxCell>
         <mxCell id="PpOvrOjPETuo-7P6tm4k-55" edge="1" parent="1" source="PpOvrOjPETuo-7P6tm4k-1" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.223;entryY=1.014;entryDx=0;entryDy=0;entryPerimeter=0;defaultLabelBackgroundColor=page;labelPadding=0 4;" target="PpOvrOjPETuo-7P6tm4k-3">
