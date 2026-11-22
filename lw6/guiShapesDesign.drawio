@@ -1,11 +1,14 @@
 <mxfile host="app.diagrams.net">
   <diagram name="Страница-1" id="1ydchJMR_UP26Sr-GqUI">
-    <mxGraphModel dx="1644" dy="449" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="1414" dy="1946" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="PpOvrOjPETuo-7P6tm4k-1" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="PictureDocument&lt;br&gt;CommandHistory&lt;br&gt;ShiftShapesCommand&lt;br&gt;AddShapesCommand&lt;div&gt;...&lt;br&gt;&lt;br&gt;Хранит историю команд, относящуюся к одной Picture. Позволяет выполнять Undo, Redo команд, изменяя состояние Picture&lt;/div&gt;" vertex="1">
-          <mxGeometry height="130" width="310" x="-40" y="420" as="geometry" />
+        <mxCell id="T75C4kviZYVaLZnj_GiQ-3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="" vertex="1">
+          <mxGeometry height="1240" width="1230" x="240" y="-280" as="geometry" />
+        </mxCell>
+        <mxCell id="PpOvrOjPETuo-7P6tm4k-1" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="&lt;font style=&quot;font-size: 20px;&quot;&gt;PictureDocument&lt;/font&gt;&lt;div&gt;&lt;span style=&quot;font-size: 14px;&quot;&gt;Классы:&lt;br&gt;&lt;/span&gt;&lt;div&gt;PictureDocument&lt;br&gt;CommandHistory&lt;br&gt;ShiftShapesCommand&lt;br&gt;AddShapesCommand&lt;div&gt;...&lt;br&gt;&lt;br&gt;Хранит историю команд, относящуюся к одной Picture. Позволяет выполнять Undo, Redo команд, изменяя состояние Picture&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="170" width="350" x="477" y="-120" as="geometry" />
         </mxCell>
         <mxCell id="PpOvrOjPETuo-7P6tm4k-13" edge="1" parent="1" source="PpOvrOjPETuo-7P6tm4k-2" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;defaultLabelBackgroundColor=page;labelPadding=0 4;entryX=1.001;entryY=0.778;entryDx=0;entryDy=0;entryPerimeter=0;" target="PpOvrOjPETuo-7P6tm4k-1" value="">
           <mxGeometry relative="1" as="geometry" />
@@ -23,8 +26,8 @@
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="PpOvrOjPETuo-7P6tm4k-2" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="EditorModel&lt;br&gt;EditorShape&lt;br&gt;IEditorShapeVisitor&lt;br&gt;VisitorAdapter&lt;div&gt;[Boost]&lt;br&gt;Хранит текущее состояние работы с редактором (Выделенные фигуры, смещения и тд.). Подписан на Model, не меняет состояние Model напрямую, а создает команды, которые передает в PictureDocuement&lt;/div&gt;" vertex="1">
-          <mxGeometry height="140" width="320" x="280" y="585" as="geometry" />
+        <mxCell id="PpOvrOjPETuo-7P6tm4k-2" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="&lt;font style=&quot;font-size: 20px;&quot;&gt;EditorModel&lt;br&gt;&lt;span style=&quot;font-size: 12px;&quot;&gt;Классы:&amp;nbsp;&lt;/span&gt;&lt;/font&gt;&lt;div&gt;&lt;font style=&quot;font-size: 20px;&quot;&gt;&lt;span style=&quot;font-size: 12px;&quot;&gt;EditorModel&lt;/span&gt;&lt;br&gt;&lt;/font&gt;EditorShape&lt;br&gt;IEditorShapeVisitor&lt;br&gt;VisitorAdapter&lt;div&gt;[Boost]&lt;br&gt;Хранит текущее состояние работы с редактором (Выделенные фигуры, смещения и тд.). Подписан на Model, не меняет состояние Model напрямую, а создает команды, которые передает в PictureDocuement&lt;/div&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="185" width="440" x="840" y="190" as="geometry" />
         </mxCell>
         <mxCell id="PpOvrOjPETuo-7P6tm4k-31" edge="1" parent="1" source="PpOvrOjPETuo-7P6tm4k-3" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.75;entryY=0;entryDx=0;entryDy=0;defaultLabelBackgroundColor=page;labelPadding=0 4;exitX=0.913;exitY=1.011;exitDx=0;exitDy=0;exitPerimeter=0;" target="PpOvrOjPETuo-7P6tm4k-2">
           <mxGeometry relative="1" as="geometry" />
@@ -34,8 +37,8 @@
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="PpOvrOjPETuo-7P6tm4k-3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Model&lt;br&gt;Picture, ShapeCollection&lt;br&gt;Shape,&lt;br&gt;Ellipse, Rect, Triangle, ShapeGroup&lt;br&gt;IShapeVisitor&lt;div&gt;[Boost]&lt;br&gt;&lt;br&gt;Представляет предметную область приложения, геометрические фигуры хранящие свои координаты, и композицию фигур - Picture&lt;/div&gt;" vertex="1">
-          <mxGeometry height="170" width="270" x="250" y="200" as="geometry" />
+        <mxCell id="PpOvrOjPETuo-7P6tm4k-3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="&lt;font style=&quot;font-size: 20px;&quot;&gt;Model&lt;/font&gt;&lt;br&gt;Picture, ShapeCollection&lt;br&gt;Shape,&lt;br&gt;Ellipse, Rect, Triangle, ShapeGroup&lt;br&gt;IShapeVisitor&lt;div&gt;[Boost]&lt;br&gt;&lt;br&gt;Представляет предметную область приложения, геометрические фигуры хранящие свои координаты, и композицию фигур - Picture&lt;/div&gt;" vertex="1">
+          <mxGeometry height="170" width="270" x="971" y="-120" as="geometry" />
         </mxCell>
         <mxCell id="PpOvrOjPETuo-7P6tm4k-6" edge="1" parent="1" source="PpOvrOjPETuo-7P6tm4k-4" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.75;entryY=1;entryDx=0;entryDy=0;defaultLabelBackgroundColor=page;labelPadding=0 4;" target="PpOvrOjPETuo-7P6tm4k-2">
           <mxGeometry relative="1" as="geometry" />
@@ -45,24 +48,24 @@
             <mxPoint x="26" y="12" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="PpOvrOjPETuo-7P6tm4k-39" edge="1" parent="1" source="PpOvrOjPETuo-7P6tm4k-4" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.25;entryDx=0;entryDy=0;defaultLabelBackgroundColor=page;labelPadding=0 4;" target="PpOvrOjPETuo-7P6tm4k-23">
+        <mxCell id="PpOvrOjPETuo-7P6tm4k-39" edge="1" parent="1" source="PpOvrOjPETuo-7P6tm4k-4" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.75;entryDx=0;entryDy=0;defaultLabelBackgroundColor=page;labelPadding=0 4;exitX=0;exitY=0.75;exitDx=0;exitDy=0;" target="PpOvrOjPETuo-7P6tm4k-23">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="PpOvrOjPETuo-7P6tm4k-41" connectable="0" parent="PpOvrOjPETuo-7P6tm4k-39" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];inheritText=1;defaultLabelBackgroundColor=page;labelPadding=0 4;" value="Отрисовка" vertex="1">
-          <mxGeometry relative="1" x="0.0628" y="3" as="geometry">
+          <mxGeometry relative="1" x="0.0646" y="3" as="geometry">
             <mxPoint x="-1" as="offset" />
           </mxGeometry>
         </mxCell>
         <mxCell id="PpOvrOjPETuo-7P6tm4k-50" edge="1" parent="1" source="PpOvrOjPETuo-7P6tm4k-4" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;defaultLabelBackgroundColor=page;labelPadding=0 4;" target="PpOvrOjPETuo-7P6tm4k-5">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="PpOvrOjPETuo-7P6tm4k-51" connectable="0" parent="PpOvrOjPETuo-7P6tm4k-50" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];inheritText=1;defaultLabelBackgroundColor=page;labelPadding=0 4;" value="Действие &lt;br&gt;пользователя" vertex="1">
+        <mxCell id="PpOvrOjPETuo-7P6tm4k-51" connectable="0" parent="PpOvrOjPETuo-7P6tm4k-50" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];inheritText=1;defaultLabelBackgroundColor=page;labelPadding=0 4;" value="Взаимодействие&lt;br&gt;с редактором" vertex="1">
           <mxGeometry relative="1" x="0.2679" as="geometry">
             <mxPoint x="12" y="1" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="PpOvrOjPETuo-7P6tm4k-4" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Views&lt;br&gt;CanvasView&lt;br&gt;ToolbarView&lt;br&gt;TimelineView&lt;div&gt;[SFML]&lt;br&gt;Отрисовывает текущее состояние EditorModel, передает события контроллерам в форме, независимой от SFML&lt;/div&gt;" vertex="1">
-          <mxGeometry height="140" width="310" x="510" y="820" as="geometry" />
+        <mxCell id="PpOvrOjPETuo-7P6tm4k-4" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="&lt;font style=&quot;&quot;&gt;&lt;span style=&quot;font-size: 20px;&quot;&gt;Views&lt;/span&gt;&lt;br&gt;&lt;font&gt;Классы:&lt;/font&gt;&lt;br&gt;&lt;/font&gt;CanvasView&lt;br&gt;ToolbarView&lt;br&gt;TimelineView&lt;div&gt;[SFML]&lt;br&gt;Отрисовывает текущее состояние EditorModel, передает события контроллерам в форме, независимой от SFML&lt;/div&gt;" vertex="1">
+          <mxGeometry height="150" width="310" x="1080" y="785" as="geometry" />
         </mxCell>
         <mxCell id="PpOvrOjPETuo-7P6tm4k-34" edge="1" parent="1" source="PpOvrOjPETuo-7P6tm4k-5" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1.008;entryY=0.304;entryDx=0;entryDy=0;defaultLabelBackgroundColor=page;labelPadding=0 4;entryPerimeter=0;" target="PpOvrOjPETuo-7P6tm4k-22">
           <mxGeometry relative="1" as="geometry" />
@@ -75,15 +78,15 @@
         <mxCell id="PpOvrOjPETuo-7P6tm4k-53" edge="1" parent="1" source="PpOvrOjPETuo-7P6tm4k-5" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.25;entryY=1;entryDx=0;entryDy=0;defaultLabelBackgroundColor=page;labelPadding=0 4;" target="PpOvrOjPETuo-7P6tm4k-2">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="PpOvrOjPETuo-7P6tm4k-54" connectable="0" parent="PpOvrOjPETuo-7P6tm4k-53" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];inheritText=1;defaultLabelBackgroundColor=page;labelPadding=0 4;" value="Дейстивие&lt;br&gt;пользователя" vertex="1">
+        <mxCell id="PpOvrOjPETuo-7P6tm4k-54" connectable="0" parent="PpOvrOjPETuo-7P6tm4k-53" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];inheritText=1;defaultLabelBackgroundColor=page;labelPadding=0 4;" value="Взаимодействие с редактором" vertex="1">
           <mxGeometry relative="1" x="0.2919" y="3" as="geometry">
             <mxPoint y="12" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="PpOvrOjPETuo-7P6tm4k-5" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Controllers&lt;br&gt;CanvasController&lt;br&gt;ToolbarController&lt;br&gt;TimelineController&lt;div&gt;Принимает события от View, вызывает необходимые методы у EditorModel&lt;/div&gt;" vertex="1">
-          <mxGeometry height="110" width="250" x="110" y="800" as="geometry" />
+        <mxCell id="PpOvrOjPETuo-7P6tm4k-5" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="&lt;font style=&quot;font-size: 20px;&quot;&gt;Controllers&lt;/font&gt;&lt;div&gt;Классы:&lt;span style=&quot;font-size: 20px;&quot;&gt;&lt;br&gt;&lt;/span&gt;CanvasController&lt;br&gt;ToolbarController&lt;br&gt;TimelineController&lt;div&gt;Принимает события от View, вызывает необходимые методы у EditorModel&lt;/div&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="130" width="280" x="650" y="430" as="geometry" />
         </mxCell>
-        <mxCell id="PpOvrOjPETuo-7P6tm4k-42" edge="1" parent="1" source="PpOvrOjPETuo-7P6tm4k-22" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;defaultLabelBackgroundColor=page;labelPadding=0 4;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" target="PpOvrOjPETuo-7P6tm4k-23">
+        <mxCell id="PpOvrOjPETuo-7P6tm4k-42" edge="1" parent="1" source="PpOvrOjPETuo-7P6tm4k-22" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.25;entryY=0;entryDx=0;entryDy=0;defaultLabelBackgroundColor=page;labelPadding=0 4;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" target="PpOvrOjPETuo-7P6tm4k-23">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="PpOvrOjPETuo-7P6tm4k-43" connectable="0" parent="PpOvrOjPETuo-7P6tm4k-42" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];inheritText=1;defaultLabelBackgroundColor=page;labelPadding=0 4;" value="Создает экземпляр окна" vertex="1">
@@ -99,27 +102,65 @@
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="PpOvrOjPETuo-7P6tm4k-22" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="WindowManager&lt;br&gt;&lt;br&gt;Владеет всеми окнами и всеми PictureDocument. Позволяет создавать и удалять окна, и назначает им уже существующий PictureDocument или создает новый" vertex="1">
-          <mxGeometry height="120" width="240" x="-180" y="690" as="geometry" />
+        <mxCell id="PpOvrOjPETuo-7P6tm4k-22" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="&lt;font style=&quot;font-size: 20px;&quot;&gt;WindowManager&lt;/font&gt;&lt;br&gt;Классы: WindowManager&lt;br&gt;Владеет всеми окнами и всеми PictureDocument. Позволяет создавать и удалять окна, и назначает им уже существующий PictureDocument или создает новый" vertex="1">
+          <mxGeometry height="120" width="240" x="320" y="290" as="geometry" />
         </mxCell>
-        <mxCell id="PpOvrOjPETuo-7P6tm4k-38" edge="1" parent="1" source="PpOvrOjPETuo-7P6tm4k-23" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.123;entryY=1.008;entryDx=0;entryDy=0;defaultLabelBackgroundColor=page;labelPadding=0 4;entryPerimeter=0;" target="PpOvrOjPETuo-7P6tm4k-4">
+        <mxCell id="PpOvrOjPETuo-7P6tm4k-38" edge="1" parent="1" source="PpOvrOjPETuo-7P6tm4k-23" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.25;entryDx=0;entryDy=0;defaultLabelBackgroundColor=page;labelPadding=0 4;exitX=1;exitY=0.25;exitDx=0;exitDy=0;" target="PpOvrOjPETuo-7P6tm4k-4">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="PpOvrOjPETuo-7P6tm4k-40" connectable="0" parent="PpOvrOjPETuo-7P6tm4k-38" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];inheritText=1;defaultLabelBackgroundColor=page;labelPadding=0 4;" value="Действия&lt;div&gt;пользователя&lt;/div&gt;" vertex="1">
-          <mxGeometry relative="1" x="0.3807" y="-1" as="geometry">
+          <mxGeometry relative="1" x="0.3831" y="-1" as="geometry">
             <mxPoint x="-13" y="10" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="PpOvrOjPETuo-7P6tm4k-23" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="EditorWindow&lt;br&gt;[SFML]&lt;br&gt;Владеет EditorModel, всеми Views и Controllers, имеет ссылку на PictureDocument, к которому относится EditorModel&lt;br&gt;Принимает и делегирует обработку событий, хранит окно SFML" vertex="1">
-          <mxGeometry height="130" width="240" x="320" y="1020" as="geometry" />
+        <mxCell id="PpOvrOjPETuo-7P6tm4k-23" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="&lt;font style=&quot;font-size: 20px;&quot;&gt;EditorWindow&lt;br&gt;&lt;/font&gt;Классы: EditorWindow&lt;br&gt;[SFML]&lt;br&gt;Владеет EditorModel, всеми Views и Controllers, имеет ссылку на PictureDocument, к которому относится EditorModel&lt;br&gt;Принимает и делегирует обработку событий, хранит окно SFML" vertex="1">
+          <mxGeometry height="150" width="260" x="567" y="790" as="geometry" />
         </mxCell>
-        <mxCell id="PpOvrOjPETuo-7P6tm4k-55" edge="1" parent="1" source="PpOvrOjPETuo-7P6tm4k-1" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.223;entryY=1.014;entryDx=0;entryDy=0;entryPerimeter=0;defaultLabelBackgroundColor=page;labelPadding=0 4;" target="PpOvrOjPETuo-7P6tm4k-3">
+        <mxCell id="PpOvrOjPETuo-7P6tm4k-55" edge="1" parent="1" source="PpOvrOjPETuo-7P6tm4k-1" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;defaultLabelBackgroundColor=page;labelPadding=0 4;" target="PpOvrOjPETuo-7P6tm4k-3">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="PpOvrOjPETuo-7P6tm4k-56" connectable="0" parent="PpOvrOjPETuo-7P6tm4k-55" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];inheritText=1;defaultLabelBackgroundColor=page;labelPadding=0 4;" value="Выполняет команду,&lt;br&gt;изменяя состояние" vertex="1">
           <mxGeometry relative="1" x="0.1529" y="1" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
+        </mxCell>
+        <mxCell id="T75C4kviZYVaLZnj_GiQ-4" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;font style=&quot;font-size: 40px;&quot;&gt;Графический редактор&lt;/font&gt;" vertex="1">
+          <mxGeometry height="110" width="310" x="1140" y="-260" as="geometry" />
+        </mxCell>
+        <mxCell id="T75C4kviZYVaLZnj_GiQ-5" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;labelPerimeter=1;" value="Пользователь" vertex="1">
+          <mxGeometry height="60" width="30" x="682" y="1040" as="geometry" />
+        </mxCell>
+        <mxCell id="T75C4kviZYVaLZnj_GiQ-6" edge="1" parent="1" source="T75C4kviZYVaLZnj_GiQ-5" style="endArrow=classic;html=1;rounded=0;defaultLabelBackgroundColor=page;labelPadding=0 4;entryX=0.5;entryY=1;entryDx=0;entryDy=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;exitPerimeter=0;" target="PpOvrOjPETuo-7P6tm4k-23" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="990" y="910" as="sourcePoint" />
+            <mxPoint x="1040" y="860" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="T75C4kviZYVaLZnj_GiQ-7" connectable="0" parent="T75C4kviZYVaLZnj_GiQ-6" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];inheritText=1;defaultLabelBackgroundColor=page;labelPadding=0 4;" value="Действия пользователя" vertex="1">
+          <mxGeometry relative="1" x="-0.1036" y="-2" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="T75C4kviZYVaLZnj_GiQ-15" edge="1" parent="1" source="T75C4kviZYVaLZnj_GiQ-3" style="endArrow=none;dashed=1;html=1;dashPattern=1 3;strokeWidth=2;rounded=0;defaultLabelBackgroundColor=page;labelPadding=0 4;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;" target="T75C4kviZYVaLZnj_GiQ-3" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="830" y="420" as="sourcePoint" />
+            <mxPoint x="880" y="370" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="T75C4kviZYVaLZnj_GiQ-16" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;font style=&quot;font-size: 30px;&quot;&gt;View&lt;/font&gt;" vertex="1">
+          <mxGeometry height="80" width="190" x="240" y="650" as="geometry" />
+        </mxCell>
+        <mxCell id="T75C4kviZYVaLZnj_GiQ-17" edge="1" parent="1" style="endArrow=none;dashed=1;html=1;dashPattern=1 3;strokeWidth=2;rounded=0;defaultLabelBackgroundColor=page;labelPadding=0 4;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="240" y="150" as="sourcePoint" />
+            <mxPoint x="1470" y="150" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="T75C4kviZYVaLZnj_GiQ-18" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;font style=&quot;font-size: 30px;&quot;&gt;ModelView&lt;/font&gt;" vertex="1">
+          <mxGeometry height="80" width="190" x="240" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="T75C4kviZYVaLZnj_GiQ-19" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;font style=&quot;font-size: 30px;&quot;&gt;Model&lt;/font&gt;" vertex="1">
+          <mxGeometry height="80" width="190" x="240" y="-280" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
